@@ -21,6 +21,15 @@ const Home: React.FC = () => {
       >
         About
       </Button>
+      <br />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/information')}
+        sx={{ marginTop: 2 }}
+      >
+        Information
+      </Button>
     </Container>
   );
 };

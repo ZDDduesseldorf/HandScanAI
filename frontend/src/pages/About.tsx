@@ -11,6 +11,14 @@ const About: React.FC = () => {
         Building a transparent, reliable, robust AI application to predict
         biometric information from hand images.
       </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/information')}
+        sx={{ marginTop: 2 }}
+      >
+        Information
+      </Button>
     </Container>
   );
 };
