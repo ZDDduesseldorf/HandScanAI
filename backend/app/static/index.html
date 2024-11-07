@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket</title>
+</head>
+<body>
+    <h1>WebSocket</h1>
+    <img id="processed" width="640" height="480" />
+    <script>
+        const processedImage = document.getElementById('processed');
+        const ws = new WebSocket('ws://localhost:8000/ws');
+
+        ws.onopen = () => {
+            console.log('WebSocket connection opened');
+            navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 640;
+                canvas.height = 480;
+
+                setInterval(() => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            ws.send(blob);
+                        }
+                    }, 'image/jpeg');
+                }, 100);
+            }).catch(error => {
+                console.error('Error accessing camera:', error);
+            });
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Received processed frame');
+            const blob = new Blob([event.data], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+    </script>
+</body>
+</html>
