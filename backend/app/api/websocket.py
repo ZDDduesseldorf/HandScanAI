@@ -1,9 +1,6 @@
-# websocket/endpoint.py
-import os
 import numpy as np
 import cv2
 from fastapi import WebSocket, WebSocketDisconnect
-from starlette.responses import FileResponse
 from lib.mediapipe import draw, recognizer, utils
 from app.core.config import settings
 
