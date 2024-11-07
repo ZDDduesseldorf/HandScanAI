@@ -23,6 +23,7 @@ class Environment(StrEnum):
 class Paths:
     # backend
     ROOT_DIR: Path = Path(__file__).parent.parent.parent
+    LIB_DIR: Path = ROOT_DIR / "lib"
     BASE_DIR: Path = ROOT_DIR / "app"
     STATIC_DIR: Path = BASE_DIR / "static"
 
