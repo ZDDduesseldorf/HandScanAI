@@ -1,7 +1,10 @@
 import React from 'react';
-import { Typography, Container } from '@mui/material';
+import { Typography, Container, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const About: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Typography variant="h2" component="h1" gutterBottom>
