@@ -17,7 +17,7 @@ const BoxSx: React.FC<Props> = ({ children }) => {
         display: 'flex', // Center the text both vertically and horizontally
         flexDirection: 'column', // Stacks header and paragraph vertically
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         padding: 2,
         overflow: 'auto', // Adds scroll if content overflows
         '&:hover': {
