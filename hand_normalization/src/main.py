@@ -173,34 +173,38 @@ def normalize_hand_image(image_path):
     outer_thumb_defect = functions.find_closest_point(intersection_points, moved_point)
     cv2.circle(image_with_defects, outer_thumb_defect, radius=3, color=(0, 0, 255), thickness=5)
 
-    ### replace contour between outer thumb defect and little defect
-    ### slice contour
-    ### find contour point close to outer_thumb_defect and little_defect
-    contour_as_list = largest_contour.reshape(-1, 2).tolist()
-    outer_thumb_defect_in_contour = functions.find_closest_point(contour_as_list,outer_thumb_defect)
-    cv2.circle(image_with_defects, outer_thumb_defect_in_contour, radius=3, color=(0, 255, 255), thickness=5)
-    little_defect_defect_in_contour = functions.find_closest_point(contour_as_list,little_defect)
-    cv2.circle(image_with_defects, little_defect_defect_in_contour, radius=3, color=(0, 255, 255), thickness=5)
 
-    sliced_contour = functions.slice_contour(largest_contour,outer_thumb_defect_in_contour,little_defect_defect_in_contour)
-    sliced_contour_as_list = sliced_contour.reshape(-1, 2).tolist()
-    sliced_contour_as_list.insert(0, outer_thumb_defect_in_contour) 
-    sliced_contour_as_list.append(little_defect_defect_in_contour) 
-    key_defect_list = np.array([outer_thumb_defect,inner_thumb_defect,index_defect,middle_index_defect,middle_ring_defect, little_ring_defect, little_defect])
-    key_defect_mask = functions.hull_or_contour_to_bitmask(key_defect_list, grey_image.shape)
-    new_contour_mask = functions.hull_or_contour_to_bitmask(np.array(sliced_contour_as_list), grey_image.shape)
-    palm_mask = new_contour_mask +key_defect_mask 
+
+    
     
     ## <output> ...
-    return image_with_defects, palm_mask
 
     # Segmentation
-    ## <input> ?
-    ## palm mask
+    ## <input> contour_mask
+    ## copy hand contour
+    segmented_contour_mask = contour_mask.copy()
+    ## draw segment lines between hand defects on hand contour
+    cv2.line(segmented_contour_mask, little_defect, little_ring_defect, 255, 2)
+    cv2.line(segmented_contour_mask, little_ring_defect, middle_ring_defect, 255, 2)
+    cv2.line(segmented_contour_mask, middle_ring_defect, middle_index_defect, 255, 2)
+    cv2.line(segmented_contour_mask, middle_index_defect, index_defect, 255, 2)
+    cv2.line(segmented_contour_mask, inner_thumb_defect, outer_thumb_defect, 255, 2)
+
+    ## find contours and inner contours
+    hand_segment_contours, _ = cv2.findContours(segmented_contour_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    
+    ## create bitmasks for each region
+    hand_segments = []
+    for contour in hand_segment_contours:
+        segment_bitmask = functions.hull_or_contour_to_bitmask(contour,blank_image.shape)
+        hand_segments.append(segment_bitmask)
     ## finger mask
     ## isolate finger mask into multiple masks
     ## crop segment masks
     ## <output> ...
+
+    return hand_segments
+
 
     # Rotate segments
     ## <input> landmarks array 
