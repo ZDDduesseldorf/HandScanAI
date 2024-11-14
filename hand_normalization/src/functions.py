@@ -45,6 +45,9 @@ def getLandmarks(image_path):
 def euclidean_distance(point1, point2):
     return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)**(0.5)
 
+def direction_vector(point1, point2):
+    return (point2[0] - point1[0], point2[1] - point1[1])
+
 
 
 # Function to sort points by their distance to a given point
@@ -108,3 +111,101 @@ def calculate_center_of_mass(binary_image):
     else:
         # Falls kein CoM berechnet werden kann, gib None zurück
         return None
+    
+
+def rotate_image(image, angle):
+    # Get the dimensions of the image
+    (h, w) = image.shape[:2]
+    
+    # Define the center of the image as the point of rotation
+    center = (w // 2, h // 2)
+    
+    # Create the rotation matrix using the specified angle
+    rotation_matrix = cv2.getRotationMatrix2D(center, angle, scale=1.0)
+    
+    # Perform the actual rotation
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (w, h))
+    
+    return rotated_image
+
+def rotate_image_no_crop(image, angle):
+    (h, w) = image.shape[:2]
+    center = (w // 2, h // 2)
+    
+    # Calculate the rotation matrix
+    rotation_matrix = cv2.getRotationMatrix2D(center, angle, scale=1.0)
+    
+    # Calculate the new bounding dimensions of the image
+    cos = abs(rotation_matrix[0, 0])
+    sin = abs(rotation_matrix[0, 1])
+    new_w = int((h * sin) + (w * cos))
+    new_h = int((h * cos) + (w * sin))
+    
+    # Adjust the rotation matrix to account for translation
+    rotation_matrix[0, 2] += (new_w / 2) - center[0]
+    rotation_matrix[1, 2] += (new_h / 2) - center[1]
+    
+    # Perform the rotation
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
+    
+    return rotated_image
+
+
+def check_points_in_mask(mask, points):
+    # Create a blank canvas (black image) of the same size as the mask
+    canvas = np.zeros_like(mask, dtype=np.uint8)
+    
+    # List to store the points that are inside the mask
+    inside_points = []
+    
+    for point in points:
+        # Draw the point on the canvas (white pixel)
+        cv2.circle(canvas, point, 1, (255), -1)  # Draw a small white dot at the point
+        
+        # Check if the mask has a non-zero value at this point
+        if mask[point[1], point[0]] > 0:  # Use (x, y) for the index
+            inside_points.append(point)
+    
+    return inside_points
+
+def slice_contour(contour_point_list, point1, point2):
+    """
+    Slices the contour based on two points.
+    The result will be a contour from point2 to point1 (or the other way around, depending on order).
+    """
+
+    # Find indices of point1 and point2 in the contour
+    idx1 = np.where(np.all(contour_point_list == point1, axis=1))[0]
+    idx2 = np.where(np.all(contour_point_list == point2, axis=1))[0]
+
+    if len(idx1) == 0 or len(idx2) == 0:
+        raise ValueError("One or both points are not found in the contour.")
+    
+    idx1 = idx1[0]  # First occurrence of point1
+    idx2 = idx2[0]  # First occurrence of point2
+
+    # Slice contour depending on the relative positions of idx1 and idx2
+    if idx2 < idx1:
+        # If point2 comes before point1, slice from point2 to the end, and then from start to point1
+        sliced_contour = np.concatenate([contour_point_list[idx1:], contour_point_list[:idx2]])
+    else:
+        # Otherwise, slice from point2 to point1
+        sliced_contour = contour_point_list[idx1:idx2]
+
+    return sliced_contour
+
+def insert_points_into_contour(sliced_contour, new_points, position='end'):
+    """
+    Inserts new points into the sliced contour.
+    position: 'start' to insert at the beginning, 'end' to insert at the end.
+    """
+    if position == 'start':
+        # Insert at the beginning of the sliced contour
+        new_contour = np.vstack([new_points, sliced_contour])
+    elif position == 'end':
+        # Insert at the end of the sliced contour
+        new_contour = np.vstack([sliced_contour, new_points])
+    else:
+        raise ValueError("Position must be either 'start' or 'end'.")
+
+    return new_contour
