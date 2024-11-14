@@ -10,3 +10,10 @@
   .information-box {
     flex: 1;
   }
+
+  /* blue to black background */
+  /* body {
+    background: linear-gradient(to bottom, #003b5c, #0b0d0e);
+    height: 100vh;
+    margin: 0;
+  } */

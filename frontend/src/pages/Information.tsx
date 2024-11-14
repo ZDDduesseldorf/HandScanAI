@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Container, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 //import Stepper from '@/pages/Stepper';
-import HorizontalLinearAlternativeLabelStepper from '@/components/Stepper';
+import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
 
 import './Information.css';
@@ -54,7 +54,7 @@ const Information: React.FC = () => {
           />
         </BoxSx>
       </div>
-      <HorizontalLinearAlternativeLabelStepper></HorizontalLinearAlternativeLabelStepper>
+      <HorizStepper pageNumber={0}></HorizStepper>
     </Container>
   );
 };

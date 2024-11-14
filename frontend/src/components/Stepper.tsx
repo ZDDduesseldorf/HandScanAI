@@ -8,10 +8,14 @@ const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis'];
 
 //Momentan noch alles hardcoded, just testing
 
-export default function HorizontalLinearAlternativeLabelStepper() {
+interface Props {
+  pageNumber: number;
+}
+
+export default function HorizStepper({ pageNumber }: Props) {
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={1} alternativeLabel>
+      <Stepper activeStep={pageNumber} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
