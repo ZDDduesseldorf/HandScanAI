@@ -184,18 +184,15 @@ def normalize_hand_image(image_path):
 
     sliced_contour = functions.slice_contour(largest_contour,outer_thumb_defect_in_contour,little_defect_defect_in_contour)
     sliced_contour_as_list = sliced_contour.reshape(-1, 2).tolist()
+    sliced_contour_as_list.insert(0, outer_thumb_defect_in_contour) 
+    sliced_contour_as_list.append(little_defect_defect_in_contour) 
     key_defect_list = np.array([outer_thumb_defect,inner_thumb_defect,index_defect,middle_index_defect,middle_ring_defect, little_ring_defect, little_defect])
     key_defect_mask = functions.hull_or_contour_to_bitmask(key_defect_list, grey_image.shape)
     new_contour_mask = functions.hull_or_contour_to_bitmask(np.array(sliced_contour_as_list), grey_image.shape)
-    
-
-
-    
-
-
+    palm_mask = new_contour_mask +key_defect_mask 
     
     ## <output> ...
-    return image_with_defects, new_contour_mask
+    return image_with_defects, palm_mask
 
     # Segmentation
     ## <input> ?

@@ -181,6 +181,7 @@ def slice_contour(contour_point_list, point1, point2):
     if len(idx1) == 0 or len(idx2) == 0:
         raise ValueError("One or both points are not found in the contour.")
     
+    # Find indices of point1 and point2 in the contour
     idx1 = idx1[0]  # First occurrence of point1
     idx2 = idx2[0]  # First occurrence of point2
 
