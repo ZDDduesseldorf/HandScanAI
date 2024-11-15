@@ -203,7 +203,7 @@ def normalize_hand_image(image_path):
     ## crop segment masks
     ## <output> ...
 
-    return hand_segments
+    return hand_segments, landmarks
 
 
     # Rotate segments
@@ -215,7 +215,7 @@ def normalize_hand_image(image_path):
     # Resize segments
     ## 
 
-images = normalize_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
+images, _ = normalize_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 for image in images:
     cv2.imshow("hand region multi otsu",image)
     cv2.waitKey(0)
