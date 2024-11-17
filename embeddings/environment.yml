@@ -1,0 +1,13 @@
+name: embeddings_handscanai
+dependencies:
+  - pip
+  - python=3.10
+  # dependencies for embeddings
+  - pytorch
+  - torchvision
+  # for dev/ tests
+  - numpy
+  - pandas
+  - pip:
+      # for dev/ tests
+      - jupyter
