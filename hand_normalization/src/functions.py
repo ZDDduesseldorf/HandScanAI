@@ -210,3 +210,7 @@ def insert_points_into_contour(sliced_contour, new_points, position='end'):
         raise ValueError("Position must be either 'start' or 'end'.")
 
     return new_contour
+
+def vector_agle(point1, point2):
+    vector = (point1[1] - point2[1] , point1[2] - point2[2])
+    vector_angle = cv2.fastAtan2(vector[0],vector[1]) + 90

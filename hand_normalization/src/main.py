@@ -76,10 +76,10 @@ def normalize_hand_image(image_path):
            cv2.circle(image_with_defects, defect_distances[i][1], radius=3, color=(0, 0, 255), thickness=5)
     
     ## find Rotation and Roteat Image 
-    hand_orientation_vector = (landmarks[5][1] - landmarks[17][1] , landmarks[5][2] - landmarks[17][2])
-    hand_angle = cv2.fastAtan2(hand_orientation_vector[0],hand_orientation_vector[1]) + 90
+    # hand_orientation_vector = (landmarks[5][1] - landmarks[17][1] , landmarks[5][2] - landmarks[17][2])
+    # hand_angle = cv2.fastAtan2(hand_orientation_vector[0],hand_orientation_vector[1]) + 90
     
-    rotated_image = functions.rotate_image_no_crop(original_image, -hand_angle)
+    # rotated_image = functions.rotate_image_no_crop(original_image, -hand_angle)
  
 
     ## cleanup hand mask
@@ -97,14 +97,14 @@ def normalize_hand_image(image_path):
     #### check wich defects are insed the mask
     middle_ring_defect = functions.check_points_in_mask(lookup_area_middle_ring_mask,four_largest_defects)[0]
 
-    #### repeat for little_ring_finger defect
-    lookup_area_little_ring_defect = np.array([landmarks[13][1:],landmarks[14][1:],landmarks[18][1:],landmarks[17][1:]])
-    lookup_area_little_ring_mask = functions.hull_or_contour_to_bitmask(lookup_area_little_ring_defect, grey_image.shape)
-    little_ring_defect = functions.check_points_in_mask(lookup_area_little_ring_mask,four_largest_defects)[0]
+    #### repeat for Pinkie_ring_finger defect
+    lookup_area_pinkie_ring_defect = np.array([landmarks[13][1:],landmarks[14][1:],landmarks[18][1:],landmarks[17][1:]])
+    lookup_area_pinkie_ring_mask = functions.hull_or_contour_to_bitmask(lookup_area_pinkie_ring_defect, grey_image.shape)
+    pinkie_ring_defect = functions.check_points_in_mask(lookup_area_pinkie_ring_mask,four_largest_defects)[0]
 
-    #### cast a line from the middle_ring defect towards the little_ring defect and look for intersection points with the contour of the hand. The Outer most point is our constructed little finger defect 
-    direction_vector_to_little_defect = functions.direction_vector(middle_ring_defect,little_ring_defect)
-    moved_point = (int(middle_ring_defect[0] + direction_vector_to_little_defect[0] * 3), int(middle_ring_defect[1] + direction_vector_to_little_defect[1] * 3))
+    #### cast a line from the middle_ring defect towards the pinkie_ring defect and look for intersection points with the contour of the hand. The Outer most point is our constructed pinkie finger defect 
+    direction_vector_to_pinkie_defect = functions.direction_vector(middle_ring_defect,pinkie_ring_defect)
+    moved_point = (int(middle_ring_defect[0] + direction_vector_to_pinkie_defect[0] * 3), int(middle_ring_defect[1] + direction_vector_to_pinkie_defect[1] * 3))
     line_mask = blank_image.copy()
     line_mask = cv2.line(line_mask, middle_ring_defect, moved_point, 255, 1)
 
@@ -119,11 +119,11 @@ def normalize_hand_image(image_path):
         cv2.circle(original_image,point, radius=3, color=(0, 0, 255), thickness=5)
 
     # Find the closest intersection point to the moved point
-    little_defect = functions.find_closest_point(intersection_points, moved_point)
-    cv2.circle(image_with_defects, little_defect, radius=3, color=(0, 0, 255), thickness=5)
+    pinkie_defect = functions.find_closest_point(intersection_points, moved_point)
+    cv2.circle(image_with_defects, pinkie_defect, radius=3, color=(0, 0, 255), thickness=5)
 
     ### repeat for index finger defect
-    #### repeat for little_ring_finger defect
+    #### repeat for pinkie_ring_finger defect
     lookup_area_middle_index_defect = np.array([landmarks[5][1:],landmarks[6][1:],landmarks[10][1:],landmarks[9][1:]])
     lookup_area_middle_index_mask = functions.hull_or_contour_to_bitmask(lookup_area_middle_index_defect, grey_image.shape)
     middle_index_defect = functions.check_points_in_mask(lookup_area_middle_index_mask,four_largest_defects)[0]
@@ -172,11 +172,6 @@ def normalize_hand_image(image_path):
     # Find the closest intersection point to the moved point
     outer_thumb_defect = functions.find_closest_point(intersection_points, moved_point)
     cv2.circle(image_with_defects, outer_thumb_defect, radius=3, color=(0, 0, 255), thickness=5)
-
-
-
-    
-    
     ## <output> ...
 
     # Segmentation
@@ -184,8 +179,8 @@ def normalize_hand_image(image_path):
     ## copy hand contour
     segmented_contour_mask = contour_mask.copy()
     ## draw segment lines between hand defects on hand contour
-    cv2.line(segmented_contour_mask, little_defect, little_ring_defect, 255, 2)
-    cv2.line(segmented_contour_mask, little_ring_defect, middle_ring_defect, 255, 2)
+    cv2.line(segmented_contour_mask, pinkie_defect, pinkie_ring_defect, 255, 2)
+    cv2.line(segmented_contour_mask, pinkie_ring_defect, middle_ring_defect, 255, 2)
     cv2.line(segmented_contour_mask, middle_ring_defect, middle_index_defect, 255, 2)
     cv2.line(segmented_contour_mask, middle_index_defect, index_defect, 255, 2)
     cv2.line(segmented_contour_mask, inner_thumb_defect, outer_thumb_defect, 255, 2)
@@ -198,22 +193,66 @@ def normalize_hand_image(image_path):
     for contour in hand_segment_contours:
         segment_bitmask = functions.hull_or_contour_to_bitmask(contour,blank_image.shape)
         hand_segments.append(segment_bitmask)
-    ## finger mask
-    ## isolate finger mask into multiple masks
-    ## crop segment masks
     ## <output> ...
+
+    ## set bonding boxes for segments
+    ## loop over segments
+    ##      rotate segment and image to segment orientation
+    ##      set boundingbox around segment
+    ##      crop original image at boundingbox
+    ## return the segments
+    regions = [
+    {
+        "name": "Palm",
+        "reference_point": landmarks[13][1:],
+        "angle_func": lambda: functions.vector_agle(landmarks[5][1:], landmarks[17][1:]),
+    },
+    {
+        "name": "Thumb",
+        "reference_point": landmarks[3][1:],
+        "angle_func": lambda: functions.vector_agle(landmarks[2][1:], landmarks[4][1:]),
+    },
+    {
+        "name": "Index Finger",
+        "reference_point": landmarks[7][1:],
+        "angle_func": lambda: functions.vector_agle(landmarks[6][1:], landmarks[8][1:]),
+    },
+    {
+        "name": "Middle Finger",
+        "reference_point": landmarks[11][1:],
+        "angle_func": lambda: functions.vector_agle(landmarks[10][1:], landmarks[12][1:]),
+    },
+    {
+        "name": "Ring Finger",
+        "reference_point": landmarks[15][1:],
+        "angle_func": lambda: functions.vector_agle(landmarks[14][1:], landmarks[16][1:]),
+    },
+    {
+        "name": "Pinkie Finger",
+        "reference_point": landmarks[19][1:],
+        "angle_func": lambda: functions.vector_agle(landmarks[18][1:], landmarks[20][1:]),
+    },
+]
+    print(regions[1].reference_point)
+    
+    # for segments in hand_segments:
+    #     for region in regions:
+    #         points = functions.check_points_in_mask()
+
 
     return hand_segments, landmarks
 
+## dynamic segment sizing
+## loop over segments
+##      resize segment to 224x224
+##      fill rest of 224x224 with 0 or 255,255,255?
+## returns embedding ready segments
 
-    # Rotate segments
-    ## <input> landmarks array 
-    ## calculate rotation
-    ## apply rotation
-    ## <output> ...
-
-    # Resize segments
-    ## 
+## static segment sizing
+## loop over segments
+##      resize segment to with a static segment scaling
+##      fill rest of 224x224 with 0 or 255,255,255?
+## returns embedding ready segments
 
 images, _ = normalize_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 for image in images:
