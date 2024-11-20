@@ -25,10 +25,9 @@ const Berechnung: React.FC = () => {
       </div>
 
       <p>
-        Ungefähr 90% der Menschen sind Rechtshänder, wobei die Handdominanz oft
-        <br></br>
-        in der frühen Kindheit festgelegt wird und teilweise genetisch<br></br>
-        beeinflusst<br></br> ist.
+        Ungefähr 90% der Menschen sind Rechtshänder,<br></br>
+        wobei die Handdominanz oft in der frühen Kindheit <br></br>
+        festgelegt wird und teilweise genetisch beeinflusst<br></br> ist.
       </p>
 
       <HorizStepper pageNumber={2}></HorizStepper>
