@@ -293,4 +293,4 @@ for region in images:
     resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
     cv2.imshow("check", resized_region)
     cv2.waitKey(0)
-    cv2.destroyAllWindows
+    cv2.destroyAllWindows()
