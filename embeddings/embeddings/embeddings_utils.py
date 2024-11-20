@@ -8,13 +8,12 @@
 ############################################################
 
 # imports
-import os
 import torch
 import torch.nn as nn
 from torchvision import models
 
 from torchvision.transforms import v2
-from torchvision.io import read_image, ImageReadMode
+from image_utils import load_image
 
 ## models
 from torchvision.models.densenet import DenseNet121_Weights
@@ -56,42 +55,6 @@ def build_densenet_model():
     # user inference mode instead of training mode
     model.eval()
     return model
-
-
-def construct_image_path(image_name, path_to_images):
-    """
-    Helper function: Constructs individual image path from image name and general path to the image folder.
-
-    Args:
-        image_name: name of the individual image-file
-        path_to_images: path to the image folder, where the image lies
-
-    Returns:
-        A string, the path to the input image from where it can be loaded.
-    """
-    # Construct the full path to the image file
-    img_path = os.path.join(path_to_images, image_name)
-    # print(img_path)
-    return img_path
-
-
-def load_image(image_name, path_to_images):
-    """
-    Loads image from from image name and general path to the image folder.
-
-    Args:
-        image_name: name of the individual image-file
-        path_to_images: path to the image folder, where the image lies
-
-    Returns:
-        A 3 dimensional RGB Tensor of the image. The values of the output tensor are uint8 in [0, 255]. (see method description read_image)
-    """
-    img_path = construct_image_path(image_name, path_to_images)
-    # print(f"img_path: {img_path}")
-    # Read the image file
-    image_tensor = read_image(img_path, ImageReadMode.RGB)
-    # returns a tensor with rgb values
-    return image_tensor
 
 
 # input image is a tensor with rgb values, like the ones getting returned by load__image
