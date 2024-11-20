@@ -8,6 +8,7 @@ from skimage.filters import threshold_multiotsu
 def normalize_hand_image(image_path):
     # image loading
     original_image = cv2.imread(image_path)
+    clean_image = cv2.imread(image_path)
     grey_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
 
     # Mediapipe Landmarks
@@ -89,7 +90,7 @@ def normalize_hand_image(image_path):
     # Find all contours in the binary mask
 
     ## calculate pinky and Index defect
-
+    
     ### find defect between middle and ring finger
     #### create the mask of the area defined by landmark points
     lookup_area_middle_ring_defect = np.array([landmarks[9][1:],landmarks[10][1:],landmarks[14][1:],landmarks[13][1:]])
@@ -203,44 +204,69 @@ def normalize_hand_image(image_path):
     ## return the segments
     regions = [
     {
+        "name": "Hand",
+        "reference_point": [],
+        "angle": 180-functions.vector_agle(landmarks[5][1:], landmarks[13][1:])-90,
+    },
+    {
         "name": "Palm",
         "reference_point": landmarks[13][1:],
-        "angle_func": lambda: functions.vector_agle(landmarks[5][1:], landmarks[17][1:]),
+        "angle": 180-functions.vector_agle(landmarks[5][1:], landmarks[13][1:])-90,
     },
     {
         "name": "Thumb",
         "reference_point": landmarks[3][1:],
-        "angle_func": lambda: functions.vector_agle(landmarks[2][1:], landmarks[4][1:]),
+        "angle": 180-functions.vector_agle(landmarks[2][1:], landmarks[4][1:]),
     },
     {
         "name": "Index Finger",
         "reference_point": landmarks[7][1:],
-        "angle_func": lambda: functions.vector_agle(landmarks[6][1:], landmarks[8][1:]),
+        "angle": 180-functions.vector_agle(landmarks[6][1:], landmarks[8][1:]),
     },
     {
         "name": "Middle Finger",
         "reference_point": landmarks[11][1:],
-        "angle_func": lambda: functions.vector_agle(landmarks[10][1:], landmarks[12][1:]),
+        "angle": 180-functions.vector_agle(landmarks[10][1:], landmarks[12][1:]),
     },
     {
         "name": "Ring Finger",
         "reference_point": landmarks[15][1:],
-        "angle_func": lambda: functions.vector_agle(landmarks[14][1:], landmarks[16][1:]),
+        "angle": 180-functions.vector_agle(landmarks[14][1:], landmarks[16][1:]),
     },
     {
-        "name": "Pinkie Finger",
+        "name": "Pinky Finger",
         "reference_point": landmarks[19][1:],
-        "angle_func": lambda: functions.vector_agle(landmarks[18][1:], landmarks[20][1:]),
+        "angle": 180-functions.vector_agle(landmarks[18][1:], landmarks[20][1:]),
     },
 ]
-    print(regions[1].reference_point)
     
-    # for segments in hand_segments:
-    #     for region in regions:
-    #         points = functions.check_points_in_mask()
+    
+    image = clean_image.copy()
+    image_rotaded = functions.rotate_image_no_crop(image, regions[0]["angle"])
+    segment_mask_rotaded = functions.rotate_image_no_crop(hand_segments[0], regions[0]["angle"])
+    bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
+    cropped_segment_image = functions.crop_to_bounding_box(image_rotaded, bounding_box)
+    regions[0].update({"mask": hand_segments[0]}) 
+    regions[0].update({"segment_image": cropped_segment_image}) 
 
+    for region in regions[1:]:
+        region_reference_point = region["reference_point"]
+        for segments in hand_segments[1:]:
+            points_in_segment = functions.check_points_in_mask(segments,region_reference_point)
+            if(points_in_segment):
+                image = clean_image.copy()
+                print(f"rotated " + region["name"] + " by: " + str(region["angle"]))
+                image_rotaded = functions.rotate_image_no_crop(image, region["angle"])
+                segment_mask_rotaded = functions.rotate_image_no_crop(segments, region["angle"])
+                bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
+                cropped_segment_image = functions.crop_to_bounding_box(image_rotaded, bounding_box)
+                region.update({"mask": segments}) 
+                region.update({"segment_image": cropped_segment_image}) 
 
-    return hand_segments, landmarks
+    images = []
+    for region in regions:
+        images.append(region["segment_image"])
+    return images
 
 ## dynamic segment sizing
 ## loop over segments
@@ -254,7 +280,7 @@ def normalize_hand_image(image_path):
 ##      fill rest of 224x224 with 0 or 255,255,255?
 ## returns embedding ready segments
 
-images, _ = normalize_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
+images = normalize_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 for image in images:
     cv2.imshow("hand region multi otsu",image)
     cv2.waitKey(0)

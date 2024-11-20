@@ -128,12 +128,14 @@ def rotate_image(image, angle):
     
     return rotated_image
 
-def rotate_image_no_crop(image, angle):
+def rotate_image_no_crop(image, angle, center_of_rotation = []):
+    angle = float(angle)
     (h, w) = image.shape[:2]
-    center = (w // 2, h // 2)
+    if (center_of_rotation == []):
+        center_of_rotation = (w // 2, h // 2)
     
-    # Calculate the rotation matrix
-    rotation_matrix = cv2.getRotationMatrix2D(center, angle, scale=1.0)
+    # Calculate the rotation matri
+    rotation_matrix = cv2.getRotationMatrix2D(center_of_rotation, angle, scale=1.0)
     
     # Calculate the new bounding dimensions of the image
     cos = abs(rotation_matrix[0, 0])
@@ -142,8 +144,8 @@ def rotate_image_no_crop(image, angle):
     new_h = int((h * cos) + (w * sin))
     
     # Adjust the rotation matrix to account for translation
-    rotation_matrix[0, 2] += (new_w / 2) - center[0]
-    rotation_matrix[1, 2] += (new_h / 2) - center[1]
+    rotation_matrix[0, 2] += (new_w / 2) - center_of_rotation[0]
+    rotation_matrix[1, 2] += (new_h / 2) - center_of_rotation[1]
     
     # Perform the rotation
     rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
@@ -157,16 +159,72 @@ def check_points_in_mask(mask, points):
     
     # List to store the points that are inside the mask
     inside_points = []
-    
-    for point in points:
+
+    # If the list only contains 1 point
+    if len(points) == 2 and isinstance(points[0],int):
+        point = points
         # Draw the point on the canvas (white pixel)
         cv2.circle(canvas, point, 1, (255), -1)  # Draw a small white dot at the point
         
         # Check if the mask has a non-zero value at this point
         if mask[point[1], point[0]] > 0:  # Use (x, y) for the index
             inside_points.append(point)
+    else:
+        for point in points:
+            # Draw the point on the canvas (white pixel)
+            cv2.circle(canvas, point, 1, (255), -1)  # Draw a small white dot at the point
+            
+            # Check if the mask has a non-zero value at this point
+            if mask[point[1], point[0]] > 0:  # Use (x, y) for the index
+                inside_points.append(point)
     
     return inside_points
+
+def get_bounding_box_with_margin(mask, margin=0):
+    """
+    Calculate a bounding box around a mask with an added margin.
+
+    Parameters:
+    - mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    - margin (int): Margin to add around the bounding box.
+
+    Returns:
+    - (x, y, w, h): Tuple representing the bounding box coordinates with the margin.
+                    (x, y) is the top-left corner, and (w, h) are the width and height.
+    """
+    # Ensure the mask is binary
+    mask = (mask > 0).astype(np.uint8)  # Convert to binary if needed
+
+    # Step 1: Find the bounding box of the mask
+    x, y, w, h = cv2.boundingRect(mask)
+
+    # Step 2: Add the margin to the bounding box
+    x = max(x - margin, 0)
+    y = max(y - margin, 0)
+    w = min(w + 2 * margin, mask.shape[1] - x)
+    h = min(h + 2 * margin, mask.shape[0] - y)
+
+    return x, y, w, h
+
+import cv2
+
+def crop_to_bounding_box(image, bounding_box):
+    """
+    Crop an image to a bounding box.
+
+    Parameters:
+    - image (numpy.ndarray): The input image.
+    - x, y (int): Top-left corner coordinates of the bounding box.
+    - w, h (int): Width and height of the bounding box.
+
+    Returns:
+    - numpy.ndarray: The cropped image.
+    """
+    x, y, w, h = bounding_box
+    # Crop the image using array slicing
+    cropped_image = image[y:y+h, x:x+w]
+    return cropped_image
+
 
 def slice_contour(contour_point_list, point1, point2):
     """
@@ -212,5 +270,6 @@ def insert_points_into_contour(sliced_contour, new_points, position='end'):
     return new_contour
 
 def vector_agle(point1, point2):
-    vector = (point1[1] - point2[1] , point1[2] - point2[2])
-    vector_angle = cv2.fastAtan2(vector[0],vector[1]) + 90
+    vector = (point2[0] - point1[0] , point2[1] - point1[1])
+    vector_angle = cv2.fastAtan2(vector[0],vector[1])
+    return vector_angle
