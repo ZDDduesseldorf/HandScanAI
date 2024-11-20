@@ -3,6 +3,7 @@ import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Information from '@/pages/Information';
 import '@/App.css';
+import Berechnung from './pages/Berechnung';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/information" element={<Information />} />
+        <Route path="/berechnung" element={<Berechnung />} />
       </Routes>
     </Router>
   );
