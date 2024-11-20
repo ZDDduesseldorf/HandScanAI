@@ -280,8 +280,17 @@ def normalize_hand_image(image_path):
 ##      fill rest of 224x224 with 0 or 255,255,255?
 ## returns embedding ready segments
 
-images = normalize_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
+images = normalize_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
 for image in images:
     cv2.imshow("hand region multi otsu",image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+fill_color=(0, 0, 0)
+size = 224
+
+for region in images:
+    resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
+    cv2.imshow("check", resized_region)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows

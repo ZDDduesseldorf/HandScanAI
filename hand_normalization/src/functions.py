@@ -206,7 +206,6 @@ def get_bounding_box_with_margin(mask, margin=0):
 
     return x, y, w, h
 
-import cv2
 
 def crop_to_bounding_box(image, bounding_box):
     """
@@ -273,3 +272,43 @@ def vector_agle(point1, point2):
     vector = (point2[0] - point1[0] , point2[1] - point1[1])
     vector_angle = cv2.fastAtan2(vector[0],vector[1])
     return vector_angle
+
+def dynamic_resize_image_to_target(input_image, size, fill_color):
+    """
+    Resizes the input image to fit within the target resolution, maintaining its aspect ratio.
+    The resized image is then placed on a square canvas, with the lower part of the image aligned
+    to the bottom of the canvas. The remaining space is filled with the specified background color.
+
+    Parameters:
+    - input_image: The image to resize (should be a NumPy array).
+    - size: The target resolution size for the square canvas (e.g., 224).
+    - fill_color: The background color (as a tuple of (B, G, R)) to fill the empty space.
+
+    Returns:
+    - new_image: The new image with the resized input image placed on a square canvas.
+    """
+    # Get the original image dimensions (height and width)
+    original_height, original_width = input_image.shape[:2]
+    
+    # Determine scaling factor based on the larger dimension
+    if original_width > original_height:
+        new_width = size
+        new_height = int(original_height * (size / original_width))
+    else:
+        new_height = size
+        new_width = int(original_width * (size / original_height))
+
+    # Resize the input image using OpenCV
+    resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+
+    # Create a new square image with the background color
+    new_image = np.full((size, size, 3), fill_color, dtype=np.uint8)  # Background filled with the specified color
+
+    # Calculate the position for placing the resized image in the new square canvas
+    top_left_x = (size - new_width) // 2  # Centering horizontally
+    top_left_y = size - new_height  # Aligning the bottom of the image with the bottom of the square canvas
+
+    # Copy the resized image onto the new square canvas
+    new_image[top_left_y:top_left_y + new_height, top_left_x:top_left_x + new_width] = resized_image
+    
+    return new_image
