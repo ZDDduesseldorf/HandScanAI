@@ -1,6 +1,5 @@
 from embeddings_utils import (
     preprocess_image,
-    build_densenet_model,
     calculate_embedding,
     calculate_embeddings,
     calculate_concatenated_embedding,
@@ -8,6 +7,7 @@ from embeddings_utils import (
 
 from image_utils import load_image
 
+from models_utils import build_densenet_model
 
 ### LOAD TEST IMAGES
 
@@ -57,14 +57,16 @@ print("Embedding 1 Shape: \n")
 print(embedding_1.shape)  # expected: 1024
 
 # test if nine images result in nine embedding vectors
-embeddings_list = calculate_embeddings(random_images_names, path_to_images)
+embeddings_list = calculate_embeddings(
+    random_images_names, build_densenet_model(), path_to_images
+)
 print()
 print("Embeddings list size: \n")
 print(len(embeddings_list))
 
 # test if nine images result in one super embedding of the size of 9216
 super_embedding_test = calculate_concatenated_embedding(
-    random_images_names, path_to_images
+    random_images_names, build_densenet_model(), path_to_images
 )
 
 # print()
@@ -72,5 +74,5 @@ super_embedding_test = calculate_concatenated_embedding(
 # print(super_embedding_test) # list of embedding-float, TODO: turn into tensor
 
 print()
-print("Super-Embedding length, expected is 9216 with 9 pictures: \n")
-print(len(super_embedding_test))  # expected: 9216
+print("Super-Embedding shape, expected is torch.Size([1, 9216]) with 9 pictures: \n")
+print(super_embedding_test.shape)  # expected: torch.Size([1, 9216])

@@ -9,14 +9,9 @@
 
 # imports
 import torch
-import torch.nn as nn
-from torchvision import models
 
-from torchvision.transforms import v2
 from image_utils import load_image
-
-## models
-from torchvision.models.densenet import DenseNet121_Weights
+import models_utils
 
 
 # Takes one Array of seven pictures
@@ -37,56 +32,29 @@ def choose_device():
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-## build CNN
-def build_densenet_model():
-    """
-    Loads densenet model used for generating embeddings.
-    Embeddings (vectors with 1024 dimensions) are generated in second to last layer, after which the classifier (last layer of the densenet) typically uses the embedding to produce its results.
-    To access the embeddings without the classification, the named classifier-layer gets replaced with an identity layer to funnel through its input untouched.
-    Additionally, the eval-flag prevents training and backpropagation.
-
-    Returns:
-        A densenet model without classifier that outputs embeddings of input images.
-    """
-    # load model via pytorch
-    model = models.densenet121(weights=DenseNet121_Weights.DEFAULT)
-    # replace classifier to access embeddings of preceeding layer (that would be the input for the classifier)
-    model.classifier = nn.Identity()
-    # user inference mode instead of training mode
-    model.eval()
-    return model
-
-
+# TODO: transforms evtl ändern je nach model
 # input image is a tensor with rgb values, like the ones getting returned by load__image
-def preprocess_image(input_image):
+def preprocess_image(input_image, transforms=models_utils.transforms_default):
     """
-    Preprocesses 3D RGB image tensor (by resizing the image and rescaling the rgb-values) into an input_batch that can be used by the neural network.
-    TODO: are these transformations enough?
+    Preprocesses 3D RGB image tensor (by using the transforms on it) into an input_batch that can be used by the neural network.
 
     Args:
         input_image: 3 dimensional RGB Tensor of an image with values being uint8 in [0, 255]
+        transforms: transforms used on the image
 
     Returns:
         tensor with values normalized to float values between 0 and 1
     """
-    # image transformations that are used on every picture
-    transforms_base = v2.Compose(
-        [
-            # turns to "readable" image
-            v2.ToImage(),
-            # change size (try different sizes, see optimal size for CNN-model used (this one is 224x224), anti-aliasing: smoother edges)
-            v2.Resize(size=(224, 224), antialias=True),
-            # turn to float32, scale=True: scales values from 0 to 1])
-            v2.ToDtype(torch.float32, scale=True),
-        ]
-    )
+
     ## ready mini input_batch
-    input_tensor = transforms_base(input_image)
-    print(input_tensor)
-    # TODO: why is this necessary?
+    input_tensor = transforms(input_image)
+    print(f"Input tensor: {input_tensor.shape}")
+
     # create a mini-batch as expected by the model
+    # model expects 4D input, so unsqueeze turns 3D tensor to 4D tensor
+    # Unsqueeze: Returns a new tensor with a dimension of size one inserted at the specified position.
     input_batch = input_tensor.unsqueeze(0)
-    print(input_batch)
+    print(f"Input_Batch shape: {input_batch.shape}")
     return input_batch
 
 
@@ -109,7 +77,9 @@ def calculate_embedding(image_name, model, path_to_images):
     model = model.to(device)
 
     loaded_image = load_image(image_name, path_to_images)
-    input_batch = preprocess_image(loaded_image)
+    input_batch = preprocess_image(
+        loaded_image,
+    )
     # push data to the same device as model
     input_batch.to(device)
 
@@ -126,30 +96,28 @@ def calculate_embedding(image_name, model, path_to_images):
 ###############################################
 
 
-# TODO: TEST, these are the results
 # takes array of pictures, calculates embeddings, returns embeddings in an array
-def calculate_embeddings(image_array, path_to_images):
+def calculate_embeddings(image_array, model, path_to_images):
     """
     Calculates the embedding of every image in the given image array.
 
     Args:
         image_array: (String) array of image file names
+        model: loaded (pytorch)-model with which the embedding is generated
         path_to_images: (String) path to the image folder, where the image lies
 
     Returns:
         array of embeddings corresponding to imput-array of images
     """
-    model = build_densenet_model()
     embeddings_array = []
     for image in image_array:
         embeddings_array.append(calculate_embedding(image, model, path_to_images))
     return embeddings_array
 
 
-# TODO: return Umwandlung in Tensor (siehe Hilfsfunktion)
 # Erst mal absprechen, was das result sein soll
 # takes array of picutres, returns the embeddings as one concatenated embedding
-def calculate_concatenated_embedding(image_array, path_to_images):
+def calculate_concatenated_embedding(image_array, model, path_to_images):
     """
     Calculates embeddings of every image in the array and concatenates them into one large embedding-vector.
 
@@ -158,9 +126,9 @@ def calculate_concatenated_embedding(image_array, path_to_images):
         path_to_images: (String) path to the image folder, where the image lies
 
     Returns:
-        list of float-values (all float values of the embeddings of all pictures concatenated)
+        tensor of float-values (all float values of the embeddings of all pictures concatenated)
     """
-    embeddings_array = calculate_embeddings(image_array, path_to_images)
+    embeddings_array = calculate_embeddings(image_array, model, path_to_images)
     print(f"embeddings_array size: {len(embeddings_array)}")
     return concatenate_embeddings_array(embeddings_array)
 
@@ -168,16 +136,17 @@ def calculate_concatenated_embedding(image_array, path_to_images):
 # helper function, concatenates embeddings from array into one
 def concatenate_embeddings_array(embeddings_array):
     """
-    Concatenates an array of embeddings (arrays of float values) into one large embedding (array of float values).
+    Concatenates an array of embeddings (tensors with float values) into one large embedding (tensor with float values).
 
     Args:
-        arrays: A list of embeddings (lists containing float values).
+        embeddings_array: A list of embeddings (tensors of torch.Size([1, 1024])).
 
     Returns:
-        A single list containing all the float values from the input arrays.
+        A single tensor of [1, 7168] containing all the float values from the input embeddings. 1 is the row-count, 7168 is the column count of all the embeddings that have been concatenated.
     """
-    super_empedding = []
-    for embedding in embeddings_array:
-        for tensor in embedding:
-            super_empedding = super_empedding + tensor.tolist()
-    return super_empedding
+    # Concatenate along the second dimension (columns, dim=1)
+    result = torch.cat(embeddings_array, dim=1)
+
+    # Output: for 9 pictures, torch.Size([1, 9216]), for 7 torch.Size([1, 7168])
+    print(result.shape)
+    return result
