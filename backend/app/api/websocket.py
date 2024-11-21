@@ -4,7 +4,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 from lib.mediapipe import draw, recognizer, utils
 from app.core.config import settings
 
-from ..validation.spread_check import spread_check
+from ..validation.hand_is_spread import hand_is_spread
 
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -33,7 +33,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 ]
                 image = draw.draw_landmarks(image, landmarks)
 
-                print(spread_check(landmarks))
+                print(hand_is_spread(landmarks, debug=True))
 
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             _, buffer = cv2.imencode(".jpg", image)
