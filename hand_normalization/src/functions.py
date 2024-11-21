@@ -318,3 +318,10 @@ def dynamic_resize_image_to_target(input_image, size, fill_color):
     new_image[top_left_y:top_left_y + new_height, top_left_x:top_left_x + new_width] = resized_image
     
     return new_image
+
+# Display all images in an array of images
+def show_images(images):
+    for image in images:
+        cv2.imshow("Images",image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
