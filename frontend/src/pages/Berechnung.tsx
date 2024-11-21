@@ -9,7 +9,7 @@ const Berechnung: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <body>
+    <div className="body_Berechnung">
       <style>
         @import
         url('https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&display=swap');
@@ -31,7 +31,7 @@ const Berechnung: React.FC = () => {
       </p>
 
       <HorizStepper pageNumber={2}></HorizStepper>
-    </body>
+    </div>
   );
 };
 
