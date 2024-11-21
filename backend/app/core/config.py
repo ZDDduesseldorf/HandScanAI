@@ -26,7 +26,7 @@ class Paths:
     LIB_DIR: Path = ROOT_DIR / "lib"
     BASE_DIR: Path = ROOT_DIR / "app"
     STATIC_DIR: Path = BASE_DIR / "static"
-
+    MEDIA_DIR: Path = BASE_DIR / "media"
 
 class Settings(BaseSettings):
     @property

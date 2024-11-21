@@ -13,7 +13,7 @@ class Query:
 
 schema = strawberry.Schema(Query)
 
-graphql_app = GraphQLRouter(schema)
+graphql_router = GraphQLRouter(schema)
 
 router = APIRouter()
-router.add_route("/", graphql_app)
+router.add_route("/", graphql_router)
