@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'Delius Unicase';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url('./fonts/DeliusUnicase-Regular.woff2') format('woff2'),
+    url('./fonts/DeliusUnicase-Regular.woff') format('woff'),
+    url('./fonts/DeliusUnicase-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Delius Unicase';
+  font-style: normal;
+  font-weight: 700;
+  src:
+    url('./fonts/DeliusUnicase-Bold.woff2') format('woff2'),
+    url('./fonts/DeliusUnicase-Bold.woff') format('woff'),
+    url('./fonts/DeliusUnicase-Bold.ttf') format('truetype');
+}

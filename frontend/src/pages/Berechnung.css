@@ -3,10 +3,10 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 80vh;
-  font-family: "Delius Unicase", serif;
+  font-family: 'Delius Unicase', serif;
   font-weight: 400;
   font-style: normal;
-  color: #0F3EB5;
+  color: #0f3eb5;
   /* align-items: stretch; */
 }
 
@@ -15,23 +15,23 @@ h2 {
   font-weight: 400;
 }
 
-p { 
+p {
   /* vertical offset since  */
-  margin-top: -40px; 
+  margin-top: -40px;
 }
 
 .top {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    min-width: 100%;
-    align-items: center;
-    /* padding: 20px; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-width: 100%;
+  align-items: center;
+  /* padding: 20px; */
 
-    /* gap: 20px; Optional: adds space between the two boxes */
-  }
+  /* gap: 20px; Optional: adds space between the two boxes */
+}
 
-  /* .delius-unicase-regular {
+/* .delius-unicase-regular {
     font-family: "Delius Unicase", serif;
     font-weight: 400;
     font-style: normal;
