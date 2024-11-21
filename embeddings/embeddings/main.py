@@ -7,7 +7,7 @@ from embeddings_utils import (
 
 from image_utils import load_image
 
-from models_utils import build_densenet_model
+from models_utils import build_densenet121_model, build_resnet50_model
 
 ### LOAD TEST IMAGES
 
@@ -37,7 +37,7 @@ print(test_image)
 print()
 print("Load Densenet-Model (print Classifier): \n")
 
-densenet_model = build_densenet_model()
+densenet_model = build_densenet121_model()
 print(densenet_model.classifier)  # expected: Identity-Layer
 
 ### PREPROCESS IMAGE
@@ -49,7 +49,7 @@ preprocess_image(test_image)
 ## CALCULATE EMBEDDINGS
 
 embedding_1 = calculate_embedding(
-    random_images_names[0], build_densenet_model(), path_to_images
+    random_images_names[0], build_densenet121_model(), path_to_images
 )
 
 print()
@@ -58,7 +58,7 @@ print(embedding_1.shape)  # expected: 1024
 
 # test if nine images result in nine embedding vectors
 embeddings_list = calculate_embeddings(
-    random_images_names, build_densenet_model(), path_to_images
+    random_images_names, build_densenet121_model(), path_to_images
 )
 print()
 print("Embeddings list size: \n")
@@ -66,7 +66,7 @@ print(len(embeddings_list))
 
 # test if nine images result in one super embedding of the size of 9216
 super_embedding_test = calculate_concatenated_embedding(
-    random_images_names, build_densenet_model(), path_to_images
+    random_images_names, build_densenet121_model(), path_to_images
 )
 
 # print()
@@ -76,3 +76,18 @@ super_embedding_test = calculate_concatenated_embedding(
 print()
 print("Super-Embedding shape, expected is torch.Size([1, 9216]) with 9 pictures: \n")
 print(super_embedding_test.shape)  # expected: torch.Size([1, 9216])
+print(super_embedding_test)
+
+
+### RESNET test
+print()
+print("ResNet50 architecture")
+# print(build_resnet50_model())
+
+super_embedding_resnet_test = calculate_concatenated_embedding(
+    random_images_names, build_resnet50_model(), path_to_images
+)
+
+print()
+print(f"ResNet50: {super_embedding_resnet_test.shape}")  # tensor torch.Size([1, 9000])
+print(f"ResNet50: {super_embedding_resnet_test}")
