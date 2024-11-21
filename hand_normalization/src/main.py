@@ -2,10 +2,8 @@
 import functions
 import cv2
 import numpy as np
-from skimage.morphology import skeletonize
-from skimage.filters import threshold_multiotsu
 
-def normalize_hand_image(image_path):
+def segment_hand_image(image_path):
     # image loading
     original_image = cv2.imread(image_path)
     clean_image = cv2.imread(image_path)
@@ -202,16 +200,17 @@ def normalize_hand_image(image_path):
     ##      set boundingbox around segment
     ##      crop original image at boundingbox
     ## return the segments
+    orientation_hand = functions.pt1_left_of_pt2(landmarks[13][1:], landmarks[5][1:])
     regions = [
     {
         "name": "Hand",
         "reference_point": [],
-        "angle": 180-functions.vector_agle(landmarks[5][1:], landmarks[13][1:])-90,
+        "angle": 180 -  orientation_hand *  functions.vector_agle(landmarks[5][1:], landmarks[13][1:])-90,
     },
     {
         "name": "Palm",
         "reference_point": landmarks[13][1:],
-        "angle": 180-functions.vector_agle(landmarks[5][1:], landmarks[13][1:])-90,
+        "angle": 180 - orientation_hand * functions.vector_agle(landmarks[5][1:], landmarks[13][1:])-90,
     },
     {
         "name": "Thumb",
@@ -273,24 +272,32 @@ def normalize_hand_image(image_path):
 ##      resize segment to 224x224
 ##      fill rest of 224x224 with 0 or 255,255,255?
 ## returns embedding ready segments
+def resize_images(images, size = 224, fill_color=(0, 0, 0)):
+    resized_regions = []
+    for region in images:
+        resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
+        resized_regions.append(resized_region)
+    
+    return resized_regions
 
-## static segment sizing
-## loop over segments
-##      resize segment to with a static segment scaling
-##      fill rest of 224x224 with 0 or 255,255,255?
-## returns embedding ready segments
+def show_images(images):
+    for image in images:
+        cv2.imshow("Images",image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
-images = normalize_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
-for image in images:
-    cv2.imshow("hand region multi otsu",image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000658.jpg")
+# images = resize_images(images)
+# show_images(images)
 
-fill_color=(0, 0, 0)
-size = 224
+# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000523.jpg")
+# images = resize_images(images)
+# show_images(images)
 
-for region in images:
-    resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
-    cv2.imshow("check", resized_region)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
+# images = resize_images(images)
+# show_images(images)
+
+# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000455.jpg")
+# images = resize_images(images)
+# show_images(images)

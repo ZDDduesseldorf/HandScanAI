@@ -273,6 +273,12 @@ def vector_agle(point1, point2):
     vector_angle = cv2.fastAtan2(vector[0],vector[1])
     return vector_angle
 
+def pt1_left_of_pt2(pt1, pt2):
+    if pt1[0]>pt2[0]: 
+        return(-1)
+    if pt1[0]<=pt2[0]: 
+        return(1)
+
 def dynamic_resize_image_to_target(input_image, size, fill_color):
     """
     Resizes the input image to fit within the target resolution, maintaining its aspect ratio.
