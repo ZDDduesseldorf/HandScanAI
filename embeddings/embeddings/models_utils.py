@@ -6,7 +6,21 @@ from torchvision.transforms import v2
 from torchvision.models.densenet import DenseNet121_Weights
 
 
-## build CNN
+# image transformations that are used on every picture
+transforms_default = v2.Compose(
+    [
+        # turns to "readable" image
+        v2.ToImage(),
+        # change size (try different sizes, see optimal size for CNN-model used (this one is 224x224), anti-aliasing: smoother edges)
+        v2.Resize(size=(224, 224), antialias=True),
+        # turn to float32, scale=True: scales values from 0 to 1])
+        v2.ToDtype(torch.float32, scale=True),
+    ]
+)
+
+### DENSENET
+
+
 def build_densenet_model():
     """
     Loads densenet model used for generating embeddings.
@@ -25,18 +39,6 @@ def build_densenet_model():
     model.eval()
     return model
 
-
-# image transformations that are used on every picture
-transforms_default = v2.Compose(
-    [
-        # turns to "readable" image
-        v2.ToImage(),
-        # change size (try different sizes, see optimal size for CNN-model used (this one is 224x224), anti-aliasing: smoother edges)
-        v2.Resize(size=(224, 224), antialias=True),
-        # turn to float32, scale=True: scales values from 0 to 1])
-        v2.ToDtype(torch.float32, scale=True),
-    ]
-)
 
 # image transformations specifically for densenet that are used on every picture
 # see https://pytorch.org/hub/pytorch_vision_densenet/

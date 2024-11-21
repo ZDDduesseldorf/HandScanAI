@@ -26,3 +26,10 @@ If new dependency is required,
 - activate environment
 - run the following (prune deinstalls deleted dependencies):
 ```conda env update --file environment.yml --prune```
+
+### Current Status
+
+- embedding-calculation in seperate module (see backend TODO)
+- load pictures automatically with path (see hand-normalization TODO)
+- models used/ implemented
+  - **DenseNet (121, Acc@1 74, Acc@5 92, Params 8M (small))**
