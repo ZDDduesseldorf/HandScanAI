@@ -11,7 +11,7 @@ from models_utils import build_densenet121_model, build_resnet50_model
 
 ### LOAD TEST IMAGES
 
-path_to_images = "embeddings/embeddings/data/Hands/Hands/"
+path_to_images = "embeddings/embeddings/data/TestImages/"
 random_images_names = [
     "Hand_0000002.jpg",
     "Hand_0000025.jpg",
@@ -20,8 +20,6 @@ random_images_names = [
     "Hand_0000088.jpg",
     "Hand_0000111.jpg",
     "Hand_0000144.jpg",
-    "Hand_0000171.jpg",
-    "Hand_0000200.jpg",
 ]
 loaded_images = []
 for name in random_images_names:
