@@ -6,11 +6,11 @@ import os
 
 rest_router = APIRouter()
 
+
 @rest_router.get("/")
 async def index():
-    return {
-        "message": "Hello World"
-    }
+    return {"message": "Hello World"}
+
 
 @rest_router.get("/image")
 async def media_image(image_id: uuid.UUID):

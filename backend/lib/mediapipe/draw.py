@@ -6,9 +6,7 @@ from .utils import LANDMARK_NAMES
 def draw_landmarks(image, landmark_point):
     if len(landmark_point) > 0:
         # Thumb
-        cv2.line(
-            image, tuple(landmark_point[2]), tuple(landmark_point[3]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[2]), tuple(landmark_point[3]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[2]),
@@ -16,9 +14,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[3]), tuple(landmark_point[4]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[3]), tuple(landmark_point[4]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[3]),
@@ -28,9 +24,7 @@ def draw_landmarks(image, landmark_point):
         )
 
         # Index finger
-        cv2.line(
-            image, tuple(landmark_point[5]), tuple(landmark_point[6]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[5]), tuple(landmark_point[6]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[5]),
@@ -38,9 +32,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[6]), tuple(landmark_point[7]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[6]), tuple(landmark_point[7]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[6]),
@@ -48,9 +40,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[7]), tuple(landmark_point[8]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[7]), tuple(landmark_point[8]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[7]),
@@ -60,9 +50,7 @@ def draw_landmarks(image, landmark_point):
         )
 
         # Middle finger
-        cv2.line(
-            image, tuple(landmark_point[9]), tuple(landmark_point[10]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[9]), tuple(landmark_point[10]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[9]),
@@ -70,9 +58,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[10]), tuple(landmark_point[11]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[10]), tuple(landmark_point[11]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[10]),
@@ -80,9 +66,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[11]), tuple(landmark_point[12]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[11]), tuple(landmark_point[12]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[11]),
@@ -92,9 +76,7 @@ def draw_landmarks(image, landmark_point):
         )
 
         # Ring finger
-        cv2.line(
-            image, tuple(landmark_point[13]), tuple(landmark_point[14]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[13]), tuple(landmark_point[14]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[13]),
@@ -102,9 +84,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[14]), tuple(landmark_point[15]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[14]), tuple(landmark_point[15]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[14]),
@@ -112,9 +92,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[15]), tuple(landmark_point[16]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[15]), tuple(landmark_point[16]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[15]),
@@ -124,9 +102,7 @@ def draw_landmarks(image, landmark_point):
         )
 
         # Little finger
-        cv2.line(
-            image, tuple(landmark_point[17]), tuple(landmark_point[18]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[17]), tuple(landmark_point[18]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[17]),
@@ -134,9 +110,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[18]), tuple(landmark_point[19]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[18]), tuple(landmark_point[19]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[18]),
@@ -144,9 +118,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[19]), tuple(landmark_point[20]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[19]), tuple(landmark_point[20]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[19]),
@@ -156,9 +128,7 @@ def draw_landmarks(image, landmark_point):
         )
 
         # Palm
-        cv2.line(
-            image, tuple(landmark_point[0]), tuple(landmark_point[1]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[0]), tuple(landmark_point[1]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[0]),
@@ -166,9 +136,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[1]), tuple(landmark_point[2]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[1]), tuple(landmark_point[2]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[1]),
@@ -176,9 +144,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[2]), tuple(landmark_point[5]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[2]), tuple(landmark_point[5]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[2]),
@@ -186,9 +152,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[5]), tuple(landmark_point[9]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[5]), tuple(landmark_point[9]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[5]),
@@ -196,9 +160,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[9]), tuple(landmark_point[13]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[9]), tuple(landmark_point[13]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[9]),
@@ -206,9 +168,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[13]), tuple(landmark_point[17]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[13]), tuple(landmark_point[17]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[13]),
@@ -216,9 +176,7 @@ def draw_landmarks(image, landmark_point):
             (255, 255, 255),
             2,
         )
-        cv2.line(
-            image, tuple(landmark_point[17]), tuple(landmark_point[0]), (0, 0, 0), 6
-        )
+        cv2.line(image, tuple(landmark_point[17]), tuple(landmark_point[0]), (0, 0, 0), 6)
         cv2.line(
             image,
             tuple(landmark_point[17]),
