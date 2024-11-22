@@ -4,6 +4,8 @@ from fastapi import WebSocket, WebSocketDisconnect
 from lib.mediapipe import draw, recognizer, utils
 from app.core.config import settings
 
+from ..validation.hand_is_spread import hand_is_spread
+
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("Accepted websocket connection")
@@ -19,8 +21,9 @@ async def websocket_endpoint(websocket: WebSocket):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             gesture_recognition_result = recognizer.recognize_gesture(image)
 
-            # Print the human-readable result
-            print(utils.format_gesture_result(gesture_recognition_result))
+            # Print the human-readable result        
+            #print(utils.format_gesture_result(gesture_recognition_result))
+            
 
             if gesture_recognition_result.hand_landmarks:
                 image_height, image_width, _ = image.shape
@@ -29,6 +32,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     for l in gesture_recognition_result.hand_landmarks[0]
                 ]
                 image = draw.draw_landmarks(image, landmarks)
+
+                print(hand_is_spread(landmarks, debug=True))
 
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             _, buffer = cv2.imencode(".jpg", image)
