@@ -1,4 +1,7 @@
-import os
+import cv2
+import mediapipe as mp
+
+mp_hands = mp.solutions.hands
 
 LANDMARK_NAMES = [
     "WRIST",
@@ -25,22 +28,21 @@ LANDMARK_NAMES = [
 ]
 
 
-def format_gesture_result(result):
-    os.system("cls" if os.name == "nt" else "clear")
-    if not result.gestures or not result.handedness or not result.hand_landmarks:
-        return "Nothing detected"
-    gesture = result.gestures[0][0]
-    handedness = result.handedness[0][0]
-    landmarks = result.hand_landmarks[0]
-    gesture_info = (
-        f"Detected Gesture:\n"
-        f"  - Name: {gesture.category_name}\n"
-        f"  - Confidence Score: {gesture.score:.2%}\n\n"
-        f"Handedness:\n"
-        f"  - Hand: {handedness.category_name}\n"
-        f"  - Confidence Score: {handedness.score:.2%}\n\n"
-        f"Normalized Landmarks:\n"
-    )
-    for i, landmark in enumerate(landmarks):
-        gesture_info += f"  - {LANDMARK_NAMES[i]}: (x: {landmark.x:.4f}, y: {landmark.y:.4f}, z: {landmark.z:.4f})\n"
-    return gesture_info
+def extract_landmarks(image):
+    """Extracts landmarks from an image"""
+
+    with mp_hands.Hands(
+        max_num_hands=1,
+        min_tracking_confidence=0.6,
+        min_detection_confidence=0.6,
+        model_complexity=1,
+    ) as hands:
+        results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        if results.multi_hand_landmarks:
+            image_height, image_width, _ = image.shape
+            landmarks = [
+                (int(landmark.x * image_width), int(landmark.y * image_height))
+                for landmark in results.multi_hand_landmarks[0].landmark
+            ]
+            return landmarks
+    return None

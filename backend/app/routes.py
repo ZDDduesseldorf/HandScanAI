@@ -1,21 +1,16 @@
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter
 
-from .api.rest import get_index
-from .api.websocket import websocket_endpoint
-from .api.graphql import graphql_app
-
+from .api.rest import rest_router
+from .api.websocket import ws_router
+from .api.graphql import graphql_router
 
 router = APIRouter()
 
-# REST API routes
-@router.get("/")
-async def get():
-    return await get_index()
+# REST API router
+router.include_router(rest_router, prefix="/rest")
 
-# Websocket routes
-@router.websocket("/ws")
-async def websocket_route(websocket: WebSocket):
-    await websocket_endpoint(websocket)
+# Websocket router
+router.include_router(ws_router, prefix="/ws")
 
-# GraphQL routes
-router.include_router(graphql_app, prefix="/graphql")
+# GraphQL router
+router.include_router(graphql_router, prefix="/graphql")

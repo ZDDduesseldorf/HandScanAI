@@ -9,6 +9,8 @@ import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Information from '@/pages/Information';
 import Berechnung from '@/pages/Berechnung';
+import Bildaufnahme from '@/pages/Bildaufnahme';
+import Sandbox from '@/pages/Sandbox';
 
 import '@/assets/fonts.css';
 import '@/App.css';
@@ -59,6 +61,8 @@ const App: React.FC = () => {
             <Route path="/about" element={<About />} />
             <Route path="/information" element={<Information />} />
             <Route path="/berechnung" element={<Berechnung />} />
+            <Route path='/bildaufnahme' element={<Bildaufnahme />} />
+            <Route path="/sandbox" element={<Sandbox />} />
           </Routes>
         </motion.div>
       </AnimatePresence>
