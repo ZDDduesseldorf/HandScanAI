@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 
-import './Berechnung.css';
+// import './Berechnung.css';
 
 const Berechnung: React.FC = () => {
   const navigate = useNavigate();

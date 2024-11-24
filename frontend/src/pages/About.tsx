@@ -7,7 +7,9 @@ const About: React.FC = () => {
 
   return (
     <Container>
-      <h6>About HandScanAI</h6>
+      <Typography variant="h2" component="h1" gutterBottom>
+        About HandScanAI
+      </Typography>
       <Typography variant="body1">
         Building a transparent, reliable, robust AI application to predict
         biometric information from hand images.

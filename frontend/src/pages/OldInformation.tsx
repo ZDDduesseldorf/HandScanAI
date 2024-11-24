@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
 
-import './NewInformation.css';
+import './Information.css';
 
 const Information: React.FC = () => {
   const navigate = useNavigate();

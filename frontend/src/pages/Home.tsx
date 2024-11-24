@@ -20,7 +20,7 @@ const Logo = styled('img')`
   margin-bottom: 1rem;
 `;
 
-const Title = styled(Typography)`
+export const Title = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
   font-weight: 400;
   color: #1a3ab8;

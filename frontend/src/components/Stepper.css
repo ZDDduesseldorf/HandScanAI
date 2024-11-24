@@ -1,0 +1,33 @@
+Box{
+    min-width: 50vw;
+    max-width: 60vw;
+    font-family: "Delius Unicase", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #0F3EB5;
+}
+
+HorizStepper{
+    font-family: "Delius Unicase", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #0F3EB5;
+}
+
+Stepper{
+    font-family: "Delius Unicase", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #0F3EB5;
+}
+
+Step{
+    HorizStepper{
+        font-family: "Delius Unicase", serif;
+      font-weight: 400;
+      font-style: normal;
+      color: #0F3EB5;
+    }
+}
+
+

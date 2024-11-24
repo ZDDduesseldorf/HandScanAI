@@ -1,4 +1,4 @@
-import * as React from 'react';
+//import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -6,7 +6,9 @@ import StepLabel from '@mui/material/StepLabel';
 
 const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis'];
 
-//Momentan noch alles hardcoded, just testing
+import './Stepper.css';
+
+//still needs to be customized 
 
 interface Props {
   pageNumber: number;
