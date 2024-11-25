@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
 
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings
@@ -26,6 +25,7 @@ class Paths:
     LIB_DIR: Path = ROOT_DIR / "lib"
     BASE_DIR: Path = ROOT_DIR / "app"
     STATIC_DIR: Path = BASE_DIR / "static"
+    MEDIA_DIR: Path = BASE_DIR / "media"
 
 
 class Settings(BaseSettings):
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
-    def assemble_cors_origins(cls, v: Union[str, list[str]]) -> Union[list[str], str]:
+    def assemble_cors_origins(cls, v: list[str] | str) -> list[str] | str:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):

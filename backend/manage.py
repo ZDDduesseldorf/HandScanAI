@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import subprocess
-
 import typer
 import uvicorn
-
 cli = typer.Typer()
 
 
@@ -27,10 +25,23 @@ def run_server(
 
 @cli.command("format")
 def format_code():
-    """Format the code using black and isort."""
-    subprocess.run(["black", "."])
-    subprocess.run(["isort", "."])
+    """Format the code using ruff."""
+    try:
+        subprocess.run(["ruff", "format", "app", "lib", "validation"], check=True)
+    except subprocess.CalledProcessError:
+        typer.echo("Please fix the errors before committing.")
+    finally:
+        subprocess.run(["ruff", "clean"], check=True)
 
+@cli.command("check")
+def check_code():
+    """Check the code using ruff."""
+    try:
+        subprocess.run(["ruff", "check", "app", "lib", "validation"], check=True)
+    except subprocess.CalledProcessError:
+        typer.echo("Please fix the errors before committing.")
+    finally:
+        subprocess.run(["ruff", "clean"], check=True)
 
 if __name__ == "__main__":
-    run_server()
+    cli()
