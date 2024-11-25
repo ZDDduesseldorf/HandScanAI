@@ -24,7 +24,7 @@ def calculate_embeddings_from_path(image_array, path_to_images, model=models_uti
         array of embeddings corresponding to input-array of images
 
     Example:
-        `calculate_embeddings_from_path("image_name", "path/to/image/", models_utils.CNNModel.DENSENET_121)`
+        `calculate_embeddings_from_path("image_name", "path/to/image/", load_model(models_utils.CNNModel.DENSENET_121))`
     """
     loaded_images = []
     for image_name in image_array:
@@ -44,7 +44,7 @@ def calculate_embeddings(image_array: list[torch.Tensor], model=models_utils.loa
         array of embeddings corresponding to input-array of images
 
     Example:
-        `calculate_embeddings(image_array, models_utils.CNNModel.DENSENET_121)`
+        `calculate_embeddings(image_array, load_model(models_utils.CNNModel.DENSENET_121))`
     """
     embeddings_array = []
     for image in image_array:
