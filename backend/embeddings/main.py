@@ -2,12 +2,12 @@ from embeddings_utils import (
     preprocess_image,
     calculate_embedding,
     calculate_embeddings,
-    calculate_concatenated_embedding,
+    calculate_embeddings_from_path,
 )
 
 from image_utils import load_image
 
-from models_utils import build_densenet121_model, build_resnet50_model
+from models_utils import load_model, CNNModel
 
 ### LOAD TEST IMAGES
 
@@ -29,13 +29,14 @@ test_image = loaded_images[0]
 print()
 print("Image Tensor after Loading: \n")
 print(test_image)
+print(test_image.shape)
 
 
 ### LOAD MODEL
 print()
 print("Load Densenet-Model (print Classifier): \n")
 
-densenet_model = build_densenet121_model()
+densenet_model = load_model()
 print(densenet_model.classifier)  # expected: Identity-Layer
 
 ### PREPROCESS IMAGE
@@ -46,35 +47,23 @@ preprocess_image(test_image)
 
 ## CALCULATE EMBEDDINGS
 
-embedding_1 = calculate_embedding(
-    random_images_names[0], build_densenet121_model(), path_to_images
-)
+embedding_1 = calculate_embedding(loaded_images[0], load_model())
 
 print()
 print("Embedding 1 Shape: \n")
 print(embedding_1.shape)  # expected: 1024
 
 # test if nine images result in nine embedding vectors
-embeddings_list = calculate_embeddings(
-    random_images_names, build_densenet121_model(), path_to_images
-)
+embeddings_list_loaded = calculate_embeddings(loaded_images, load_model())
+print()
+print("Embeddings list size: \n")
+print(len(embeddings_list_loaded))
+
+# test if nine images result in nine embedding vectors
+embeddings_list = calculate_embeddings_from_path(random_images_names, path_to_images, load_model())
 print()
 print("Embeddings list size: \n")
 print(len(embeddings_list))
-
-# test if nine images result in one super embedding of the size of 9216
-super_embedding_test = calculate_concatenated_embedding(
-    random_images_names, build_densenet121_model(), path_to_images
-)
-
-# print()
-# print("Super-Embedding at the end: \n")
-# print(super_embedding_test) # list of embedding-float, TODO: turn into tensor
-
-print()
-print("Super-Embedding shape, expected is torch.Size([1, 9216]) with 9 pictures: \n")
-print(super_embedding_test.shape)  # expected: torch.Size([1, 9216])
-print(super_embedding_test)
 
 
 ### RESNET test
@@ -82,10 +71,7 @@ print()
 print("ResNet50 architecture")
 # print(build_resnet50_model())
 
-super_embedding_resnet_test = calculate_concatenated_embedding(
-    random_images_names, build_resnet50_model(), path_to_images
-)
+embeddings_array_resnet = calculate_embeddings(loaded_images, load_model(CNNModel.RESNET_50))
 
 print()
-print(f"ResNet50: {super_embedding_resnet_test.shape}")  # tensor torch.Size([1, 9000])
-print(f"ResNet50: {super_embedding_resnet_test}")
+print(f"ResNet50: {len(embeddings_array_resnet)}")
