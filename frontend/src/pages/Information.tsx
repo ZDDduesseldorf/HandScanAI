@@ -1,23 +1,30 @@
 import React from 'react';
-import { Typography, Container, Button, Box } from '@mui/material';
+import { Typography, Container, Button, Box, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 //import Stepper from '@/pages/Stepper';
 import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
 import { Title } from './Home';
+import { Logo } from './Home';
 
-// import './Information.css';
+const BoxText = styled(Typography)`
+  font-family: 'Poppins', sans-serif;
+  margin: 0 0 1.875rem;
+  text-align: justify;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+`;
+const SecondaryHeading = styled(Typography)`
+  font-family: 'Delius Unicase', cursive;
+  margin: 0 0 1rem;
+  text-align: left;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+`;
 
 const Information: React.FC = () => {
   const navigate = useNavigate();
 
   return (
     <div>
-      <style>
-        @import
-        url('https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&display=swap');
-      </style>
-
       <div className="top">
         <Title variant="h2">Bevor wir Beginnen</Title>
         <img
@@ -26,10 +33,12 @@ const Information: React.FC = () => {
           style={{ maxWidth: '12%' }}
         />
       </div>
+
       <div className="information-container">
         <BoxSx>
-          <h3 style={{ margin: 0 }}>Daten statt Gebühren</h3>
-          <p>
+          <SecondaryHeading>Daten statt Gebühren</SecondaryHeading>
+          {/* <Title variant="h1">Daten statt Gebühren</Title> */}
+          <BoxText>
             Wie bei vielen digitalen Diensten gilt auch hier: Statt eines
             klassischen Preises zahlen Sie mit etwas anderem – Ihren Daten. In
             unserer App sind es vor allem Ihre Interaktionen und die Bilder
@@ -39,12 +48,12 @@ const Information: React.FC = () => {
             dazu bei, dass das System weiterentwickelt und optimiert wird, um
             Ihnen und anderen Anwendern zukünftig noch bessere Ergebnisse zu
             bieten.
-          </p>
+          </BoxText>
         </BoxSx>
 
         <BoxSx>
-          <h3 style={{ margin: 0 }}>Einwilligung zur Datennutzung</h3>
-          <p>
+          <SecondaryHeading>Einwilligung zur Datennutzung</SecondaryHeading>
+          <BoxText>
             Indem Sie unsere App nutzen, erklären Sie sich ausdrücklich damit
             einverstanden, dass Ihre Daten – einschließlich Ihrer Interaktionen
             und bereitgestellten Informationen – für die Verbesserung der
@@ -53,7 +62,7 @@ const Information: React.FC = () => {
             GitHub veröffentlicht. Das bedeutet, dass die Daten in einem
             öffentlich zugänglichen Modell weiterleben können. Ihre Daten
             bleiben dabei jedoch anonymisiert und werden nicht direkt einsehbar.
-          </p>
+          </BoxText>
           <br></br>
           <p>
             Mit Ihrer Zustimmung stimmen Sie der Verarbeitung und

@@ -2,7 +2,6 @@ import React from 'react';
 // import { Typography, Container, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
-
 // import './Berechnung.css';
 
 const Berechnung: React.FC = () => {
