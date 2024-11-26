@@ -1,7 +1,7 @@
 import torch
 
-from image_utils import load_image
-import models_utils
+from backend.embeddings.image_utils import load_image
+from backend.embeddings import models_utils
 
 
 ###############################################

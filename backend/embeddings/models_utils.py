@@ -1,6 +1,6 @@
 """
 Main Function: load_model() and CNNModel.
-Do not use create-functions outside of load_model().
+Do not use private create-functions outside of load_model().
 """
 
 from enum import Enum
@@ -16,7 +16,7 @@ from torchvision.models.resnet import ResNet50_Weights
 
 ###############################################
 ### MODELS
-def create_densenet121():
+def _create_densenet121():
     """
     Helper Function:
     Loads densenet121 used for generating embeddings (tensors with 1024 dimensions, generated in second to last layer).
@@ -27,7 +27,7 @@ def create_densenet121():
     return models.densenet121(weights=DenseNet121_Weights.DEFAULT)
 
 
-def create_densenet169():
+def _create_densenet169():
     """
     Helper Function:
     Loads densenet169 used for generating embeddings (tensors with 1024 dimensions, generated in second to last layer).
@@ -38,7 +38,7 @@ def create_densenet169():
     return models.densenet169(weights=DenseNet169_Weights.DEFAULT)
 
 
-def create_resnet50():
+def _create_resnet50():
     """
     Helper Function:
     Loads resnet50 used for generating embeddings (tensors with 1000 dimensions, generated in second to last layer).
@@ -50,9 +50,9 @@ def create_resnet50():
 
 
 class CNNModel(Enum):
-    DENSENET_121 = create_densenet121
-    DENSENET_169 = create_densenet169
-    RESNET_50 = create_resnet50
+    DENSENET_121 = _create_densenet121
+    DENSENET_169 = _create_densenet169
+    RESNET_50 = _create_resnet50
 
 
 def load_model(load_model_function: CNNModel = CNNModel.DENSENET_121) -> models.DenseNet | models.ResNet:
