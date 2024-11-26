@@ -1,21 +1,42 @@
 import React from 'react';
-import { Typography, Container, Button, Box, styled } from '@mui/material';
+import { Typography, Button, Box, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 //import Stepper from '@/pages/Stepper';
 import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
 import { Title } from './Home';
-import { Logo } from './Home';
 
+export const BodyLayout = styled(Box)`
+  margin: 20px;
+  margin-right: 30px;
+  margin-left: 30px;
+`;
+
+export const HorizontalBar = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-width: 100%;
+  align-items: center;
+`;
+const BoxLayout = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  gap: 20px; /* Optional: adds space between the two boxes */
+}
+`;
 const BoxText = styled(Typography)`
   font-family: 'Poppins', sans-serif;
-  margin: 0 0 1.875rem;
+  margin: 0 0 1 rem;
   text-align: justify;
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  // font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: 0.8rem;
 `;
 const SecondaryHeading = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
   text-align: left;
   font-size: clamp(1rem, 2vw, 1.5rem);
 `;
@@ -24,17 +45,17 @@ const Information: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <div className="top">
-        <Title variant="h2">Bevor wir Beginnen</Title>
+    <BodyLayout>
+      <HorizontalBar>
+        <Title variant="h1">Bevor wir Beginnen</Title>
         <img
           src="/HandLogo.png"
           alt="Logo von der Hand"
           style={{ maxWidth: '12%' }}
         />
-      </div>
+      </HorizontalBar>
 
-      <div className="information-container">
+      <BoxLayout>
         <BoxSx>
           <SecondaryHeading>Daten statt Gebühren</SecondaryHeading>
           {/* <Title variant="h1">Daten statt Gebühren</Title> */}
@@ -64,30 +85,35 @@ const Information: React.FC = () => {
             bleiben dabei jedoch anonymisiert und werden nicht direkt einsehbar.
           </BoxText>
           <br></br>
-          <p>
+
+          <BoxText>
+            <br></br>
             Mit Ihrer Zustimmung stimmen Sie der Verarbeitung und
             Veröffentlichung Ihrer anonymisierten Daten innerhalb dieses
             Open-Source-Modells zu und tragen aktiv zur stetigen Verbesserung
             und Transparenz der KI bei. Weitere Informationen finden Sie hier:
             Datenschutzmerkblatt
-          </p>
-          <footer>
-            <div className="checkbox">Ich akzeptiere die Datenverarbeitung</div>
+          </BoxText>
+          <HorizontalBar>
+            <BoxText className="checkbox">
+              Ich akzeptiere die Datenverarbeitung
+            </BoxText>
 
             {/* Need to add Conditional Rendering here based on the checkbox */}
             <Button
               variant="contained"
               color="primary"
               onClick={() => navigate('/about')}
-              sx={{ marginTop: 2 }}
+              // sx={{ marginTop: 2 }}
             >
               Weiter
             </Button>
-          </footer>
+          </HorizontalBar>
         </BoxSx>
-      </div>
+      </BoxLayout>
+      <br></br>
       <HorizStepper pageNumber={0}></HorizStepper>
-    </div>
+    </BodyLayout>
   );
 };
 

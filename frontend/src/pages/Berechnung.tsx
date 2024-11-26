@@ -1,36 +1,48 @@
 import React from 'react';
-// import { Typography, Container, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Typography, styled } from '@mui/material';
+// import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
-// import './Berechnung.css';
+import { Title } from './Home';
+import { BodyLayout, HorizontalBar } from './Information';
+
+const FontText = styled(Typography)`
+  font-family: 'Delius Unicase', cursive;
+  color: #1a3ab8;
+  margin: 0 0 1 rem;
+  text-align: center;
+  // font-size: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  justify-content: center; // Horizontale Zentrierung
+  align-items: center; // Vertikale Zentrierung
+  position: absolute; // Ermöglicht es, das Element mit 'top', 'left' etc. zu positionieren
+  top: 50%; // Vertikal in der Mitte
+  left: 50%; // Horizontal in der Mitte
+  transform: translate(-50%, -50%);
+`;
 
 const Berechnung: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
-    <div className="body_Berechnung">
-      <style>
-        @import
-        url('https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&display=swap');
-      </style>
+    <BodyLayout>
+      <HorizontalBar>
+        <Title variant="h1">Berechnung</Title>
 
-      <div className="top">
-        <h2>Berechnung</h2>
         <img
           src="/HandLogo.png"
           alt="Logo von der Hand"
           //style={{ maxWidth: '30%', marginTop: '10px' }}
         />
-      </div>
+      </HorizontalBar>
 
-      <p>
+      <FontText>
         Ungefähr 90% der Menschen sind Rechtshänder,<br></br>
         wobei die Handdominanz oft in der frühen Kindheit <br></br>
         festgelegt wird und teilweise genetisch beeinflusst<br></br> ist.
-      </p>
+      </FontText>
 
       <HorizStepper pageNumber={2}></HorizStepper>
-    </div>
+    </BodyLayout>
   );
 };
 

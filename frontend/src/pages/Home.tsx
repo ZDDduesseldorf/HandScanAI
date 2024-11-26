@@ -15,7 +15,7 @@ const Container = styled(Box)`
   background-color: #ffffff;
 `;
 
-const Logo = styled('img')`
+export const Logo = styled('img')`
   width: clamp(200px, 35%, 450px);
   margin-bottom: 1rem;
 `;

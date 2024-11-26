@@ -38,7 +38,9 @@ const Bildaufnahme = () => {
     width: number;
     height: number;
   }>();
-  const [serverMessage, setServerMessage] = useState<ServerMessage | undefined>();
+  const [serverMessage, setServerMessage] = useState<
+    ServerMessage | undefined
+  >();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,7 +78,7 @@ const Bildaufnahme = () => {
                     0,
                     0,
                     canvas.width,
-                    canvas.height
+                    canvas.height,
                   );
                   canvas.toBlob((blob) => {
                     if (blob && ws.readyState === WebSocket.OPEN) {

@@ -61,7 +61,7 @@ const App: React.FC = () => {
             <Route path="/about" element={<About />} />
             <Route path="/information" element={<Information />} />
             <Route path="/berechnung" element={<Berechnung />} />
-            <Route path='/bildaufnahme' element={<Bildaufnahme />} />
+            <Route path="/bildaufnahme" element={<Bildaufnahme />} />
             <Route path="/sandbox" element={<Sandbox />} />
           </Routes>
         </motion.div>
