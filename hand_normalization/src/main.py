@@ -4,72 +4,31 @@ import numpy as np
 
 def segment_hand_image(image_path):
     # image loading
-    original_image = cv2.imread(image_path)
+    original_image = cv2.imread(image_path) # -> Abhängig von Bilderübergabe Frontend
     grey_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
 
+    # Create placeholder image
+    image_height, image_width = grey_image.shape
+    blank_image = np.zeros((image_height, image_width), dtype=np.uint8)
+
     # Mediapipe Landmarks
-    ## <input> image array
-    ## <output> landmarks array
-    landmarks = functions.getLandmarks(image_path)
-
-    # Defect Detection
-    ## <input> image array
-    ## apply gaussian filter
-    blurred_image = cv2.GaussianBlur(original_image, (11, 11), 2)
-
-
-    # Define the range for skin color in HSV(Hue, Saturation, Value)
-    # These values might need to be adjusted depending on lighting and skin tone
-    hsv = cv2.cvtColor(blurred_image, cv2.COLOR_BGR2HSV)
-
-    lower_skin = np.array([0, 40, 80])  # Lower bound of skin color (Hue, Saturation, Value)
-    upper_skin = np.array([20, 255, 255])  # Upper bound of skin color
+    landmarks = functions.getLandmarks(image_path) # -> Abstimmung Frontend, um Redundanz zu vermeiden
 
     # Create a mask for the skin color
-    hand_mask = cv2.inRange(hsv, lower_skin, upper_skin)
-    # Apply the mask to the original image to get the segmented hand
-    # segmented_hand = cv2.bitwise_and(blurred_image, blurred_image, mask=skin_mask)
+    hand_mask = functions.create_handmask(original_image)
 
     # find contour and defects
     contours, _ = cv2.findContours(hand_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-
     if contours:
         # Find the largest contour by area
         largest_contour = max(contours, key=cv2.contourArea)
 
-        # Find the convex hull of the largest contour
-        hull = cv2.convexHull(largest_contour, returnPoints=False)
-
-        # Find the convexity defects
-        defects = cv2.convexityDefects(largest_contour, hull)
-
-        # Draw the largest contour on the original image
-        image_with_defects = original_image.copy()
-        cv2.drawContours(image_with_defects, [largest_contour], -1, (0, 255, 0), 2) 
         # Draw the largest contour on a Contour image
-        image_height, image_width = grey_image.shape
-        blank_image = np.zeros((image_height, image_width), dtype=np.uint8)
         contour_mask = blank_image.copy()
         cv2.drawContours(contour_mask, [largest_contour], -1, 255, 2) 
-
-        
-        defect_distances = []
-        for i in range(defects.shape[0]):
-            # Extract defect details
-            start_idx, end_idx, farthest_idx, defect_distance = defects[i, 0]
-            farthest_point = tuple(largest_contour[farthest_idx][0])
-
-            
-            defect_distances.append([defect_distance,farthest_point])
-
-        defect_distances.sort(reverse=True)
-        four_largest_defects = []
-        for i in range(4):
-           four_largest_defects.append(defect_distances[i][1])
-           cv2.circle(image_with_defects, defect_distances[i][1], radius=3, color=(0, 0, 255), thickness=5)
-    ## <output> four_largest_defects, contour
-    
+                
+        four_largest_defects = functions.detect_largest_defects(largest_contour)
     
     # calculate defects
     ## <input> four_largest_defects, landmarks
@@ -98,8 +57,6 @@ def segment_hand_image(image_path):
     swapped_intersection_points = np.column_stack(np.where(intersections == 255))
     ### swap point to back cv2 style 
     intersection_points = [(x, y) for y, x in swapped_intersection_points]
-
-
 
     # Find the closest intersection point to the moved point
     pinkie_defect = functions.find_closest_point(intersection_points, moved_point)
@@ -267,9 +224,9 @@ def resize_images(images, size = 224, fill_color=(0, 0, 0)):
     return resized_regions
 
 
-# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000658.jpg")
-# images = resize_images(images)
-# functions.show_images(images)
+images = segment_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
+images = resize_images(images)
+functions.show_images(images)
 
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000523.jpg")
 # images = resize_images(images)

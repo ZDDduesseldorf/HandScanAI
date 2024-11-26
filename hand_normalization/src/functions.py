@@ -30,15 +30,12 @@ def getLandmarks(image_path):
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 # Loop through each landmark, get its name and coordinates
-                for idx, landmark in enumerate(hand_landmarks.landmark):
-                    # Get landmark name from mp_hands.HandLandmark
-                    landmark_name = mp_hands.HandLandmark(idx).name
-                    
+                for idx, landmark in enumerate(hand_landmarks.landmark):                    
                     # Get the coordinates in image dimensions
                     h, w, _ = image.shape  # Get image dimensions
                     x, y = int(landmark.x * w), int(landmark.y * h)  # Scale x, y to image dimensions
 
-                    output.append([landmark_name, x, y])
+                    output.append([x, y])
     return output
 
 # Function to calculate the Euclidean distance between two points
@@ -325,3 +322,42 @@ def show_images(images):
         cv2.imshow("Images",image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+
+# Create a binary handmask with HSV values
+def create_handmask(original_image):
+    # Apply gaussian filter
+    blurred_image = cv2.GaussianBlur(original_image, (11, 11), 2)
+
+    # Define the range for skin color in HSV(Hue, Saturation, Value)
+    # These values might need to be adjusted depending on lighting and skin tone
+    hsv = cv2.cvtColor(blurred_image, cv2.COLOR_BGR2HSV)
+    lower_skin = np.array([0, 40, 80])  # Lower bound of skin color (Hue, Saturation, Value)
+    upper_skin = np.array([20, 255, 255])  # Upper bound of skin color
+
+    # Create a mask for the skin color
+    hand_mask = cv2.inRange(hsv, lower_skin, upper_skin)
+
+    return hand_mask
+
+def detect_largest_defects(largest_contour):
+    # Find the convex hull of the largest contour
+    hull = cv2.convexHull(largest_contour, returnPoints=False)
+
+    # Find the convexity defects
+    defects = cv2.convexityDefects(largest_contour, hull)
+
+    defect_distances = []
+    for i in range(defects.shape[0]):
+        # Extract defect details
+        start_idx, end_idx, farthest_idx, defect_distance = defects[i, 0]
+        farthest_point = tuple(largest_contour[farthest_idx][0])
+        
+        defect_distances.append([defect_distance,farthest_point])
+
+    defect_distances.sort(reverse=True)
+    four_largest_defects = []
+    for i in range(4):
+        four_largest_defects.append(defect_distances[i][1])
+        
+    return four_largest_defects
