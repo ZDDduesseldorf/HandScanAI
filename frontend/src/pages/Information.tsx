@@ -103,7 +103,7 @@ const Information: React.FC = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate('/about')}
+              onClick={() => navigate('/Berechnung')}
               // sx={{ marginTop: 2 }}
             >
               Weiter

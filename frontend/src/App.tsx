@@ -11,6 +11,9 @@ import Information from '@/pages/Information';
 import Berechnung from '@/pages/Berechnung';
 import Bildaufnahme from '@/pages/Bildaufnahme';
 import Sandbox from '@/pages/Sandbox';
+import ErgebnisAge from '@/pages/ErgebnisAge';
+import ErgebnisGender from './pages/ErgebnisGender';
+import Danke from './pages/Danke';
 
 import '@/assets/fonts.css';
 import '@/App.css';
@@ -63,6 +66,9 @@ const App: React.FC = () => {
             <Route path="/berechnung" element={<Berechnung />} />
             <Route path="/bildaufnahme" element={<Bildaufnahme />} />
             <Route path="/sandbox" element={<Sandbox />} />
+            <Route path="ergebnisage" element={<ErgebnisAge />} />
+            <Route path="ergebnisgender" element={<ErgebnisGender />} />
+            <Route path="danke" element={<Danke />} />
           </Routes>
         </motion.div>
       </AnimatePresence>

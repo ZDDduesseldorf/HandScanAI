@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, styled } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
+import { Button, Typography, styled } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import { Title } from './Home';
 import { BodyLayout, HorizontalBar } from './Information';
@@ -21,7 +21,7 @@ const FontText = styled(Typography)`
 `;
 
 const Berechnung: React.FC = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <BodyLayout>
@@ -40,6 +40,14 @@ const Berechnung: React.FC = () => {
         wobei die Handdominanz oft in der frühen Kindheit <br></br>
         festgelegt wird und teilweise genetisch beeinflusst<br></br> ist.
       </FontText>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/ErgebnisAge')}
+        // sx={{ marginTop: 2 }}
+      >
+        Weiter
+      </Button>
 
       <HorizStepper pageNumber={2}></HorizStepper>
     </BodyLayout>
