@@ -74,6 +74,10 @@ def segment_hand_image(image_path):
         segment_bitmask = functions.hull_or_contour_to_bitmask(contour,blank_image.shape)
         hand_segments.append(segment_bitmask)
 
+    # sort hand_segments according to mask size and select the 7 largest 
+    sorted_hand_segments = sorted(hand_segments, key=functions.count_white_pixels, reverse=True)[:7]
+
+
     # Extraction
     ## <input> hand_segments bitmasks
 
@@ -127,10 +131,10 @@ def segment_hand_image(image_path):
 ]
 
     # Assign hand segement mask to correct region
-    regions[0].update({"mask": hand_segments[0]}) # Whole hand image has to be assigned seperatly due to missing reference point
+    regions[0].update({"mask": sorted_hand_segments[0]}) # Whole hand image has to be assigned seperatly due to missing reference point
     for region in regions[1:]:
         region_reference_point = region["reference_point"]
-        for segments in hand_segments[1:]:
+        for segments in sorted_hand_segments[1:]:
             points_in_segment = functions.check_points_in_mask(segments,region_reference_point)
             if(points_in_segment):
                 region.update({"mask": segments}) 
@@ -151,6 +155,7 @@ def segment_hand_image(image_path):
     images = []
     for region in regions:
         images.append(region["segment_image"])
+    
     return images
 
 ## dynamic segment sizing
@@ -162,18 +167,18 @@ def resize_images(images, size = 224, fill_color=(255, 255, 255)):
     
     return resized_regions
 
-# images = segment_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
-# images = resize_images(images)
-# functions.show_images(images)
-
-# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000523.jpg")
-# images = resize_images(images)
-# functions.show_images(images)
-
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 # images = resize_images(images)
 # functions.show_images(images)
 
+# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000523.jpg")
+# # images = resize_images(images)
+# functions.show_images(images)
+
+# images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
+# # images = resize_images(images)
+# functions.show_images(images)
+
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000455.jpg")
-# images = resize_images(images)
+# # images = resize_images(images)
 # functions.show_images(images)
