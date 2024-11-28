@@ -145,7 +145,7 @@ def rotate_image_no_crop(image, angle, center_of_rotation = []):
     rotation_matrix[1, 2] += (new_h / 2) - center_of_rotation[1]
     
     # Perform the rotation
-    rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h), borderValue=(255, 255, 255))
     
     return rotated_image
 
@@ -361,6 +361,7 @@ def detect_missing_point(first_defect, second_defect, contour_mask, blank_image)
         moved_point = (int(first_defect[0] + direction_vector[0] * 3), int(second_defect[1] + direction_vector[1] * 3))
 
         line_mask = blank_image.copy()
+        line_mask = cv2.line(line_mask, first_defect, moved_point, 255, 1)
         intersections = cv2.bitwise_and(contour_mask, line_mask)
         swapped_intersection_points = np.column_stack(np.where(intersections == 255))
 

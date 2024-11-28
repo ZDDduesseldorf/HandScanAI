@@ -62,7 +62,7 @@ def segment_hand_image(image_path):
 
     # Draw segment lines between hand defects on hand contour
     for idx, _ in enumerate(specified_defects):
-        if idx != 1 or idx != 6:
+        if idx != 1 and idx != 6:
             cv2.line(segmented_contour_mask, specified_defects[idx], specified_defects[idx+1], 255, 2)
 
     # Find contours and inner contours
@@ -125,47 +125,27 @@ def segment_hand_image(image_path):
         "angle": 180 - functions.vector_agle(landmarks[18], landmarks[20]),
     },
 ]
-    ## extract the the resulting segment images by clipping the original image to a boundingbox defined by the hand_segments bitmasks
-    ## region "Hand" is always the first image since is the biggest contour
-    
+
     # Assign hand segement mask to correct region
-    # regions[0].update({"mask": hand_segments[0]}) # Whole hand image has to be assigned seperatly due to missing reference point
-    # for region in regions[1:]:
-    #     region_reference_point = region["reference_point"]
-    #     for segments in hand_segments[1:]:
-    #         points_in_segment = functions.check_points_in_mask(segments,region_reference_point)
-    #         if(points_in_segment):
-    #             region.update({"mask": segments}) 
-
-
-    image = original_image.copy()
-    ## rotate clean and segmented image
-    image_rotated = functions.rotate_image_no_crop(image, regions[0]["angle"])
-    segment_mask_rotated = functions.rotate_image_no_crop(hand_segments[0], regions[0]["angle"])
-    ## calculate boundingbox of the mask
-    bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotated, 5)
-    ## crop original image to bounding box
-    cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
-    # write the cropped image and the segment mask to regions dict 
-    regions[0].update({"mask": hand_segments[0]}) 
-    regions[0].update({"segment_image": cropped_segment_image}) 
-
+    regions[0].update({"mask": hand_segments[0]}) # Whole hand image has to be assigned seperatly due to missing reference point
     for region in regions[1:]:
         region_reference_point = region["reference_point"]
         for segments in hand_segments[1:]:
             points_in_segment = functions.check_points_in_mask(segments,region_reference_point)
             if(points_in_segment):
-                image = original_image.copy()
-                ## rotate clean and segmented image
-                image_rotated = functions.rotate_image_no_crop(image, region["angle"])
-                segment_mask_rotaded = functions.rotate_image_no_crop(segments, region["angle"])
-                ## calculate boundingbox of the mask
-                bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
-                ## crop original image to bounding box
-                cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
-                ## write the cropped image and the segment mask to regions dict 
                 region.update({"mask": segments}) 
-                region.update({"segment_image": cropped_segment_image}) 
+
+    for region in regions:
+        image = original_image.copy()
+        ## rotate clean and segmented image
+        image_rotated = functions.rotate_image_no_crop(image, region["angle"])
+        segment_mask_rotaded = functions.rotate_image_no_crop(region["mask"], region["angle"])
+        ## calculate boundingbox of the mask
+        bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
+        ## crop original image to bounding box
+        cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
+        ## write the cropped image and the segment mask to regions dict 
+        region.update({"segment_image": cropped_segment_image}) 
 
     ##  write the images in the dict to the output list to preserve a constant segment ordering in the list
     images = []
@@ -174,7 +154,7 @@ def segment_hand_image(image_path):
     return images
 
 ## dynamic segment sizing
-def resize_images(images, size = 224, fill_color=(0, 0, 0)):
+def resize_images(images, size = 224, fill_color=(255, 255, 255)):
     resized_regions = []
     for region in images:
         resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
@@ -182,10 +162,9 @@ def resize_images(images, size = 224, fill_color=(0, 0, 0)):
     
     return resized_regions
 
-
-images = segment_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
-images = resize_images(images)
-functions.show_images(images)
+# images = segment_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
+# images = resize_images(images)
+# functions.show_images(images)
 
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000523.jpg")
 # images = resize_images(images)
