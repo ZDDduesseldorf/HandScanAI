@@ -22,9 +22,29 @@
 
 ## Installation
 
+### MongoDB installieren
+
+#### MongoDB mit Docker Compose starten
+Um MongoDB mit Docker zu starten, verwenden Sie den folgenden Befehl:
+
+```sh
+docker-compose up mongodb
+```
+
+Dieser Befehl startet den MongoDB-Dienst, wie er in der docker-compose.yml-Datei definiert ist.
+
+#### MongoDB manuell installieren
+Alternativ können Sie die offizielle Anleitung zur Installation der MongoDB-Community-Edition befolgen. Die Anleitung finden Sie hier:
+[MongoDB Community Edition installieren](https://www.mongodb.com/docs/manual/administration/install-community/)
+
 ### Python installieren
 
 Stellen Sie sicher, dass Python auf Ihrem System installiert ist. Sie können die neueste Version von [python.org](https://www.python.org/downloads/) herunterladen und installieren.
+
+### Enviroment Datei erstellen
+
+Die Datei `.env.sample` duplizieren und umbenennen in `.env`
+Falls nötig, die Attribute in der Datei entsprechend der Konfiguration anpassen.
 
 ### Virtuelle Umgebung erstellen
 

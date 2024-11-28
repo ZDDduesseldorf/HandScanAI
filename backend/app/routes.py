@@ -7,9 +7,11 @@ from .api.graphql import graphql_router
 
 router = APIRouter()
 
+
 @router.get("/")
 async def index():
     return RedirectResponse(url="/docs")
+
 
 # REST API router
 router.include_router(rest_router, prefix="/rest")

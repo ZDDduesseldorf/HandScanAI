@@ -27,6 +27,7 @@ class Paths:
     STATIC_DIR: Path = BASE_DIR / "static"
     MEDIA_DIR: Path = BASE_DIR / "media"
 
+
 class Settings(BaseSettings):
     @property
     def PATHS(self) -> Paths:

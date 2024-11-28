@@ -3,6 +3,7 @@ from pydantic import Field
 from typing import Optional
 from datetime import datetime, timezone
 
+
 class TestModel(Document):
     name: str
     description: Optional[str] = None

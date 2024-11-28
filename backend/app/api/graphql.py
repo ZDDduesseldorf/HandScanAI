@@ -6,6 +6,7 @@ from strawberry.fastapi import GraphQLRouter
 
 from app.db.models import TestModel
 
+
 @strawberry.type
 class TestModelType:
     id: strawberry.ID
@@ -13,10 +14,12 @@ class TestModelType:
     description: Optional[str]
     created_at: datetime
 
+
 @strawberry.input
 class TestModelInput:
     name: str
     description: Optional[str]
+
 
 @strawberry.type
 class Query:
@@ -24,6 +27,7 @@ class Query:
     async def get_test_models(self) -> List[TestModelType]:
         test_models = await TestModel.find_all().to_list()
         return [TestModelType(**model.model_dump()) for model in test_models]
+
 
 @strawberry.type
 class Mutation:
@@ -50,6 +54,7 @@ class Mutation:
             await test_model.delete()
             return True
         return False
+
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 
