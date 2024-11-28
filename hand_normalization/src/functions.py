@@ -42,7 +42,7 @@ def getLandmarks(image_path):
 def euclidean_distance(point1, point2):
     return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)**(0.5)
 
-def direction_vector(point1, point2):
+def find_direction_vector(point1, point2):
     return (point2[0] - point1[0], point2[1] - point1[1])
 
 
@@ -270,12 +270,6 @@ def vector_agle(point1, point2):
     vector_angle = cv2.fastAtan2(vector[0],vector[1])
     return vector_angle
 
-def pt1_left_of_pt2(pt1, pt2):
-    if pt1[0]>pt2[0]: 
-        return(-1)
-    if pt1[0]<=pt2[0]: 
-        return(1)
-
 def dynamic_resize_image_to_target(input_image, size, fill_color):
     """
     Resizes the input image to fit within the target resolution, maintaining its aspect ratio.
@@ -361,3 +355,16 @@ def detect_largest_defects(largest_contour):
         four_largest_defects.append(defect_distances[i][1])
         
     return four_largest_defects
+
+def detect_missing_point(first_defect, second_defect, contour_mask, blank_image):
+        direction_vector = find_direction_vector(first_defect, second_defect)
+        moved_point = (int(first_defect[0] + direction_vector[0] * 3), int(second_defect[1] + direction_vector[1] * 3))
+
+        line_mask = blank_image.copy()
+        intersections = cv2.bitwise_and(contour_mask, line_mask)
+        swapped_intersection_points = np.column_stack(np.where(intersections == 255))
+
+        intersection_points = [(x, y) for y, x in swapped_intersection_points]
+        detected_point = find_closest_point(intersection_points, moved_point)
+
+        return detected_point
