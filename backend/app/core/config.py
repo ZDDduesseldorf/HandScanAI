@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, AnyUrl, field_validator
 from pydantic_settings import BaseSettings
 
 try:
@@ -27,7 +27,6 @@ class Paths:
     STATIC_DIR: Path = BASE_DIR / "static"
     MEDIA_DIR: Path = BASE_DIR / "media"
 
-
 class Settings(BaseSettings):
     @property
     def PATHS(self) -> Paths:
@@ -46,6 +45,15 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
+
+    DATABASE_HOST: str
+    DATABASE_PORT: int
+    MONGO_INITDB_ROOT_USERNAME: str
+    MONGO_INITDB_ROOT_PASSWORD: str
+
+    @property
+    def MONGO_URI(self) -> AnyUrl:
+        return f"mongodb://{self.MONGO_INITDB_ROOT_USERNAME}:{self.MONGO_INITDB_ROOT_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}"
 
     class Config:
         env_file = ".env"
