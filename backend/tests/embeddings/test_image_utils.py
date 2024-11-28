@@ -3,18 +3,6 @@ import torch
 
 from backend.embeddings import image_utils
 
-### FIXTURES ######################################################
-
-
-# @pytest.fixture()
-# def image_name():
-#    yield "Hand_0000002.jpg"
-
-
-# @pytest.fixture()
-# def path_to_images():
-#    yield "tests/data/TestImages/"
-
 
 ### TESTS #############################################################
 

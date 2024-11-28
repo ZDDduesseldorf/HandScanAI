@@ -7,16 +7,6 @@ from backend.embeddings import models_utils
 ### FIXTURES ######################################################
 
 
-# @pytest.fixture()
-# def image_name():
-#    yield "Hand_0000002.jpg"
-
-
-# @pytest.fixture()
-# def path_to_images():
-#    yield "backend/data/TestImages/"
-
-
 @pytest.fixture()
 def loaded_test_image(image_name, path_to_images):
     yield image_utils.load_image(image_name, path_to_images)
