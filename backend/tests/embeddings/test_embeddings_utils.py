@@ -7,14 +7,14 @@ from backend.embeddings import models_utils
 ### FIXTURES ######################################################
 
 
-@pytest.fixture()
-def image_name():
-    yield "Hand_0000002.jpg"
+# @pytest.fixture()
+# def image_name():
+#    yield "Hand_0000002.jpg"
 
 
-@pytest.fixture()
-def path_to_images():
-    yield "tests/data/TestImages/"
+# @pytest.fixture()
+# def path_to_images():
+#    yield "backend/data/TestImages/"
 
 
 @pytest.fixture()
@@ -61,36 +61,28 @@ def test_preprocess_image(loaded_test_image):
 
 
 def test_calculate_single_densenet_embedding(loaded_test_image, test_densenet):
-    test_embeddings = embeddings_utils.calculate_embedding(
-        loaded_test_image, test_densenet
-    )
+    test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_densenet)
     # expected dimensions of densenet embedding are [1, 1024]
     assert test_embeddings.shape[0] == 1
     assert test_embeddings.shape[1] == 1024
 
 
 def test_calculate_single_resnet_embedding(loaded_test_image, test_resnet):
-    test_embeddings = embeddings_utils.calculate_embedding(
-        loaded_test_image, test_resnet
-    )
+    test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_resnet)
     # expected dimensions of resnet embedding are [1, 1000]
     assert test_embeddings.shape[0] == 1
     assert test_embeddings.shape[1] == 1000
 
 
 def test_calculate_embeddings(loaded_test_image_array, test_densenet):
-    test_embeddings = embeddings_utils.calculate_embeddings(
-        loaded_test_image_array, test_densenet
-    )
+    test_embeddings = embeddings_utils.calculate_embeddings(loaded_test_image_array, test_densenet)
     # expected dimensions of densenet embedding are [1, 1024]
     assert test_embeddings[0].shape[1] == 1024
     # expected length of the resulting array is the same as input array
     assert len(test_embeddings) == len(loaded_test_image_array)
 
 
-def test_calculate_embeddings_from_path(
-    test_image_name_array, path_to_images, test_densenet
-):
+def test_calculate_embeddings_from_path(test_image_name_array, path_to_images, test_densenet):
     test_embeddings = embeddings_utils.calculate_embeddings_from_path(
         test_image_name_array, path_to_images, test_densenet
     )

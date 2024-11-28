@@ -1,7 +1,9 @@
 import torch
 
-from backend.embeddings.image_utils import load_image
-from backend.embeddings import models_utils
+from .image_utils import load_image
+from .models_utils import transforms_default, load_model
+# from backend.embeddings.image_utils import load_image
+# from backend.embeddings import models_utils
 
 
 ###############################################
@@ -11,7 +13,7 @@ from backend.embeddings import models_utils
 ###############################################
 
 
-def calculate_embeddings_from_path(image_array, path_to_images, model=models_utils.load_model) -> list[torch.Tensor]:
+def calculate_embeddings_from_path(image_array, path_to_images, model=load_model) -> list[torch.Tensor]:
     """
     Calculates the embedding of every image in the given array of image names and a path to the images.
 
@@ -32,7 +34,7 @@ def calculate_embeddings_from_path(image_array, path_to_images, model=models_uti
     return calculate_embeddings(loaded_images, model)
 
 
-def calculate_embeddings(image_array: list[torch.Tensor], model=models_utils.load_model) -> list[torch.Tensor]:
+def calculate_embeddings(image_array: list[torch.Tensor], model=load_model) -> list[torch.Tensor]:
     """
     Calculates the embedding of every image in the given array of image tensors.
 
@@ -52,7 +54,7 @@ def calculate_embeddings(image_array: list[torch.Tensor], model=models_utils.loa
     return embeddings_array
 
 
-def calculate_embedding(image: torch.Tensor, model=models_utils.load_model) -> torch.Tensor:
+def calculate_embedding(image: torch.Tensor, model=load_model) -> torch.Tensor:
     """
     Uses the given model to generate the embedding of an image.
     Pushes model and data to gpu (cuda) if possible to enhance performance.
@@ -83,7 +85,7 @@ def calculate_embedding(image: torch.Tensor, model=models_utils.load_model) -> t
     return embedding
 
 
-def preprocess_image(input_image: torch.Tensor, transforms=models_utils.transforms_default) -> torch.Tensor:
+def preprocess_image(input_image: torch.Tensor, transforms=transforms_default) -> torch.Tensor:
     """
     Preprocesses 3D RGB image tensor (by using the transforms on it) into an input_batch for neural network.
 
