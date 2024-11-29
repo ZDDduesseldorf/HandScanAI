@@ -14,7 +14,7 @@ def load_image(image_name, path_to_images):
         A 3 dimensional RGB Tensor of the image. The values of the output tensor are uint8 in [0, 255].
     """
     img_path = construct_image_path(image_name, path_to_images)
-    # print(f"img_path: {img_path}")
+
     # Read the image file
     image_tensor = read_image(img_path, ImageReadMode.RGB)
     # returns a tensor with rgb values
@@ -34,5 +34,4 @@ def construct_image_path(image_name, path_to_images):
     """
     # Construct the full path to the image file
     img_path = os.path.join(path_to_images, image_name)
-    # print(img_path)
     return img_path

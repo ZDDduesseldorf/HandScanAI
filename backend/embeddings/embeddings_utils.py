@@ -2,9 +2,6 @@ import torch
 
 from .image_utils import load_image
 from .models_utils import transforms_default, load_model
-# from backend.embeddings.image_utils import load_image
-# from backend.embeddings import models_utils
-
 
 ###############################################
 
@@ -100,13 +97,13 @@ def preprocess_image(input_image: torch.Tensor, transforms=transforms_default) -
 
     ## ready mini input_batch
     input_tensor = transforms(input_image)
-    print(f"Input tensor: {input_tensor.shape}")
+    # debug: print(f"Input tensor: {input_tensor.shape}")
 
     # create a mini-batch as expected by the model
     # Unsqueeze: Returns a new tensor with a dimension of size one inserted at the specified position.
     # model expects 4D input, so unsqueeze turns 3D tensor to 4D tensor
     input_batch = input_tensor.unsqueeze(0)
-    print(f"Input_Batch shape: {input_batch.shape}")
+    # debug: print(f"Input_Batch shape: {input_batch.shape}")
     return input_batch
 
 
