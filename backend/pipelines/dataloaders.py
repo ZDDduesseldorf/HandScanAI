@@ -1,5 +1,3 @@
-
-
 # dataset_images
 # input: folderpath
 # load all paths
@@ -31,7 +29,7 @@ class ImagePathDataset(Dataset):
 # return imagepath, metadata
 import pandas as pd
 
-class ImagePathWithCSV(Dataset):
+class ImagePathWithCSVDataset(Dataset):
     def __init__(self, folder_path, csv_path):
         """
         Args:
