@@ -1,7 +1,7 @@
 import torch
 from torchvision import models
 
-from embeddings import models_utils
+from backend.embeddings import models_utils
 
 ### TESTS #############################################################
 

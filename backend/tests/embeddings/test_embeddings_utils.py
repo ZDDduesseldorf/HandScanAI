@@ -1,8 +1,8 @@
 import pytest
 
-from embeddings import embeddings_utils
-from embeddings import image_utils
-from embeddings import models_utils
+from backend.embeddings import embeddings_utils
+from backend.embeddings import image_utils
+from backend.embeddings import models_utils
 
 ### FIXTURES ######################################################
 

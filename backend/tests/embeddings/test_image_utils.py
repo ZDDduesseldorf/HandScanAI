@@ -1,6 +1,6 @@
 import torch
 import os
-from embeddings import image_utils
+from backend.embeddings import image_utils
 from pathlib import Path
 
 
