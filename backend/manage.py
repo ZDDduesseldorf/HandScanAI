@@ -46,5 +46,11 @@ def check_code():
         subprocess.run(["ruff", "clean"], check=True)
 
 
+@cli.command("test")
+def run_tests():
+    """Run the tests using pytest."""
+    subprocess.run(["pytest", "tests"], check=True)
+
+
 if __name__ == "__main__":
     cli()
