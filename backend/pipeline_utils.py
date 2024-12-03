@@ -54,9 +54,6 @@ def add_entry_to_csv(file_path, entry):
 
             # Write the filtered entry to the CSV file
             writer.writerow(filtered_entry)
-
-        print(f"Entry {filtered_entry} added successfully to '{file_path}'.")
-
     except Exception as e:
         print(f"Error adding entry to CSV file: {e}")
 
