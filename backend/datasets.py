@@ -5,6 +5,7 @@ import pandas as pd
 
 from collections import defaultdict
 
+
 class ImagePathDataset(Dataset):
     def __init__(self, folder_path):
         self.folder_path = folder_path
@@ -12,7 +13,7 @@ class ImagePathDataset(Dataset):
         self.image_paths = [
             os.path.join(folder_path, fname)
             for fname in os.listdir(folder_path)
-            if fname.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp'))
+            if fname.lower().endswith((".png", ".jpg", ".jpeg", ".bmp"))
         ]
 
     def __len__(self):
@@ -20,7 +21,6 @@ class ImagePathDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.image_paths[idx]
-
 
 
 class ImagePathWithCSVDataset(Dataset):
@@ -36,16 +36,13 @@ class ImagePathWithCSVDataset(Dataset):
         self.csv_data = pd.read_csv(csv_path)
 
         # Create a dictionary mapping image file names to corresponding row entries
-        self.image_to_csv_entry = {
-            row['imageName']: row.to_dict()
-            for _, row in self.csv_data.iterrows()
-        }
+        self.image_to_csv_entry = {row["imageName"]: row.to_dict() for _, row in self.csv_data.iterrows()}
 
         # Get all file paths in the folder that have image file extensions
         self.image_paths = [
             os.path.join(folder_path, fname)
             for fname in os.listdir(folder_path)
-            if fname.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')) and fname in self.image_to_csv_entry
+            if fname.lower().endswith((".png", ".jpg", ".jpeg", ".bmp", ".gif")) and fname in self.image_to_csv_entry
         ]
 
     def __len__(self):
@@ -64,17 +61,17 @@ class ImagePathWithCSVDataset(Dataset):
         csv_entry = self.image_to_csv_entry.get(image_name, None)  # Get the corresponding CSV entry
         return image_path, csv_entry
 
+
 # ----- Usage -----------
-# folder_path = 'TestImages' 
-# csv_path = 'HandInfo.csv'  
+# folder_path = 'TestImages'
+# csv_path = 'HandInfo.csv'
 
 # dataset = ImagePathWithCSVDataset(folder_path, csv_path)
 
-# # Iterate over the Dataset 
+# # Iterate over the Dataset
 # for image_path, csv_entry in dataset:
 #     print("Image Path:", image_path)
 #     print("CSV Entry:", csv_entry)
-
 
 
 class DatasetRegions(Dataset):
@@ -90,16 +87,16 @@ class DatasetRegions(Dataset):
 
         # Get all image file paths from the folder
         self.image_paths = [
-            os.path.join(folder_path, fname)
-            for fname in os.listdir(folder_path)
-            if fname.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))
+            os.path.join(self.folder_path, fname)
+            for fname in os.listdir(self.folder_path)
+            if fname.lower().endswith((".png", ".jpg", ".jpeg", ".bmp", ".gif"))
         ]
 
         # Parse image paths to group by UUID
         self.uuid_to_paths = defaultdict(list)
         for image_path in self.image_paths:
             filename = os.path.basename(image_path)
-            uuid, region = filename.split('_', 1)  # Split on the first underscore to get UUID and region
+            uuid, region = filename.split("_", 1)  # Split on the first underscore to get UUID and region
             self.uuid_to_paths[uuid].append(image_path)
 
         # If clustered_data is True, use grouped UUIDs for iteration
@@ -119,22 +116,23 @@ class DatasetRegions(Dataset):
             - If clustered_data is False: Single image path.
         """
         return self.image_clusters[idx]
-    
+
+
 # # ----- Usage -----------
-# folder_path = 'TestRegionDataset' 
+# folder_path = 'TestRegionDataset'
 
 # dataset = DatasetRegions(folder_path, clustered_data=True)
 
-# # Iterate over the Dataset 
+# # Iterate over the Dataset
 # for image_paths in dataset:
 #     print("Image Path:", image_path) # -> prints an array of all imagepaths with the same uuid each iteration
 
 # # or
 
-# folder_path = 'TestRegionDataset' 
+# folder_path = 'TestRegionDataset'
 
 # dataset = DatasetRegions(folder_path, clustered_data=False)
 
-# # Iterate over the Dataset 
+# # Iterate over the Dataset
 # for image_path in dataset:
 #     print("Image Path:", image_path) -> prints an one imagepath each iteration
