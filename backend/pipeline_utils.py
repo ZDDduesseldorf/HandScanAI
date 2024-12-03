@@ -23,7 +23,7 @@ def create_csv_with_header(file_path, header):
 def add_entry_to_csv(file_path, entry):
     """
     Adds a new row to a CSV file based on a dictionary entry.
-    Raises an error if the dictionary keys don't match the CSV header.
+    Writes only matching keys to the CSV file and raises an error if no keys match.
 
     Parameters:
     - file_path (str): Path to the CSV file.
@@ -38,21 +38,25 @@ def add_entry_to_csv(file_path, entry):
             reader = csv.DictReader(file)
             header = reader.fieldnames
 
-            # Check if all keys in the entry match the header
-            if not all(key in header for key in entry.keys()):
-                missing_keys = [key for key in entry.keys() if key not in header]
-                raise ValueError(f"Entry contains invalid keys: {missing_keys}. Expected keys: {header}")
+            # Find matching keys between the entry and the CSV header
+            matching_keys = [key for key in entry.keys() if key in header]
 
-        # If the keys match, append the entry to the CSV file
+            # Check if there are any matching keys
+            if not matching_keys:
+                raise ValueError(f"Entry contains no valid keys. Expected keys: {header}")
+
+        # If there are matching keys, append the entry to the CSV file
         with open(file_path, mode='a', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=header)
-            writer.writerow(entry)
 
-        print(f"Entry {entry} added successfully to '{file_path}'.")
+            # Filter the entry to only include matching keys
+            filtered_entry = {key: entry[key] for key in matching_keys}
+
+            # Write the filtered entry to the CSV file
+            writer.writerow(filtered_entry)
+
+        print(f"Entry {filtered_entry} added successfully to '{file_path}'.")
 
     except Exception as e:
         print(f"Error adding entry to CSV file: {e}")
 
-
-create_csv_with_header("testcsv.csv",["UID","Alter","Geschlecht"])
-add_entry_to_csv("testcsv.csv", {"UID":1, "Alter": 12,"Geschlecht": "Mannlich"})
