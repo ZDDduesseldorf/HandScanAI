@@ -1,6 +1,6 @@
 import pytest
 
-from datasets import DatasetRegions
+from pipelines.datasets import DatasetRegions
 
 from embeddings import embeddings_utils
 from embeddings import models_utils
@@ -8,7 +8,7 @@ from embeddings import models_utils
 
 def test_correct_clusters(path_to_region_images):
     dataset = DatasetRegions(path_to_region_images, clustered_data=True)
-    
+
     # expected to load two clusters from testdata
     assert len(dataset) == 2
 
