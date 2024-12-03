@@ -15,7 +15,9 @@
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
   - [Projektstruktur](#projektstruktur)
     - [app](#app)
+    - [embeddings](#embeddings)
     - [lib](#lib)
+    - [tests](#tests)
     - [validation](#validation)
     - [Weitere Module](#weitere-module)
   - [Formatierung und Linter](#formatierung-und-linter)
@@ -107,9 +109,17 @@ Das Verzeichnis `app` enthält die Hauptanwendung und die Routen für das FastAP
 
 Diese Struktur hilft dabei, den Code sauber und modular zu halten, was die Wartung und Erweiterung der Anwendung erleichtert.
 
+### embeddings
+
+Das Verzeichnis `embeddings` enthält die Module, die zur Berechnung der Embeddings durch CNNs verwendet werden. Es enthält eine eigene Readme für weitere Informationen.
+
 ### lib
 
 Das Verzeichnis `lib` enthält allgemeine Bibliotheksfunktionen und Hilfsprogramme, die in verschiedenen Teilen der Anwendung verwendet werden können. Diese Funktionen sind oft wiederverwendbar und abstrahieren komplexe Logik, um sie einfacher zugänglich zu machen.
+
+### tests
+
+Das Verzeichnis `tests` enthält die Unit- und Integrationstests des Backends, die mittels `pytest` implementiert wurden. Es enthält eine eigene Readme für weitere Informationen.
 
 ### validation
 
