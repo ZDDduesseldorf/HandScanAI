@@ -2,14 +2,11 @@ import cv2
 import os
 from torch.utils.data import DataLoader
 
-from app.utils import uuid
+from app.utils.uuid import generate_uuid
 from pipeline_utils import create_csv_with_header, add_entry_to_csv
 from datasets import ImagePathDataset, ImagePathWithCSVDataset, DatasetRegions
 from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
 
-
-from app.utils.uuid import generate_uuid
-import os
 
 ### This pipeline is for filtering 11K dataset
 
