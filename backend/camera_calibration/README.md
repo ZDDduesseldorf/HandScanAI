@@ -1,8 +1,13 @@
 ## Camera Calibration
 
-calculates: - brightness using the mean - contrast using the standard deviation - sharpness using varicance of Laplace
+calculates: 
+- brightness using the mean
+- - contrast using the standard deviation
+  - - sharpness using varicance of Laplace
 
-detects a rectangle: - with Canny-Edge-Detection - finds a contour with len 4
+detects a rectangle: 
+- with Canny-Edge-Detection
+- finds a contour with len 4
 -> 4 corner points
 
 calculates extenisive of rectangle to check correct size
