@@ -41,5 +41,3 @@ def filter_11k_hands(folder_path, new_dataset_path, new_csv_path):
             csv_data['uuid'] =  uuid
             csv_data['old_id'] = csv_data.pop('id')
             add_entry_to_csv(new_csv_path, csv_data)
-
-print("ok")
