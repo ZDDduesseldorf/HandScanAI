@@ -372,3 +372,43 @@ def detect_missing_point(first_defect, second_defect, contour_mask, blank_image)
 
 def count_white_pixels(image):
     return np.sum(image == 255)
+
+def draw_images_in_grid(image_list, rows, cols, image_size=(224, 224), padding=10, bg_color=(13, 17, 23)):
+    """
+    Draw an array of images on a single canvas.
+
+    Parameters:
+    - image_list: List of image arrays (NumPy arrays).
+    - rows: Number of rows in the grid.
+    - cols: Number of columns in the grid.
+    - image_size: Tuple specifying the size (width, height) to resize each image.
+    - padding: Padding between images in pixels.
+    - bg_color: Background color as a BGR tuple (default is white).
+    """
+    # Calculate the size of the canvas
+    canvas_height = rows * (image_size[1] + padding) + padding
+    canvas_width = cols * (image_size[0] + padding) + padding
+
+    # Create a blank canvas with the background color
+    canvas = np.full((canvas_height, canvas_width, 3), bg_color, dtype=np.uint8)
+
+    # Loop through images and place them on the canvas
+    for i, img in enumerate(image_list):
+        if i >= rows * cols:
+            break  # Avoid adding more images than the grid can hold
+        # Convert grayscale to color if necessary
+        if len(img.shape) == 2:  # Check if image is grayscale
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        # Resize the image to the specified size
+        img_resized = cv2.resize(img, image_size)
+
+        # Calculate position to place the image
+        row = i // cols
+        col = i % cols
+        y = padding + row * (image_size[1] + padding)
+        x = padding + col * (image_size[0] + padding)
+
+        # Place the resized image on the canvas
+        canvas[y:y+image_size[1], x:x+image_size[0]] = img_resized
+
+    return canvas

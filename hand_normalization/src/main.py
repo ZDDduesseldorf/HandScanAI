@@ -1,6 +1,7 @@
 import functions
 import cv2
 import numpy as np
+import os
 
 def segment_hand_image(image_path):
     # image loading
@@ -44,26 +45,27 @@ def segment_hand_image(image_path):
         ]
 
     # Identify defects by determined lookup areas
-    specified_defects = []
+    region_defining_points = []
     for area in lookup_areas:
         lookup_area_mask = functions.hull_or_contour_to_bitmask(area, grey_image.shape)
-        specified_defects.append(functions.check_points_in_mask(lookup_area_mask,four_largest_defects)[0])
+        region_defining_points.append(functions.check_points_in_mask(lookup_area_mask,four_largest_defects)[0])
 
     # Find intersection points with hand contour by casting lines to detect missing defects
-    outer_thumb_defect = functions.detect_missing_point(specified_defects[0], landmarks[2], contour_mask, blank_image)
-    index_defect = functions.detect_missing_point(specified_defects[2], specified_defects[1], contour_mask, blank_image)
-    pinkie_defect = functions.detect_missing_point(specified_defects[2], specified_defects[3], contour_mask, blank_image)
+    outer_thumb_defect = functions.detect_missing_point(region_defining_points[0], landmarks[2], contour_mask, blank_image)
+    index_defect = functions.detect_missing_point(region_defining_points[2], region_defining_points[1], contour_mask, blank_image)
+    pinkie_defect = functions.detect_missing_point(region_defining_points[2], region_defining_points[3], contour_mask, blank_image)
 
-    specified_defects.insert(0, outer_thumb_defect)
-    specified_defects.insert(2, index_defect)
-    specified_defects.append(pinkie_defect)
+    # inserting new found region defining points to match the orderstruckture thumb to littlefinger
+    region_defining_points.insert(0, outer_thumb_defect)
+    region_defining_points.insert(2, index_defect)
+    region_defining_points.append(pinkie_defect)
 
     segmented_contour_mask = contour_mask.copy()
 
-    # Draw segment lines between hand defects on hand contour
-    for idx, _ in enumerate(specified_defects):
+    # Draw seperation lines between region defining points on hand contour 
+    for idx, _ in enumerate(region_defining_points):
         if idx != 1 and idx != 6:
-            cv2.line(segmented_contour_mask, specified_defects[idx], specified_defects[idx+1], 255, 2)
+            cv2.line(segmented_contour_mask, region_defining_points[idx], region_defining_points[idx+1], 255, 2)
 
     # Find contours and inner contours
     hand_segment_contours, _ = cv2.findContours(segmented_contour_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
@@ -77,10 +79,6 @@ def segment_hand_image(image_path):
     # sort hand_segments according to mask size and select the 7 largest 
     sorted_hand_segments = sorted(hand_segments, key=functions.count_white_pixels, reverse=True)[:7]
 
-
-    # Extraction
-    ## <input> hand_segments bitmasks
-
     # Detect hand orientation (thumb on left or right side)
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
@@ -89,8 +87,9 @@ def segment_hand_image(image_path):
     else:
         orientation_hand = 1
     
-    ## "reference_point" marks a landmark that must be contained inside of the segment
-    ## "angle" is the angle the image needs to be rotadet to be oriented from bottom to top
+    # identify regions
+    ## "reference_point" contains the landmark that must be inside of the region, in order to identify it correctly later
+    ## "angle" is the angle the image needs to be rotadet for the region to be oriented from bottom to top
     regions = [
     {
         "name": "Hand",
@@ -139,6 +138,7 @@ def segment_hand_image(image_path):
             if(points_in_segment):
                 region.update({"mask": segments}) 
 
+    # Rotate and Crop the original image by the calculated values for each region
     for region in regions:
         image = original_image.copy()
         ## rotate clean and segmented image
@@ -151,25 +151,47 @@ def segment_hand_image(image_path):
         ## write the cropped image and the segment mask to regions dict 
         region.update({"segment_image": cropped_segment_image}) 
 
-    ##  write the images in the dict to the output list to preserve a constant segment ordering in the list
-    images = []
     for region in regions:
-        images.append(region["segment_image"])
+        image = original_image.copy()
+        ## rotate clean and segmented image
+        image_rotated = functions.rotate_image_no_crop(image, region["angle"])
+        segment_mask_rotaded = functions.rotate_image_no_crop(region["mask"], region["angle"])
+        ## calculate boundingbox of the mask
+        bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
+        ## crop original image to bounding box
+        cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
+        ## write the cropped image and the segment mask to regions dict 
+        region.update({"segment_image": cropped_segment_image}) 
     
-    return images
+    return [{"name": region["name"], "image": region["segment_image"]} for region in regions]
 
 ## dynamic segment sizing
-def resize_images(images, size = 224, fill_color=(255, 255, 255)):
+def resize_images(images_with_names, size=224, fill_color=(255, 255, 255)):
     resized_regions = []
-    for region in images:
-        resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
-        resized_regions.append(resized_region)
+    for region in images_with_names:
+        resized_image = functions.dynamic_resize_image_to_target(region["image"], size, fill_color)
+        resized_regions.append({"name": region["name"], "image": resized_image})
     
     return resized_regions
 
+def save_image_with_name(images_with_names):
+    output_directory = "E:\OneDrive\Bilder" # Change to image output directory
+
+    if os.path.isdir(output_directory):
+        for entry in images_with_names:
+            filename = os.path.join(output_directory, f"{entry['name']}.jpg")  # Combine directory and file name; for UUID switch to: os.path.join(output_directory, f"{unique_id}_{entry['name']}.jpg")
+            cv2.imwrite(filename, entry["image"])
+    return
+
+
+# Code for Tests
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 # images = resize_images(images)
-# functions.show_images(images)
+# grid_image = functions.draw_images_in_grid(images, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
+
+# cv2.imshow('Image Grid', grid_image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000523.jpg")
 # # images = resize_images(images)
@@ -182,3 +204,10 @@ def resize_images(images, size = 224, fill_color=(255, 255, 255)):
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000455.jpg")
 # # images = resize_images(images)
 # functions.show_images(images)
+
+images_with_names = segment_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
+images_with_names = resize_images(images_with_names)
+save_image_with_name(images_with_names)
+functions.show_images([region["image"] for region in images_with_names])
+
+
