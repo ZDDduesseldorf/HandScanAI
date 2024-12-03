@@ -9,7 +9,7 @@ from embeddings import models_utils
 
 @pytest.fixture()
 def loaded_test_image(image_name, path_to_images):
-    yield image_utils.load_image(image_name, path_to_images)
+    yield image_utils.load_image_from_path_fragments(image_name, path_to_images)
 
 
 @pytest.fixture()
@@ -73,7 +73,7 @@ def test_calculate_embeddings(loaded_test_image_array, test_densenet):
 
 
 def test_calculate_embeddings_from_path(test_image_name_array, path_to_images, test_densenet):
-    test_embeddings = embeddings_utils.calculate_embeddings_from_path(
+    test_embeddings = embeddings_utils.calculate_embeddings_from_path_fragments(
         test_image_name_array, path_to_images, test_densenet
     )
     # expected dimensions of densenet embedding are [1, 1024]
