@@ -1,12 +1,12 @@
-from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
-from validation.hand_is_spread import hand_is_spread
-
-from datasets import ImagePathDataset,ImagePathWithCSVDataset
+import cv2
+import os
 from torch.utils.data import DataLoader
 
-import cv2
-
+from app.utils import uuid
 from pipeline_utils import create_csv_with_header, add_entry_to_csv
+from datasets import ImagePathDataset, ImagePathWithCSVDataset, DatasetRegions
+from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
+
 
 from app.utils.uuid import generate_uuid
 import os
@@ -53,9 +53,18 @@ def filter_11k_hands(folder_path, new_dataset_path, csv_path):
 # provide Hand-regions as Enum or something similar to standardize path reading
 
 # TODO: embeddings
+print("--------------- Embeddings: Load dataset --------------------------------")
 # dataloader (loading with path)
+#path_to_images = #TODO (path to region images, see above)
+#dataset = DatasetRegions(path_to_region_images, clustered_data=True)
+
+print("--------------- Embeddings: Calculate embeddings --------------------------------")
 # calculate embeddings
-# provide embeddings per region to
+#for cluster in dataset:
+#    test_embeddings = embeddings_utils.calculate_embeddings_from_full_paths(cluster, models_utils.load_model())
+
+#    TODO: in same for-loop(?): provide embeddings per region to vector trees (see following)
+# TODO: or should embeddings be saved to be loaded into vector trees?
 
 # TODO: kNN (vector tree)
 # one kNN Tree per Hand-region

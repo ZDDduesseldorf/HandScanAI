@@ -1,6 +1,6 @@
 import torch
 
-from .image_utils import load_image
+from .image_utils import load_image_from_path_fragments, load_image_from_full_path, construct_image_path
 from .models_utils import transforms_default, load_model
 
 ###############################################
@@ -9,8 +9,27 @@ from .models_utils import transforms_default, load_model
 
 ###############################################
 
+def calculate_embeddings_from_full_paths(image_path_array, model=load_model) -> list[torch.Tensor]:
+    """
+    Calculates the embedding of every image in the given array of full image paths.
 
-def calculate_embeddings_from_path(image_array, path_to_images, model=load_model) -> list[torch.Tensor]:
+    Args:
+        image_path_array (list[str]): list of image paths
+        model: (DenseNet | ResNet) loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
+
+    Returns:
+        array of embeddings corresponding to input-array of images
+
+    Example:
+        `calculate_embeddings_from_path(["path/to/image/"], load_model(models_utils.CNNModel.DENSENET_121))`
+    """
+    loaded_images = []
+    for image_path in image_path_array:
+        loaded_images.append(load_image_from_full_path(image_path))
+    return calculate_embeddings(loaded_images, model)
+
+
+def calculate_embeddings_from_path_fragments(image_array, path_to_images, model=load_model) -> list[torch.Tensor]:
     """
     Calculates the embedding of every image in the given array of image names and a path to the images.
 
@@ -25,10 +44,10 @@ def calculate_embeddings_from_path(image_array, path_to_images, model=load_model
     Example:
         `calculate_embeddings_from_path("image_name", "path/to/image/", load_model(models_utils.CNNModel.DENSENET_121))`
     """
-    loaded_images = []
+    image_paths = []
     for image_name in image_array:
-        loaded_images.append(load_image(image_name, path_to_images))
-    return calculate_embeddings(loaded_images, model)
+        image_paths.append(construct_image_path(image_name, path_to_images))
+    return calculate_embeddings_from_full_paths(image_paths, model)
 
 
 def calculate_embeddings(image_array: list[torch.Tensor], model=load_model) -> list[torch.Tensor]:
