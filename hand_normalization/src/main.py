@@ -1,6 +1,7 @@
 import functions
 import cv2
 import numpy as np
+import os
 
 def segment_hand_image(image_path):
     # image loading
@@ -150,21 +151,38 @@ def segment_hand_image(image_path):
         ## write the cropped image and the segment mask to regions dict 
         region.update({"segment_image": cropped_segment_image}) 
 
-    # To ensure a consistent embedding order for the regions, they are returned based on the order of the regions in the regions array.
-    images = []
     for region in regions:
-        images.append(region["segment_image"])
+        image = original_image.copy()
+        ## rotate clean and segmented image
+        image_rotated = functions.rotate_image_no_crop(image, region["angle"])
+        segment_mask_rotaded = functions.rotate_image_no_crop(region["mask"], region["angle"])
+        ## calculate boundingbox of the mask
+        bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
+        ## crop original image to bounding box
+        cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
+        ## write the cropped image and the segment mask to regions dict 
+        region.update({"segment_image": cropped_segment_image}) 
     
-    return images
+    return [{"name": region["name"], "image": region["segment_image"]} for region in regions]
 
-# dynamic segment sizing
-def resize_images(images, size = 224, fill_color=(255, 255, 255)):
+## dynamic segment sizing
+def resize_images(images_with_names, size=224, fill_color=(255, 255, 255)):
     resized_regions = []
-    for region in images:
-        resized_region = functions.dynamic_resize_image_to_target(region, size, fill_color)
-        resized_regions.append(resized_region)
+    for region in images_with_names:
+        resized_image = functions.dynamic_resize_image_to_target(region["image"], size, fill_color)
+        resized_regions.append({"name": region["name"], "image": resized_image})
     
     return resized_regions
+
+def save_image_with_name(images_with_names):
+    output_directory = "E:\OneDrive\Bilder" # Change to image output directory
+
+    if os.path.isdir(output_directory):
+        for entry in images_with_names:
+            filename = os.path.join(output_directory, f"{entry['name']}.jpg")  # Combine directory and file name; for UUID switch to: os.path.join(output_directory, f"{unique_id}_{entry['name']}.jpg")
+            cv2.imwrite(filename, entry["image"])
+    return
+
 
 # Code for Tests
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
@@ -186,3 +204,10 @@ def resize_images(images, size = 224, fill_color=(255, 255, 255)):
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000455.jpg")
 # # images = resize_images(images)
 # functions.show_images(images)
+
+images_with_names = segment_hand_image("C:\\Users\lukas\Documents\Local-Repositories\HandScanAI\hand_normalization\TestImages\Hand_0000064.jpg")
+images_with_names = resize_images(images_with_names)
+save_image_with_name(images_with_names)
+functions.show_images([region["image"] for region in images_with_names])
+
+
