@@ -2,8 +2,8 @@
 
 calculates: 
 - brightness using the mean
-- - contrast using the standard deviation
-  - - sharpness using varicance of Laplace
+- contrast using the standard deviation
+- sharpness using varicance of Laplace
 
 detects a rectangle: 
 - with Canny-Edge-Detection
