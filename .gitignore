@@ -1,0 +1,28 @@
+# cache
+__pycache__/
+*.pyc
+.pytest_cache
+
+# Logs
+*.log
+
+# env
+.env
+
+# Build
+build/
+dist/
+poetry.lock
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.vscode
+
+# Generated Media
+media/

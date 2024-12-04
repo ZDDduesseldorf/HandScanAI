@@ -29,6 +29,10 @@ lint.ignore = [
     "T201",
     "N802",
     "N805",
+    "S101",
     "S603",
     "S607",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
