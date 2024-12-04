@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def hand_is_spread(landmarks, thresholds={"thumb-index": 1.20, "pinky-ring": 1.40, "rest": 1.15}, debug=False):
+def hand_is_spread(landmarks, thresholds=None, debug=False):
     """
     Check if the fingers are sufficiently spread.
 
@@ -11,6 +11,9 @@ def hand_is_spread(landmarks, thresholds={"thumb-index": 1.20, "pinky-ring": 1.4
     :param debug: If set to True, logs are printed to the console for debugging. Default is False.
     :return: True if all fingers meet their specified or default threshold, False otherwise.
     """
+
+    if thresholds is None:
+        thresholds = {"thumb-index": 1.20, "pinky-ring": 1.40, "rest": 1.15}
 
     # Define indices for PIP (proximal interphalangeal) and MCP (metacarpophalangeal) joints
     # Note: The thumb does not have a PIP joint; its IP (interphalangeal) joint is used instead.
