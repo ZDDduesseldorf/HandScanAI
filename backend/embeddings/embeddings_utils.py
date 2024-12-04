@@ -1,6 +1,6 @@
 import torch
 
-from .image_utils import load_image_from_path_fragments, load_image_from_full_path, construct_image_path
+from .image_utils import load_image_from_full_path, construct_image_path
 from .models_utils import transforms_default, load_model
 
 ###############################################
@@ -8,6 +8,7 @@ from .models_utils import transforms_default, load_model
 # embeddings-calculation for an array of pictures via CNN and return via array
 
 ###############################################
+
 
 def calculate_embeddings_from_full_paths(image_path_array, model=load_model) -> list[torch.Tensor]:
     """
@@ -25,6 +26,7 @@ def calculate_embeddings_from_full_paths(image_path_array, model=load_model) -> 
     """
     loaded_images = []
     for image_path in image_path_array:
+        # TODO: error handling for -1 in image_path_array
         loaded_images.append(load_image_from_full_path(image_path))
     return calculate_embeddings(loaded_images, model)
 

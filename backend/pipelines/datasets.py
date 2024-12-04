@@ -1,9 +1,11 @@
 import os
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 
 import pandas as pd
 
 from collections import defaultdict
+
+from .hand_regions import reorder_dict_values_from_region_dict
 
 
 class ImagePathDataset(Dataset):
@@ -93,15 +95,21 @@ class DatasetRegions(Dataset):
         ]
 
         # Parse image paths to group by UUID
-        self.uuid_to_paths = defaultdict(list)
+        self.uuid_to_paths = defaultdict(lambda: defaultdict(str))
         for image_path in self.image_paths:
             filename = os.path.basename(image_path)
             uuid, region = filename.split("_", 1)  # Split on the first underscore to get UUID and region
-            self.uuid_to_paths[uuid].append(image_path)
+            region, ending = region.split(".", 1)
+            # dict of key=uuid, value=dict of key=region, value=path
+            self.uuid_to_paths[uuid][region] = image_path
 
         # If clustered_data is True, use grouped UUIDs for iteration
         if self.clustered_data:
-            self.image_clusters = list(self.uuid_to_paths.values())
+            # uuid_to_paths is a dict (uuid) with values dict (region: paths)
+            # iterate over uuid, then iterate over hand_region_order and append the entries in the correct order to list
+            # results in dict of uuid: list[paths in right order]
+            image_clusters_dict = reorder_dict_values_from_region_dict(self.uuid_to_paths)
+            self.image_clusters = list(image_clusters_dict.values())
         else:
             self.image_clusters = self.image_paths
 
