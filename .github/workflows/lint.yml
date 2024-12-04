@@ -50,9 +50,10 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-        working-directory: ./backend
+      # Uncomment this if dependency installation is needed in the future
+      # - name: Install dependencies
+      #   run: pip install -r requirements.txt
+      #   working-directory: ./backend
 
       - name: Install ruff
         run: pip install ruff
