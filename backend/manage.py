@@ -4,6 +4,8 @@ import subprocess
 import typer
 import uvicorn
 
+import pipelines.initial_data_pipeline as initial_pipeline
+
 cli = typer.Typer()
 
 
@@ -50,6 +52,12 @@ def check_code():
 def run_tests():
     """Run the tests using pytest."""
     subprocess.run(["pytest", "tests"], check=True)
+
+
+@cli.command("initial_data_pipeline")
+def run_initial_data_pipeline():
+    """Run the initial data pipeline."""
+    initial_pipeline.run_initial_data_pipeline()
 
 
 if __name__ == "__main__":
