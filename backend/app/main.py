@@ -8,6 +8,8 @@ from .routes import router as api_router
 
 
 def get_application() -> FastAPI:
+    """ Initialize the FastAPI application """
+
     _app = FastAPI(
         title="backend",
         description="",
