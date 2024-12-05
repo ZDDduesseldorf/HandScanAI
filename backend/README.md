@@ -2,25 +2,28 @@
 
 ## Inhaltsverzeichnis
 
-1. [Installation](#installation)
+- [HandScanAI Backend](#handscanai-backend)
+  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [Installation](#installation)
     - [MongoDB installieren](#mongodb-installieren)
-    - [Enviroment Datei erstellen](#enviroment-datei-erstellen)
     - [Python installieren](#python-installieren)
+    - [Enviroment Datei erstellen](#enviroment-datei-erstellen)
     - [Virtuelle Umgebung erstellen](#virtuelle-umgebung-erstellen)
     - [Virtuelle Umgebung aktivieren](#virtuelle-umgebung-aktivieren)
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
     - [Server starten](#server-starten)
-2. [Entwicklung in VSCode](#entwicklung-in-vscode)
+  - [Entwicklung in VSCode](#entwicklung-in-vscode)
     - [Extensions](#extensions)
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
-3. [Projektstruktur](#projektstruktur)
+  - [Projektstruktur](#projektstruktur)
     - [app](#app)
     - [lib](#lib)
     - [validation](#validation)
     - [Weitere Module](#weitere-module)
-5. [Formatierung und Linter](#formatierung-und-linter)
+  - [Formatierung und Linter](#formatierung-und-linter)
     - [Code Checks](#code-checks)
     - [Code formatieren](#code-formatieren)
+  - [Tests ausführen](#tests-ausführen)
 
 ## Installation
 
@@ -156,4 +159,10 @@ python manage.py check
 
 ```sh
 python manage.py format
+```
+
+## Tests ausführen
+
+```sh
+python manage.py test
 ```
