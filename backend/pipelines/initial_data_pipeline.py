@@ -1,8 +1,9 @@
 from pathlib import Path
+import os
 
-from .datasets import ImagePathDataset, ImagePathWithCSVDataset, DatasetRegions
+from .datasets import ImagePathDataset, DatasetRegions
 from .initial_dataset_filter_pipeline import filter_11k_hands
-from embeddings.image_utils import construct_image_path
+from embeddings.embeddings_utils import calculate_embeddings_from_full_paths
 import hand_normalization.src.main as normalization
 
 
@@ -17,9 +18,15 @@ def run_initial_data_pipeline(filter_initial_dataset=False):
     if filter_initial_dataset:
         # TODO: add correct path
         folder_path_initial_dataset = "path/to/image/folder"  # current dataset
+        initial_csv_path = "path/to/csv"  # e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
         new_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
         new_csv_path = "CSV_filtered.csv"
-        filter_11k_hands(folder_path_initial_dataset, new_dataset_path, new_csv_path)
+        filter_11k_hands(
+            folder_path=folder_path_initial_dataset,
+            csv_path=initial_csv_path,
+            new_dataset_path=new_dataset_path,
+            new_csv_path=new_csv_path,
+        )
 
     ######## STEP 2: Hand normalization #################################
     # TODO: hand-normalization
@@ -36,28 +43,32 @@ def run_initial_data_pipeline(filter_initial_dataset=False):
         images = normalization.segment_hand_image(path)
         images = normalization.resize_images(images)
         for image in images:
-            # TODO: in hand-normalization keys korrigieren (siehe hand_regions)
+            # TODO: sollen wir das schon in hand normalization so rausgeben und nicht erst hier umändern?
             normalized_dict[image["name"]] = image["image"]
     # provide Hand-regions as Enum or something similar to standardize path reading
     print(normalized_dict)
     # TODO: abspeichern der Bilder unter dem korrekten Namen (where is the UUID?)
+    # (dafür folder_path_region updaten und hier und im Aufruf von Embeddings nutzen)
 
     ######## STEP 3: Embeddings #################################
     # TODO: embeddings
     print("--------------- Embeddings: Load dataset --------------------------------")
     # dataloader (loading with path)
-    # path_to_images = #TODO (path to region images, see above)
-    # dataset = DatasetRegions(path_to_region_images, clustered_data=True)
+    folder_path_region = temp_base_dir / "tests" / "data" / "TestRegionDataset"
+    dataset = DatasetRegions(folder_path_region, clustered_data=True)
 
     print("--------------- Embeddings: Calculate embeddings --------------------------------")
     # calculate embeddings
-    # for cluster in dataset:
-    #    test_embeddings = embeddings_utils.calculate_embeddings_from_full_paths(cluster, models_utils.load_model())
+    print(f"{dataset.uuid_to_paths}")
+    print(f"{dataset.image_clusters}")
+    for cluster in dataset:
+        test_embeddings = calculate_embeddings_from_full_paths(cluster)
+        print(test_embeddings)
 
     #    TODO: in same for-loop(?): provide embeddings per region to vector trees (see following)
     # TODO: or should embeddings be saved to be loaded into vector trees?
 
-    ######## STEP 4: Search Trees #################################
-    # TODO: kNN (vector tree)
-    # one kNN Tree per Hand-region
-    # save models/trees (lokal folder/ teams?)
+    ######## STEP 4: VECTOR DATABASE #################################
+    # TODO: take embeddings from vector database
+    # one vector database per Hand-region
+    # save models (lokal folder/ database/ teams?)

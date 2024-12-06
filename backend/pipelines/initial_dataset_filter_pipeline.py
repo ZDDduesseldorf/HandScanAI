@@ -14,12 +14,9 @@ from validation.validation_pipeline import validation_pipeline, is_validation_pi
 # image names are in the form of {UUID}.jpg
 
 
-def filter_11k_hands(folder_path, new_dataset_path, new_csv_path):
+def filter_11k_hands(folder_path, csv_path, new_dataset_path, new_csv_path):
     # load images from 11K Dataset
-    # TODO: update or abstract absolute path (e.g. add to a config)
-    dataset_11k = ImagePathWithCSVDataset(
-        folder_path, csv_path="J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
-    )
+    dataset_11k = ImagePathWithCSVDataset(folder_path, csv_path=csv_path)
     csv_header = [
         "uuid",
         "old_id",
