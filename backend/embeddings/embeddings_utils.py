@@ -16,7 +16,7 @@ def calculate_embeddings_from_path_dict(regions_dict: dict[str, str], model=load
 
     Args:
         regions_dict (dict[str, str]): dict of region keys and image-path values
-        model: (DenseNet | ResNet) loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
+        model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
         dict of region keys and of embeddings tensors corresponding to input dict
@@ -25,7 +25,6 @@ def calculate_embeddings_from_path_dict(regions_dict: dict[str, str], model=load
         `calculate_embeddings_from_path_dict(regions_dict, load_model(models_utils.CNNModel.DENSENET_121))`
         `calculate_embeddings_from_path_dict(regions_dict)`
     """
-    print(regions_dict)
     embeddings_dict = {}
     for region_key, image_path in regions_dict.items():
         image = load_image_from_full_path(image_path)
@@ -39,7 +38,7 @@ def calculate_embeddings_from_full_paths(image_path_array: list[str], model=load
 
     Args:
         image_path_array (list[str]): list of image paths
-        model: (DenseNet | ResNet) loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
+        model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
         array of embeddings corresponding to input-array of images

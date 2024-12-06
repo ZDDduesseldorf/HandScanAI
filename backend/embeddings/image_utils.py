@@ -17,6 +17,7 @@ def load_image_from_full_path(path_to_image):
     # returns a tensor with rgb values
     return image_tensor
 
+
 def load_image_from_path_fragments(image_name, path_to_images):
     """
     Loads image from from image name and general path to the image folder.

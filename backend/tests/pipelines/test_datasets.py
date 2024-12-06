@@ -1,5 +1,3 @@
-import pytest
-
 from pipelines.datasets import DatasetRegions
 from pipelines.hand_regions import hand_region_order
 
