@@ -1,5 +1,5 @@
-import rectangle_operations
-import image_operations 
+from . import rectangle_operations
+from . import image_operations 
 
 
 def create_calibration_file(image_path, file_name):
@@ -16,6 +16,7 @@ def create_calibration_file(image_path, file_name):
     f1.write(str(metrics[0]) + "\n" + str(metrics[1]) + "\n" + (str(metrics[2]) + "\n"))
 
     rectangle = rectangle_operations.find_rectangle(image_path)
+    print(f"{rectangle}")
     sorted_rectangle = rectangle_operations.sort_points(rectangle)
     extensive = rectangle_operations.calculate_extensive(rectangle)   
     
@@ -124,7 +125,7 @@ def compare_std(metrics, k_values):
     elif ((standard_deviation - k_standard_deviation) > th):
         raise ValueError("Kontrast ist zu groß")
     elif ((standard_deviation - k_standard_deviation) < -th):
-       raise ValueError("Bild ist zu klein")
+       raise ValueError("Kontrast ist zu klein")
 
 
 def compare_sharpness(metrics, k_values):
@@ -139,7 +140,7 @@ def compare_sharpness(metrics, k_values):
     """
     variance_of_laplacian = metrics[2]
     k_variance_of_laplacian = k_values[2]
-    th =-0.5
+    th = 0.5
     # compare sharpness
     if ((variance_of_laplacian - k_variance_of_laplacian) > th):
         return True
@@ -158,6 +159,7 @@ def compare_rectangle( rectangle, k_values ):
     raise ValueError: when one point is out of threshold
     """
     sort_rectangle = rectangle_operations.sort_points(rectangle)
+    
     k_rectangle = k_values[4]
     index=0
     threshold=100
@@ -182,26 +184,15 @@ def compare_extensive(rectangle, k_values):
     raise ValueError: distance is bigger than threshold
     """
     extensive = rectangle_operations.calculate_extensive(rectangle)
+    print(f"{extensive}")
     k_extensive=k_values[3]
     ## Validierung Größe 10%
-    if ((abs(k_extensive - extensive)/k_extensive) < 0.1):
+    difference = abs(k_extensive - extensive) / k_extensive
+    if (difference < 0.1):
         return True
-    elif ((k_extensive - extensive)/k_extensive < - 0.1):
-        raise ValueError("Rechteck zu groß")
     else:
-        raise ValueError("Rechteck zu klein")
+        if extensive > k_extensive:
+            raise ValueError("Rechteck zu groß")
+        else:
+            raise ValueError("Rechteck zu klein")
 
-imagepath = "kali_test.jpg"
-imgpath = "WIN_20241203_14_53_08_Pro.jpg"
-filename = "kalibrierungswerte.txt"
-
-#try:
-    #create_calibration_file(imagepath, filename)
-#except ValueError as e:
-    #print(f"Error: {e}")
-
-try:
-    check_kalibration(imgpath, filename)
-except ValueError as e:
-    print(f"Error: {e}")
-#print(f"{kali}")
