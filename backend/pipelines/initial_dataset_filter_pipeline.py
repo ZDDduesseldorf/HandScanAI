@@ -41,8 +41,8 @@ def filter_11k_hands(folder_path, new_dataset_path, new_csv_path):
         is_valid = is_validation_pipeline_valid(validation_pipeline(image))
 
         # Check if its the dorsal side
-        aspectOfHand = csv_data["aspectOfHand"]
-        is_dorsal = aspectOfHand.split(" ", 1)[0] == "dorsal"
+        aspect_of_hand = csv_data["aspectOfHand"]
+        is_dorsal = aspect_of_hand.split(" ", 1)[0] == "dorsal"
 
         if is_valid and is_dorsal:
             uuid = generate_uuid()
