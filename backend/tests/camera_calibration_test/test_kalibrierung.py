@@ -4,7 +4,12 @@ import os
 
 from camera_calibration.kalibrierung import *
 
-
+@pytest.fixture()  # `module` bedeutet, dass es einmal pro Testmodul ausgeführt wird
+def setup_method():
+    image_path = "tests/data/calibration/kali_test.jpg"
+    file_name = "tests/data/calibration/kalibrierungswerte.txt"
+    create_calibration_file(image_path, file_name)
+    print("Setup abgeschlossen")
 
 def test_compare_mean_within_threshold():
     metrics = [100, 112, 98]
@@ -89,22 +94,22 @@ def test_compare_extensive_too_low():
         compare_extensive(rectangle, k_values)
 
 
-def test_check_kali():
-    image_path = "tests/data/calibration/kali_test.jpg"
+def test_check_kali(setup_method):
+    image_path = "tests/data/calibration/test_bild.jpg"
     file_name = "tests/data/calibration/kalibrierungswerte.txt"
     assert check_kalibration(image_path, file_name) == True
 
-def test_check_kali_failes():
+def test_check_kali_failes(setup_method):
     image_path = "tests/data/calibration/failed_kali.jpg"
     file_name = "tests/data/calibration/kalibrierungswerte.txt"
     with pytest.raises(ValueError): 
         check_kalibration(image_path, file_name) == False
 
 
-def test_read_calibration_file():
+def test_read_calibration_file(setup_method):
     file_name = "tests/data/calibration/kalibrierungswerte.txt"
     k_values = read_calibrationfile(file_name)
-    expected_values = (233.9558369502315, 60.45824616558628, 9.971898990259211, 760.5353882456766, [[1039, 1170], [1063, 1367], [1219, 1153], [1244, 1351]])
+    expected_values = (250.616159456983, 20.653294995518543,0.8325489485543115, 996.1001768764597, [[1913, 995], [1917, 1246], [2160, 992], [2164, 1243]])
     print(k_values)
     # Vergleiche die numerischen Werte zuerst
     for i in range(4):
