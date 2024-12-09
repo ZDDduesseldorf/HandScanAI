@@ -1,5 +1,5 @@
-from . import rectangle_operations
-from . import image_operations 
+from camera_calibration import rectangle_operations
+from camera_calibration import image_operations 
 
 
 def create_calibration_file(image_path, file_name):
@@ -49,7 +49,7 @@ def check_kalibration(image_path, file_name):
         print("Kalibrierung erfolgreich")
         return True
     else:
-        raise ValueError ("Kalibierung fehlgeschlagen")
+        return False
     
 ###############################################
 # helper functions
@@ -140,11 +140,13 @@ def compare_sharpness(metrics, k_values):
     """
     variance_of_laplacian = metrics[2]
     k_variance_of_laplacian = k_values[2]
-    th = 0.5
+    th = 1
     # compare sharpness
-    if ((variance_of_laplacian - k_variance_of_laplacian) > th):
+    if (abs(variance_of_laplacian - k_variance_of_laplacian) <= th):
         return True
-    elif ((variance_of_laplacian - k_variance_of_laplacian) < th):
+    elif ((variance_of_laplacian - k_variance_of_laplacian) > th):
+        return True
+    else:
         raise ValueError("Bild ist zu unscharf")
 
 
