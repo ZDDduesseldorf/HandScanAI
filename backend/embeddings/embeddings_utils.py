@@ -9,8 +9,39 @@ from .models_utils import transforms_default, load_model
 
 ###############################################
 
+# Default-Model (Densenet121)
+_default_cnn_model_ = load_model()
 
-def calculate_embeddings_from_path_dict(regions_dict: dict[str, str], model=load_model()) -> dict[str, torch.Tensor]:
+###############################################
+
+
+# TODO: update signature and docstring, check tensor dimensions
+def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn_model_) -> dict[str, torch.Tensor]:
+    """
+    Calculates the embedding of every image in the given dict of region keys and image-tensor values.
+    The tensor represents a 3 dimensional RGB array (3 x H x W) of an image with values being uint8 in [0, 255].
+
+    Args:
+        regions_dict (dict[str, ]): dict of region keys and image-path values
+        model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
+
+    Returns:
+        dict of region keys and of embeddings tensors corresponding to input dict
+
+    Example:
+        `calculate_embeddings_from_path_dict(regions_dict, load_model(models_utils.CNNModel.DENSENET_121))`
+        `calculate_embeddings_from_path_dict(regions_dict)`
+    """
+    embeddings_dict = {}
+    for region_key, image_path in regions_dict.items():
+        image = load_image_from_full_path(image_path)
+        embeddings_dict[region_key] = calculate_embedding(image, model)
+    return embeddings_dict
+
+
+def calculate_embeddings_from_path_dict(
+    regions_dict: dict[str, str], model=_default_cnn_model_
+) -> dict[str, torch.Tensor]:
     """
     Calculates the embedding of every image in the given dict of region keys and image-path values.
 
@@ -32,7 +63,7 @@ def calculate_embeddings_from_path_dict(regions_dict: dict[str, str], model=load
     return embeddings_dict
 
 
-def calculate_embeddings_from_full_paths(image_path_array: list[str], model=load_model()) -> list[torch.Tensor]:
+def calculate_embeddings_from_full_paths(image_path_array: list[str], model=_default_cnn_model_) -> list[torch.Tensor]:
     """
     Calculates the embedding of every image in the given array of full image paths.
 
@@ -54,7 +85,7 @@ def calculate_embeddings_from_full_paths(image_path_array: list[str], model=load
 
 
 def calculate_embeddings_from_path_fragments(
-    image_array: list[str], path_to_images: str, model=load_model()
+    image_array: list[str], path_to_images: str, model=_default_cnn_model_
 ) -> list[torch.Tensor]:
     """
     Calculates the embedding of every image in the given array of image names and a path to the images.
@@ -76,12 +107,12 @@ def calculate_embeddings_from_path_fragments(
     return calculate_embeddings_from_full_paths(image_paths, model)
 
 
-def calculate_embeddings(image_array: list[torch.Tensor], model=load_model()) -> list[torch.Tensor]:
+def calculate_embeddings(image_array: list[torch.Tensor], model=_default_cnn_model_) -> list[torch.Tensor]:
     """
     Calculates the embedding of every image in the given array of image tensors.
 
     Args:
-        image_array (list[torch.Tensor]): array of 3 dimensional RGB Tensors (3, H, W) with values of uint8 in range [0, 255]
+        image_array (list[torch.Tensor]): array of 3D RGB Tensor (3, H, W) with values of uint8 in range [0, 255]
         model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
@@ -96,7 +127,7 @@ def calculate_embeddings(image_array: list[torch.Tensor], model=load_model()) ->
     return embeddings_array
 
 
-def calculate_embedding(image: torch.Tensor, model=load_model()) -> torch.Tensor:
+def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> torch.Tensor:
     """
     Uses the given model to generate the embedding of an image.
     Pushes model and data to gpu (cuda) if possible to enhance performance.
@@ -104,7 +135,7 @@ def calculate_embedding(image: torch.Tensor, model=load_model()) -> torch.Tensor
     Returns an embeddings-tensor of torch.Size([1, 1024]) (densenet) or torch.Size([1, 1000]) (resnet).
 
     Args:
-        image (torch.Tensor): loaded image in form of 3 dimensional RGB Tensors (3, H, W) with values of uint8 in range [0, 255]
+        image (torch.Tensor): image as 3 dimensional RGB Tensor (3, H, W) with values of uint8 in range [0, 255]
         model (DenseNet | ResNet): loaded (pytorch)-model that generates embedding. Default: CNNModel.DenseNet121
 
     Returns:
