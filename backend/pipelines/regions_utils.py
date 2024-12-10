@@ -24,6 +24,8 @@ hand_region_order = [
     HandRegions.LITTLEFINGER_6.value,
 ]
 
+# TODO: add keys for dicts as Enum
+
 
 def reorder_dict_values_from_region_dict(
     input_dict: dict[str, dict[str, str]], right_order: list[str] = hand_region_order
