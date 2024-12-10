@@ -5,7 +5,7 @@ import pandas as pd
 
 from collections import defaultdict
 
-from .regions_utils import reorder_dict_values_from_region_dict
+from .regions_utils import PipelineDictKeys
 
 
 class ImagePathDataset(Dataset):
@@ -13,7 +13,10 @@ class ImagePathDataset(Dataset):
         self.folder_path = folder_path
         # Get all file paths in the folder that have image file extensions
         self.image_paths = [
-            os.path.join(folder_path, fname)
+            {
+                PipelineDictKeys.IMAGE_PATH.value: os.path.join(folder_path, fname),
+                PipelineDictKeys.UUID.value: extract_uuid_from_filename(fname),
+            }
             for fname in os.listdir(folder_path)
             if fname.lower().endswith((".png", ".jpg", ".jpeg", ".bmp"))
         ]
@@ -76,16 +79,25 @@ class ImagePathWithCSVDataset(Dataset):
 #     print("CSV Entry:", csv_entry)
 
 
-class DatasetRegions(Dataset):
-    def __init__(self, folder_path, clustered_data=False):
+# TODO: IN UTILS AUFNEHMEN FALLS MAN DIE SONST WO BRAUCHT
+def extract_uuid_from_filename(filename: str) -> str:
+    uuid, ending = filename.split(".", 1)  # Split on the first underscore to get UUID and region
+    return uuid
+
+
+def extract_uuid_and_region_from_filename(filename: str) -> tuple[str, str]:
+    uuid, region = filename.split("_", 1)  # Split on the first underscore to get UUID and region
+    region, ending = region.split(".", 1)
+    return uuid, region
+
+
+class DatasetRegionClusters(Dataset):
+    def __init__(self, folder_path: str):
         """
         Args:
             folder_path (str): Path to the folder containing images.
-            clustered_data (bool): If True, return all images with the same UUID together.
-                                   If False, return images sequentially.
         """
         self.folder_path = folder_path
-        self.clustered_data = clustered_data
 
         # Get all image file paths from the folder
         self.image_paths = [
@@ -98,49 +110,43 @@ class DatasetRegions(Dataset):
         self.uuid_to_paths = defaultdict(lambda: defaultdict(str))
         for image_path in self.image_paths:
             filename = os.path.basename(image_path)
-            uuid, region = filename.split("_", 1)  # Split on the first underscore to get UUID and region
-            region, ending = region.split(".", 1)
+            uuid, region = extract_uuid_and_region_from_filename(filename)
             # dict of key=uuid, value=dict of key=region, value=path
             self.uuid_to_paths[uuid][region] = image_path
 
-        # If clustered_data is True, use grouped UUIDs for iteration
-        if self.clustered_data:
             # uuid_to_paths is a dict (uuid) with values dict (region: paths)
-            # iterate over uuid, then iterate over hand_region_order and append the entries in the correct order to list
-            # results in dict of uuid: list[paths in right order]
-            image_clusters_dict = reorder_dict_values_from_region_dict(self.uuid_to_paths)
-            self.image_clusters = list(image_clusters_dict.values())
-        else:
-            self.image_clusters = self.image_paths
+            # iterate over uuid -> region_dict and append the entries as new dicts
+            # results in list of dicts{ uuid: str, image_paths: dict{ region_key: path}}
+            self.image_clusters = [
+                {PipelineDictKeys.UUID.value: uuid, PipelineDictKeys.IMAGE_PATHS_INITIAL.value: value}
+                for uuid, value in self.uuid_to_paths.items()
+            ]
 
     def __len__(self):
-        """Returns the total number of items based on the mode."""
+        """Returns the total number of items."""
         return len(self.image_clusters)
 
     def __getitem__(self, idx):
         """
         Returns:
-            - If clustered_data is True: List of image paths with the same UUID.
-            - If clustered_data is False: Single image path.
+        ```
+        dict {
+          'uuid': str,
+          'image_paths': dict {
+            region_key (str): image_path (str)
+          }
+        }
+        ```
         """
+        # key=uuid, value=dict of key=region, value=path
         return self.image_clusters[idx]
 
 
 # # ----- Usage -----------
 # folder_path = 'TestRegionDataset'
 
-# dataset = DatasetRegions(folder_path, clustered_data=True)
+# dataset = DatasetRegionClusters(folder_path, clustered_data=True)
 
 # # Iterate over the Dataset
 # for image_paths in dataset:
 #     print("Image Path:", image_path) # -> prints an array of all imagepaths with the same uuid each iteration
-
-# # or
-
-# folder_path = 'TestRegionDataset'
-
-# dataset = DatasetRegions(folder_path, clustered_data=False)
-
-# # Iterate over the Dataset
-# for image_path in dataset:
-#     print("Image Path:", image_path) -> prints an one imagepath each iteration

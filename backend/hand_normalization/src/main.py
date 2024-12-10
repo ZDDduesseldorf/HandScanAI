@@ -9,6 +9,15 @@ import os
 def normalize_hand_image(uuid, image_path):
     """
     Pipeline to segment image into 7 images, resize them and return them as a dict.
+    Format output dictionary from build_regions_dict:
+    ```
+    {
+      'uuid': str,
+      'image_tensors': dict{
+            name (str): segment_image (should be a NumPy array)
+        }
+    }
+    ```
     """
     segmented_image_list = segment_hand_image(image_path)
     resized_image_list = resize_images(segmented_image_list)
@@ -256,6 +265,18 @@ def save_image_with_name(images_with_names):
                 output_directory, f"{entry['name']}.jpg"
             )  # Combine directory and file name; for UUID switch to: os.path.join(output_directory, f"{unique_id}_{entry['name']}.jpg")
             cv2.imwrite(filename, entry["image"])
+    return
+
+
+# TODO: join with above function/ eine Version und auslagern in utils
+def save_region_images(regions_dict: dict, output_directory):
+    uuid = regions_dict[PipelineDictKeys.UUID.value]
+    region_images: dict = regions_dict[PipelineDictKeys.IMAGE_TENSORS.value]
+    print(region_images)
+    if os.path.isdir(output_directory):
+        for region_key, image in region_images.items():
+            filename = os.path.join(output_directory, f"{uuid}_{region_key}.jpg")
+            cv2.imwrite(filename, image)
     return
 
 

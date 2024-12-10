@@ -10,8 +10,10 @@ class PipelineDictKeys(Enum):
     """
 
     UUID = "uuid"
-    IMAGE_TENSORS = "image_tensors"
     EMBEDDINGS = "embeddings"
+    IMAGE_PATH = "image_path"
+    IMAGE_PATHS_INITIAL = "image_paths"
+    IMAGE_TENSORS = "image_tensors"
 
 
 class HandRegions(Enum):

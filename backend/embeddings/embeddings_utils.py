@@ -22,7 +22,7 @@ def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn
     The tensor represents a 3 dimensional RGB array (3 x H x W) of an image with values being uint8 in [0, 255].
 
     Args:
-        regions_dict (dict[str, ]): dict of region keys and image-path values
+        regions_dict (dict[str, numpyArray]): dict of region keys and image-path values
         model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
