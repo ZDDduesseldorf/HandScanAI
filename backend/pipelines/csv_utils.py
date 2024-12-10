@@ -1,5 +1,6 @@
 import csv
 
+
 def create_csv_with_header(file_path, header):
     """
     Creates a CSV file with the specified header row.
@@ -12,7 +13,7 @@ def create_csv_with_header(file_path, header):
     create_csv_with_header('output.csv', ['Name', 'Age', 'City'])
     """
     try:
-        with open(file_path, mode='w', newline='') as file:
+        with open(file_path, mode="w", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(header)
         print(f"CSV file '{file_path}' created successfully with header: {header}")
@@ -34,7 +35,7 @@ def add_entry_to_csv(file_path, entry):
     """
     try:
         # Open the CSV file in read mode to get the header
-        with open(file_path, mode='r', newline='') as file:
+        with open(file_path, mode="r", newline="") as file:
             reader = csv.DictReader(file)
             header = reader.fieldnames
 
@@ -46,7 +47,7 @@ def add_entry_to_csv(file_path, entry):
                 raise ValueError(f"Entry contains no valid keys. Expected keys: {header}")
 
         # If there are matching keys, append the entry to the CSV file
-        with open(file_path, mode='a', newline='') as file:
+        with open(file_path, mode="a", newline="") as file:
             writer = csv.DictWriter(file, fieldnames=header)
 
             # Filter the entry to only include matching keys
@@ -56,4 +57,3 @@ def add_entry_to_csv(file_path, entry):
             writer.writerow(filtered_entry)
     except Exception as e:
         print(f"Error adding entry to CSV file: {e}")
-

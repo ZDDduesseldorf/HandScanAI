@@ -33,9 +33,8 @@ def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn
         `calculate_embeddings_from_path_dict(regions_dict)`
     """
     embeddings_dict = {}
-    for region_key, image_path in regions_dict.items():
-        image = load_image_from_full_path(image_path)
-        embeddings_dict[region_key] = calculate_embedding(image, model)
+    for region_key, image_tensor in regions_dict.items():
+        embeddings_dict[region_key] = calculate_embedding(image_tensor, model)
     return embeddings_dict
 
 
