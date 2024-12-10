@@ -5,7 +5,7 @@ import pandas as pd
 
 from collections import defaultdict
 
-from .hand_regions import reorder_dict_values_from_region_dict
+from .regions_utils import reorder_dict_values_from_region_dict
 
 
 class ImagePathDataset(Dataset):

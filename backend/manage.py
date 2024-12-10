@@ -5,6 +5,7 @@ import typer
 import uvicorn
 
 import pipelines.initial_data_pipeline as initial_pipeline
+import knn.anntree as anntree
 
 cli = typer.Typer()
 
@@ -58,6 +59,11 @@ def run_tests():
 def run_initial_data_pipeline():
     """Run the initial data pipeline."""
     initial_pipeline.run_initial_data_pipeline()
+
+@cli.command("anntree")
+def run_anntree():
+    """Run the ann tree."""
+    anntree.run_anntree()
 
 
 if __name__ == "__main__":

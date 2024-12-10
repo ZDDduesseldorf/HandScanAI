@@ -4,7 +4,23 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
+class PipelineDictKeys(Enum):
+    """
+    Used as keys to dicts that pass data down the pipelines.
+    """
+
+    UUID = "uuid"
+    IMAGE_TENSORS = "image_tensors"
+    EMBEDDINGS = "embeddings"
+
+
 class HandRegions(Enum):
+    """
+    Used as region keys to
+    - save and load data
+    - in dicts that pass data down the pipelines.
+    """
+
     HAND_0 = "Hand"
     HANDBODY_1 = "HandBody"
     THUMB_2 = "Thumb"
@@ -14,6 +30,7 @@ class HandRegions(Enum):
     LITTLEFINGER_6 = "LittleFinger"
 
 
+# TODO: potentially not used anymore (hand_region_order and function). If so, delete and rename file to dict_utils o.ä.
 hand_region_order = [
     HandRegions.HAND_0.value,
     HandRegions.HANDBODY_1.value,

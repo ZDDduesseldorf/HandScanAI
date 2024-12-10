@@ -1,10 +1,22 @@
 from . import functions
-from pipelines.hand_regions import HandRegions
+from pipelines.regions_utils import HandRegions, PipelineDictKeys
 import cv2
 import numpy as np
 import os
 
 
+# TODO: docstring
+def normalize_hand_image(uuid, image_path):
+    """
+    Pipeline to segment image into 7 images, resize them and return them as a dict.
+    """
+    segmented_image_list = segment_hand_image(image_path)
+    resized_image_list = resize_images(segmented_image_list)
+    normalized_hand_dict = build_regions_dict(resized_image_list, uuid)
+    return normalized_hand_dict
+
+
+# TODO: docstring
 def segment_hand_image(image_path):
     # image loading
     original_image = cv2.imread(image_path)  # -> Abhängig von Bilderübergabe Frontend
@@ -15,7 +27,7 @@ def segment_hand_image(image_path):
     blank_image = np.zeros((image_height, image_width), dtype=np.uint8)
 
     # Mediapipe Landmarks
-    landmarks = functions.getLandmarks(image_path)  # -> Abstimmung Frontend, um Redundanz zu vermeiden
+    landmarks = functions.getLandmarks(image_path)  # TODO: Abstimmung Frontend, um Redundanz zu vermeiden
 
     # Create a mask for the skin color
     hand_mask = functions.create_handmask(original_image)
@@ -96,7 +108,7 @@ def segment_hand_image(image_path):
         orientation_hand = 1
 
     # identify regions
-    ## "reference_point" contains the landmark that must be inside of the region, in order to identify it correctly later
+    ## "reference_point" contains the landmark that must be inside of the region, in order to identify it later
     ## "angle" is the angle the image needs to be rotadet for the region to be oriented from bottom to top
     regions = [
         {
@@ -161,29 +173,78 @@ def segment_hand_image(image_path):
         ## write the cropped image and the segment mask to regions dict
         region.update({"segment_image": cropped_segment_image})
 
-    for region in regions:
-        image = original_image.copy()
-        ## rotate clean and segmented image
-        image_rotated = functions.rotate_image_no_crop(image, region["angle"])
-        segment_mask_rotaded = functions.rotate_image_no_crop(region["mask"], region["angle"])
-        ## calculate boundingbox of the mask
-        bounding_box = functions.get_bounding_box_with_margin(segment_mask_rotaded, 5)
-        ## crop original image to bounding box
-        cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
-        ## write the cropped image and the segment mask to regions dict
-        region.update({"segment_image": cropped_segment_image})
+    """
+    regions at this point is a list of dicts.
+    Format of such a dict in the list:
+    {
+      'name': str,
+      'reference_point': numpy.NDArray,
+      'angle': float,
+      'mask': image?,
+      'segment_image': should be a NumPy array
+    }
 
+    the return value is a list of smaller dicts of the format:
+    {
+      'name': str,
+      'image': segment_image (should be a NumPy array)
+    }
+    """
     return [{"name": region["name"], "image": region["segment_image"]} for region in regions]
 
 
+# TODO: update docstring
 ## dynamic segment sizing
 def resize_images(images_with_names, size=224, fill_color=(255, 255, 255)):
+    """
+    Takes list of dicts and return list of dicts of same format but with resized image-values.
+
+    Parameters:
+    - images_with_names: list of dicts
+    - size
+    - fill_color
+
+    Dicts in images_with_names have following format:
+    ```
+    {
+    'name': str,
+    'image': segment_image (should be a NumPy array)
+    }
+    ```
+    """
     resized_regions = []
     for region in images_with_names:
         resized_image = functions.dynamic_resize_image_to_target(region["image"], size, fill_color)
         resized_regions.append({"name": region["name"], "image": resized_image})
 
     return resized_regions
+
+
+# TODO: Docstring AND where do we get uuid?
+def build_regions_dict(regions: list[dict], uuid: str) -> dict:
+    """
+    Used to build a dictionary of the right format from the given list of dicts.
+    Format dictionary in input-list:
+    ```
+    {
+      'name': str,
+      'image': segment_image (should be a NumPy array)
+    }
+    ```
+    Format output dictionary:
+    ```
+    {
+      'uuid': str,
+      'image_tensors': dict{
+            name (str): segment_image (should be a NumPy array)
+        }
+    }
+    ```
+    The image_tensors-dictionary should contain 7 region names as keys and the corresponding image-arrays.
+    See HandRegions for valid region names.
+    """
+    image_tensors_dict = {region["name"]: region["image"] for region in regions}
+    return {PipelineDictKeys.UUID.value: uuid, PipelineDictKeys.IMAGE_TENSORS.value: image_tensors_dict}
 
 
 def save_image_with_name(images_with_names):
@@ -198,6 +259,8 @@ def save_image_with_name(images_with_names):
     return
 
 
+#####################################################################################
+# TODO: Auslagern in hand-normalization tests
 # Code for Tests
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 # images = resize_images(images)

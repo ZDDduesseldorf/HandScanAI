@@ -1,4 +1,4 @@
-from pipelines.hand_regions import reorder_dict_values_from_region_dict
+from pipelines.regions_utils import reorder_dict_values_from_region_dict
 
 
 def test_reorder_region_dict():

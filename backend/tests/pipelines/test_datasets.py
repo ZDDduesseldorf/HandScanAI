@@ -1,5 +1,5 @@
 from pipelines.datasets import DatasetRegions
-from pipelines.hand_regions import hand_region_order
+from pipelines.regions_utils import hand_region_order
 
 from embeddings import embeddings_utils
 from embeddings import models_utils

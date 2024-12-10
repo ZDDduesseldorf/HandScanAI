@@ -6,6 +6,7 @@ from pathlib import Path
 def image_name():
     yield "Hand_0000002.jpg"
 
+
 @pytest.fixture()
 def path_to_region_images():
     base_dir = Path(__file__).resolve().parent.parent
