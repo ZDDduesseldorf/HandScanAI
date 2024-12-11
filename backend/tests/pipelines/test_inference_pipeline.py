@@ -21,6 +21,4 @@ def test_run_inference_pipeline():
     uuid = "514f53d0-6aab-4da1-b929-8f1dc0817289"
     dict_embedding = run_inference_pipeline(uuid)
     print(dict_embedding)
-    embeddings = dict_embedding[Keys.EMBEDDINGS.value]
-    assert len(dict_embedding) == 2
-    assert len(embeddings) == 7
+    assert len(dict_embedding) == 7

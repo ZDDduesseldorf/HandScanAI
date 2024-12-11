@@ -18,7 +18,7 @@ def run_inference_pipeline(uuid):
         uuid (str): Unique identifier for the image
 
     Returns:
-        actual: dict = {'uuid': str, 'embedding': dict{region(str): embedding_image(embedding_tensor)}}
+        actual: dict = {region(str): embedding(torch.Tensor)}
 
         later: age and gender prediction
     """
@@ -29,14 +29,12 @@ def run_inference_pipeline(uuid):
 
     ######## STEP 1: image normalization #################################
 
-    dict_regions = normalization.normalize_hand_image(image_path)
+    dict_normalization = normalization.normalize_hand_image(image_path)
 
     ######## STEP 2: Calcualte embeddings ################################
 
     # calculate embeddings for each image from dict_regions
-    embedding_region_dict = calculate_embeddings_from_tensor_dict(dict_regions)
-    # create new dict_embedding with {uuid, embedding{region:embedding}}
-    dict_embedding = {Keys.UUID.value: uuid, Keys.EMBEDDINGS.value: embedding_region_dict}
+    dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization)
 
     # TODO: delete when adding knn-search
     return dict_embedding
