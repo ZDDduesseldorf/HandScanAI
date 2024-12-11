@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 
 from .api.rest import rest_router
 from .api.websocket import ws_router
-from .api.graphql import graphql_router
+# from .api.graphql import graphql_router
 
 router = APIRouter()
 
@@ -20,4 +20,4 @@ router.include_router(rest_router, prefix="/rest")
 router.include_router(ws_router, prefix="/ws")
 
 # GraphQL router
-router.include_router(graphql_router, prefix="/graphql")
+# router.include_router(graphql_router, prefix="/graphql")

@@ -2,55 +2,54 @@ from beanie import Document
 from pydantic import Field
 from typing import Optional
 from datetime import datetime, timezone
+from uuid import UUID
 
-
-class ValidatedData(Document):
-    """ Validated Data """
-
-    hand_side: str
-    gender: Optional[str] = None
-    age: int
-    job_type: str
 
 class CameraConfiguration(Document):
     """ Camera Configuration """
 
+    configuration_id : int
     camera_type: str
     camera_position: str
-    resolution: tuple[int]
+    height: int
+    width: int
 
 
 class MetadataModel(Document):
     """ MetadataModel """
-    UUID: str
-    person_id: int
+    id: UUID
     age: int
+    age_confirmed: bool = False 
     gender: str
-    skin_colour: str 
-    accessories: int
-    nail_polish: int
-    aspect_of_hand: str
-    eleven_k_hands_image_name: str
-    irregularities: int
+    gender_confirmed: bool = False
+
+    person_id: Optional[int]
+    skin_colour: Optional[str]
+    accessories: Optional[int] 
+    nail_polish: Optional[int]
+    aspect_of_hand: Optional[str]
+    eleven_k_hands_image_name: Optional[str]
+    irregularities: Optional[int]
 
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    camera_configuration: CameraConfiguration
-    validated_data: ValidatedData
+    
+    camera_configuration_id: int
 
     class Settings:
         collection = "Metadata_model"
-        indexes = ("UUID", 1)
 
-class HandRegionsModel(Document):
+class ImagesModel(Document):
     """ Test Model """
 
-    UUID: str
-    region: str
-    image: Optional[str] = None # TODO 
+    id: UUID
+    original_image_path: str
+    image_region_hand_path: Optional[str]
+    image_region_palm_path: Optional[str]
+    image_region_thumb_path: Optional[str]
+    image_region_index_path: Optional[str]
+    image_region_middle_path: Optional[str]
+    image_region_ring_path: Optional[str]
+    image_region_pinky_path: Optional[str]
 
     class Settings:
-        collection = "Hand_regions_model"
-        indexes = [
-            [("UUID", 1), ("region", 1)]
-        ]
-
+        collection = "ImagesDatabase"
