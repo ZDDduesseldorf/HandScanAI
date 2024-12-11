@@ -6,7 +6,7 @@ import os
 
 
 # TODO: docstring
-def normalize_hand_image(uuid, image_path):
+def normalize_hand_image(image_path):
     """
     Pipeline to segment image into 7 images, resize them and return them as a dict.
     Format output dictionary from build_regions_dict:
@@ -21,7 +21,7 @@ def normalize_hand_image(uuid, image_path):
     """
     segmented_image_list = segment_hand_image(image_path)
     resized_image_list = resize_images(segmented_image_list)
-    normalized_hand_dict = build_regions_dict(resized_image_list, uuid)
+    normalized_hand_dict = build_regions_dict(resized_image_list)
     return normalized_hand_dict
 
 
@@ -229,8 +229,8 @@ def resize_images(images_with_names, size=224, fill_color=(255, 255, 255)):
     return resized_regions
 
 
-# TODO: Docstring AND where do we get uuid?
-def build_regions_dict(regions: list[dict], uuid: str) -> dict:
+# TODO: Docstring
+def build_regions_dict(regions: list[dict]) -> dict:
     """
     Used to build a dictionary of the right format from the given list of dicts.
     Format dictionary in input-list:
@@ -243,17 +243,13 @@ def build_regions_dict(regions: list[dict], uuid: str) -> dict:
     Format output dictionary:
     ```
     {
-      'uuid': str,
-      'image_tensors': dict{
-            name (str): segment_image (should be a NumPy array)
-        }
+      name (str): segment_image (should be a NumPy array)
     }
     ```
     The image_tensors-dictionary should contain 7 region names as keys and the corresponding image-arrays.
     See HandRegions for valid region names.
     """
-    image_tensors_dict = {region["name"]: region["image"] for region in regions}
-    return {PipelineDictKeys.UUID.value: uuid, PipelineDictKeys.IMAGE_TENSORS.value: image_tensors_dict}
+    return {region["name"]: region["image"] for region in regions}
 
 
 def save_image_with_name(images_with_names):
@@ -269,12 +265,10 @@ def save_image_with_name(images_with_names):
 
 
 # TODO: join with above function/ eine Version und auslagern in utils
-def save_region_images(regions_dict: dict, output_directory):
-    uuid = regions_dict[PipelineDictKeys.UUID.value]
-    region_images: dict = regions_dict[PipelineDictKeys.IMAGE_TENSORS.value]
-    print(region_images)
+def save_region_images(uuid: str, regions_dict: dict, output_directory):
+    print(regions_dict)
     if os.path.isdir(output_directory):
-        for region_key, image in region_images.items():
+        for region_key, image in regions_dict.items():
             filename = os.path.join(output_directory, f"{uuid}_{region_key}.jpg")
             cv2.imwrite(filename, image)
     return

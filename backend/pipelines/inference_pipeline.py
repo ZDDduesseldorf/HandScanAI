@@ -29,12 +29,10 @@ def run_inference_pipeline(uuid):
 
     ######## STEP 1: image normalization #################################
 
-    dict_normalization = normalization.normalize_hand_image(uuid, image_path)
+    dict_regions = normalization.normalize_hand_image(image_path)
 
     ######## STEP 2: Calcualte embeddings ################################
 
-    # image_tensor dictonarie
-    dict_regions = dict_normalization[Keys.IMAGE_TENSORS.value]
     # calculate embeddings for each image from dict_regions
     embedding_region_dict = calculate_embeddings_from_tensor_dict(dict_regions)
     # create new dict_embedding with {uuid, embedding{region:embedding}}

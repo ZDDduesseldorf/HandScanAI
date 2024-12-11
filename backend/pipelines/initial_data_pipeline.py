@@ -35,12 +35,12 @@ def run_initial_data_pipeline(
     for path_dict in dataset_base:
         uuid = path_dict[Keys.UUID.value]
         path = path_dict[Keys.IMAGE_PATH.value]
-        regions_dict = normalization.normalize_hand_image(uuid, path)
+        regions_dict = normalization.normalize_hand_image(path)
 
         # save normalized images (path: UUID_HandRegion)
         # for tests and debugs possible to comment this out
         if save_results_in_temp_folders:
-            normalization.save_region_images(regions_dict, region_dataset_path)
+            normalization.save_region_images(uuid, regions_dict, region_dataset_path)
 
     ######## STEP 3: Embeddings #################################
     print("--------------- Embeddings: Load dataset --------------------------------")

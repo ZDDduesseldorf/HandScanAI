@@ -30,15 +30,13 @@ def run_add_new_embeddings_pipeline(uuid):
 
     ######## STEP 1: image normalization #################################
 
-    dict_normalization = normalization.normalize_hand_image(uuid, image_path)
+    dict_regions = normalization.normalize_hand_image(image_path)
 
-    normalization.save_region_images(dict_normalization, folder_path_base)
+    normalization.save_region_images(uuid, dict_regions, folder_path_base)
 
     ######## STEP 2: Calcualte embeddings ################################
 
     # calculate embeddings for each image from dict_regions
-    # image_tensor dictonarie
-    dict_regions = dict_normalization[Keys.IMAGE_TENSORS.value]
     embedding_region_dict = calculate_embeddings_from_tensor_dict(dict_regions)
     # create new dict_embedding with {uuid, embedding{region:embedding}}
     dict_embedding = {Keys.UUID.value: uuid, Keys.EMBEDDINGS.value: embedding_region_dict}
