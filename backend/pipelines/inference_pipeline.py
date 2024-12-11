@@ -1,50 +1,50 @@
 from pathlib import Path
 
-from embeddings.embeddings_utils import calculate_embedding
+from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
+from .regions_utils import PipelineDictKeys as Keys
 
 # this file is used to generate the prediction of an image
 
-######## STEP 0: image capture and validation in backend #############
-# image is captured and saved in the following path:
-# validation is checked: hand spread and hand visible
-
-# UUID hier generiert und übergeben?
-
-# result: image + metadata (UUID,....)
+# is triggered by the ‘Analyse Starten’ button in the frontend. Transfer of the uuid of the current image
 
 
+# TODO pydoc
 def run_inference_pipeline(uuid):
-    temp_base_dir = Path(__file__).resolve().parent.parent
-    ######## STEP 1: image normalization #################################
+    """
+    pipeline to classify age and gender based on the hand image
 
-    # TODO: correct path, correct input image (with uuid)
-    # path to specific image with UUID.jpg, UUID.png
+    Args:
+        uuid (str): Unique identifier for the image
+
+    Returns:
+        actual: dict = {'uuid': str, 'embedding': dict{region(str): embedding_image(embedding_tensor)}}
+
+        later: age and gender prediction
+    """
+    temp_base_dir = Path(__file__).resolve().parent.parent
+    ######## STEP 0: build path to image #################################
 
     image_path = get_image_path(temp_base_dir, uuid)
 
-    # segmentation of one image into 7 images as a dictionarie
+    ######## STEP 1: image normalization #################################
 
-    image_segements = normalization.segment_hand_image(image_path)
-
-    # resize images to 224x224
-    image_segmentes_resized = normalization.resize_images(image_segements)
+    dict_normalization = normalization.normalize_hand_image(uuid, image_path)
 
     ######## STEP 2: Calcualte embeddings ################################
 
-    # Übernahme dictionarie 'image_segmentes_resized' aus Step 1
-    for element in image_segmentes_resized:
-        # calculate embedding for each image
-        image_tensor = element["image"]
-        embedding = calculate_embedding(image_tensor)
-        # add new element 'embedding' to dictionarie
-        element["embedding"] = embedding
+    # image_tensor dictonarie
+    dict_regions = dict_normalization[Keys.IMAGE_TENSORS.value]
+    # calculate embeddings for each image from dict_regions
+    embedding_region_dict = calculate_embeddings_from_tensor_dict(dict_regions)
+    # create new dict_embedding with {uuid, embedding{region:embedding}}
+    dict_embedding = {Keys.UUID.value: uuid, Keys.EMBEDDINGS.value: embedding_region_dict}
 
-    return image_segmentes_resized
+    # TODO: delete when adding knn-search
+    return dict_embedding
 
     ######## STEP 3: search nearest neighbours ###########################
     # TODO: Welche Vektordatenbank wird verwendet? 1 für Alter und 1 für Geschlecht oder beides in einer? -> 7 oder 14?
-    # TODO: was ist k?
 
     # 7 knn Abfragen für jede Region
 
@@ -72,10 +72,22 @@ def run_inference_pipeline(uuid):
 
 # TODO: Verschieben in utils Datei
 def get_image_path(temp_base_dir, uuid):
+    # TODO: correct path to image_folder
+    """
+    Finds and returns the file path to an image based on its UUID and supported extensions.
+
+    Args:
+        temp_base_dir (Path): The base directory. Typically derived from the current file's location.
+        uuid (str): Unique identifier for the image
+
+    Returns:
+        Path: The absolute path to the image file if found.
+        None: If no file with the given UUID and extensions exists in the specified folder.
+    """
     extensions = [".png", ".jpg", ".jpeg", ".bmp"]
-    folder_path_base = temp_base_dir / "tests" / "data" / "TestImages"
+    folder_path_base = temp_base_dir / "tests" / "data" / "TestBaseDataset"
     for ext in extensions:
         image_path = folder_path_base / f"{uuid}{ext}"
-        if image_path.exists():  # Überprüfen, ob die Datei existiert
+        if image_path.exists():
             return image_path.resolve()
-    return None  # Falls kein Bild gefunden wird
+    return None

@@ -1,60 +1,53 @@
 from pathlib import Path
 
-from embeddings.embeddings_utils import calculate_embedding
+from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from pipelines.inference_pipeline import get_image_path
+from .regions_utils import PipelineDictKeys as Keys
+from .inference_pipeline import get_image_path
 
-# this file is used to add the embedding of a new image to the vektortree
+# before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
-# After the image has been classified and checked to see if the age and gender details match
-# the image can be added to the vektortree
-
-# Step 1-3 are identical to the infernece_pipeline
 
 def run_add_new_embeddings_pipeline(uuid):
-    ######## STEP 0: image validation #################################
+    """
+    pipeline to add classified and checked image to vektortree
+    checking if the age and gender details are logical
 
-    # alle relevanten metadaten vorhanden?? (UUID, alter, geschlecht)
-    # Unterschied links oder rechts?
-    # Alter logisch?
+    Args:
+        uuid (str): Unique identifier for the image
 
-    # TODO: Validation
-    #if(check_metadata == True):
+    Returns:
+        actual: dict = {'uuid': str, 'embedding': dict{region(str): embedding_image(embedding_tensor)}}
+
+
+    """
 
     temp_base_dir = Path(__file__).resolve().parent.parent
-    ######## STEP 1: image normalization #################################
-
-    # TODO: correct path, correct input image (with uuid)
-    # path to specific image with UUID.jpg, UUID.png
+    folder_path_base = temp_base_dir / "tests" / "data" / "TestRegionDataset"
+    ######## STEP 0: build path to image #################################
 
     image_path = get_image_path(temp_base_dir, uuid)
 
-    # segmentation of one image into 7 images as a dictionarie
+    ######## STEP 1: image normalization #################################
 
-    image_segements = normalization.segment_hand_image(image_path)
+    dict_normalization = normalization.normalize_hand_image(uuid, image_path)
 
-    # resize images to 224x224
-    image_segmentes_resized = normalization.resize_images(image_segements)
-
-    # TODO: Bilder lokal speichern? mit uuid_hand..
-    normalization.save_image_with_name(image_segmentes_resized)
+    normalization.save_region_images(dict_normalization, folder_path_base)
 
     ######## STEP 2: Calcualte embeddings ################################
 
-    # Übernahme dictionarie 'image_segmentes_resized' aus Step 1
-    for element in image_segmentes_resized:
-        # calculate embedding for each image
-        image_tensor = element["image"]
-        embedding = calculate_embedding(image_tensor)
-        #add new element 'embedding' to dictionarie
-        element["embedding"] = embedding
-    
-    return image_segmentes_resized
+    # calculate embeddings for each image from dict_regions
+    # image_tensor dictonarie
+    dict_regions = dict_normalization[Keys.IMAGE_TENSORS.value]
+    embedding_region_dict = calculate_embeddings_from_tensor_dict(dict_regions)
+    # create new dict_embedding with {uuid, embedding{region:embedding}}
+    dict_embedding = {Keys.UUID.value: uuid, Keys.EMBEDDINGS.value: embedding_region_dict}
+
+    # TODO: delete when adding knn-search
+    return dict_embedding
 
     ######## STEP 3: Update vektortree ################################
 
     # TODO: add embeddings to vektortree
 
     # TODO: calculate distances
-
-
