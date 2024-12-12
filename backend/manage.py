@@ -31,7 +31,13 @@ def run_server(
 def format_code():
     """Format the code using ruff."""
     try:
-        subprocess.run(["ruff", "format", "app", "embeddings", "lib", "validation"], check=True)
+        subprocess.run(
+            [
+                "ruff", "format", "app", "embeddings", "hand_normalization", 
+                "knn", "lib", "pipelines", "tests", "validation"
+            ], 
+            check=True
+        )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
     finally:
@@ -42,7 +48,13 @@ def format_code():
 def check_code():
     """Check the code using ruff."""
     try:
-        subprocess.run(["ruff", "check", "app", "embeddings", "lib", "validation"], check=True)
+        subprocess.run(
+            [
+                "ruff", "check", "app", "embeddings", "hand_normalization", 
+                "knn", "lib", "pipelines", "tests", "validation"
+            ], 
+            check=True
+        )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
     finally:
