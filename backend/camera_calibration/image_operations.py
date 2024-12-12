@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def calculate_image_metrics(image_path):
     """
     calculates brightness (mean), contrast (standard_devitaion) and sharpness (variance_of_laplacian) of the image
@@ -14,6 +15,5 @@ def calculate_image_metrics(image_path):
     mean = np.mean(gray)
     standard_deviation = np.std(gray)
     variance_of_laplacian = cv2.Laplacian(gray, cv2.CV_64F).var()
-    
-    return mean, standard_deviation, variance_of_laplacian
 
+    return mean, standard_deviation, variance_of_laplacian
