@@ -1,4 +1,5 @@
 import pytest
+import torch
 
 from embeddings import embeddings_utils
 from embeddings import image_utils
@@ -9,7 +10,7 @@ from embeddings import models_utils
 
 @pytest.fixture()
 def loaded_test_image(image_name, path_to_images):
-    yield image_utils.load_image(image_name, path_to_images)
+    yield image_utils.load_image_from_path_fragments(image_name, path_to_images)
 
 
 @pytest.fixture()
@@ -72,11 +73,50 @@ def test_calculate_embeddings(loaded_test_image_array, test_densenet):
     assert len(test_embeddings) == len(loaded_test_image_array)
 
 
-def test_calculate_embeddings_from_path(test_image_name_array, path_to_images, test_densenet):
-    test_embeddings = embeddings_utils.calculate_embeddings_from_path(
+def test_calculate_embeddings_from_path_fragments(test_image_name_array, path_to_images, test_densenet):
+    test_embeddings = embeddings_utils.calculate_embeddings_from_path_fragments(
         test_image_name_array, path_to_images, test_densenet
     )
     # expected dimensions of densenet embedding are [1, 1024]
     assert test_embeddings[0].shape[1] == 1024
     # expected length of the resulting array is the same as input array
     assert len(test_embeddings) == len(test_image_name_array)
+
+
+def test_calculate_embeddings_with_default_densenet_model(test_image_name_array, path_to_images):
+    # model does not need to be specified if default model should be used
+    test_embeddings = embeddings_utils.calculate_embeddings_from_path_fragments(test_image_name_array, path_to_images)
+    # expected dimensions of densenet (default model) embedding are [1, 1024]
+    assert test_embeddings[0].shape[1] == 1024
+    # expected length of the resulting array is the same as input array
+    assert len(test_embeddings) == len(test_image_name_array)
+
+
+def test_calculate_embeddings_with_resnet(test_image_name_array, path_to_images, test_resnet):
+    test_embeddings = embeddings_utils.calculate_embeddings_from_path_fragments(
+        test_image_name_array, path_to_images, test_resnet
+    )
+    # expected dimensions of resnet embedding are [1, 1000]
+    assert test_embeddings[0].shape[1] == 1000
+    # expected length of the resulting array is the same as input array
+    assert len(test_embeddings) == len(test_image_name_array)
+
+
+# TODO: update with region-enums
+def test_calculate_embeddings_from_dict(path_to_region_images: str):
+    region_dict = {
+        "Hand": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_Hand.jpg",
+        "HandBody": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_HandBody.jpg",
+        "IndexFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_IndexFinger.jpg",
+        "LittleFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_LittleFinger.jpg",
+        "MiddleFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_MiddleFinger.jpg",
+        "RingFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_RingFinger.jpg",
+        "Thumb": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_Thumb.jpg",
+    }
+    embeddings_dict: dict[str, torch.Tensor] = embeddings_utils.calculate_embeddings_from_path_dict(region_dict)
+    # expect the result dict to have the same amount of keys as the input dict
+    assert len(embeddings_dict) == len(region_dict)
+    # expect the result dict to have the same keys as the input dict
+    assert embeddings_dict.keys() == region_dict.keys()
+    # expect the embedding-value to have the correct length for the densenet used per default (1024)
+    assert embeddings_dict["Hand"].shape[1] == 1024

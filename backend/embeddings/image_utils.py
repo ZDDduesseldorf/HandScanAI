@@ -2,7 +2,23 @@ import os
 from torchvision.io import read_image, ImageReadMode
 
 
-def load_image(image_name, path_to_images):
+def load_image_from_full_path(path_to_image):
+    """
+    Loads image from from image name and general path to the image folder.
+
+    Args:
+        path_to_image: full path to the image
+
+    Returns:
+        A 3 dimensional RGB Tensor of the image. The values of the output tensor are uint8 in [0, 255].
+    """
+    # Read the image file
+    image_tensor = read_image(path_to_image, ImageReadMode.RGB)
+    # returns a tensor with rgb values
+    return image_tensor
+
+
+def load_image_from_path_fragments(image_name, path_to_images):
     """
     Loads image from from image name and general path to the image folder.
 
