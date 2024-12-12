@@ -1,6 +1,7 @@
 # cache
 __pycache__/
 *.pyc
+volumes/
 
 # Logs
 *.log
