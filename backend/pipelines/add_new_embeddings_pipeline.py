@@ -2,7 +2,6 @@ from pathlib import Path
 
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from .regions_utils import PipelineDictKeys as Keys
 from .inference_pipeline import get_image_path
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline

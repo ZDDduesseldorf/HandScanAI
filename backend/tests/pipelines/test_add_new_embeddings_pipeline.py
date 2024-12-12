@@ -1,7 +1,4 @@
-import pytest
-
 from pipelines.add_new_embeddings_pipeline import run_add_new_embeddings_pipeline
-from pipelines.regions_utils import PipelineDictKeys as Keys
 
 
 def test_add_new_embeddings_pipeline():

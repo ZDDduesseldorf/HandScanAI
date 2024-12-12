@@ -2,7 +2,6 @@ from pathlib import Path
 
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from .regions_utils import PipelineDictKeys as Keys
 
 # this file is used to generate the prediction of an image
 
