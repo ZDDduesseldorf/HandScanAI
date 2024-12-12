@@ -22,4 +22,44 @@ Then, the pipeline can be run from the `/backend`-folder via console:
 
 ## Inference Pipeline
 
+This pipeline (inference_pipeline.py) is used to predict the age and gender of an image.
+
+The following diagram shows the flow of the pipeline:
+![A diagram showing the pipeline steps of validation (provides image), hand normalisation (which provides a region dataset), calculation of embeddings, search for the knn (provides k nearest neighbours) and classification (prediction of age and gender).](readme_data/inference_pipeline_concept.png)
+The following diagram shows the inputs and outputs of the individual steps:
+![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.png)
+
+TODO: Add knn-search and classification to diagram
+
+### Use the inference pipeline
+
+Make sure in the method get_image_path() is the correct path to the image_folder
+
+The pipeline can be executed via the test_inference_pipeline.py from the `/backend` folder via the console:
+pytest -s tests/pipelines/test_inference_pipeline.py
+
+later:
+Pipeline is triggered by the frontend after the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
+
 ## Add new Embeddings Pipeline
+
+This pipeline (add_new_embeddings_pipeline.py) is used after checking the metadata for age and gender to add the embeddings of a new image to the vectortrees. It also saves the images of each region.
+
+The following diagram shows the flow of the pipeline:
+![A diagram showing the pipeline steps of validation (provides image and metadata), hand normalisation (which provides a region dataset and saves images), calculation of embeddings and adding to the vector tree.](readme_data/add_new_embeddings_pipeline_concept.png)
+
+The following diagram shows the inputs and outputs of the individual steps:
+![A diagram describing the input and output data types of the pipeline shown above. First part until normalization ](readme_data/add_new_embeddings_pipeline_datatypes_1.png)
+![Shows the second part of the datatyp diagram ](readme_data/add_new_embeddings_pipeline_datatypes_2.png)
+
+TODO: Add integration of embeddings to vektortree
+
+### Use the inference pipeline
+
+Make sure in the method get_image_path() is the correct path to the image_folder and the 'output_folder_path_base' is correct.
+
+The pipeline can be executed via the test_add_new_embeddings_pipeline.py from the `/backend` folder via the console:
+pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py
+
+later:
+After a check of the metadata (manually by a person or with a check-script), it is triggert by the fronted and the uuid is transferred.

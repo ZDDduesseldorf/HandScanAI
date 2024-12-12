@@ -17,13 +17,13 @@ def run_add_new_embeddings_pipeline(uuid):
         uuid (str): Unique identifier for the image
 
     Returns:
-        actual: dict = {region(str): embedding_image(embedding_tensor)}
+        actual: dict = {region(str): embedding(torch.Tensor)}
 
 
     """
 
     temp_base_dir = Path(__file__).resolve().parent.parent
-    folder_path_base = temp_base_dir / "tests" / "data" / "TestRegionDataset"
+    output_folder_path_base = temp_base_dir / "tests" / "data" / "TestRegionDataset"
     ######## STEP 0: build path to image #################################
 
     image_path = get_image_path(temp_base_dir, uuid)
@@ -32,7 +32,7 @@ def run_add_new_embeddings_pipeline(uuid):
 
     dict_normalization = normalization.normalize_hand_image(image_path)
 
-    normalization.save_region_images(uuid, dict_normalization, folder_path_base)
+    normalization.save_region_images(uuid, dict_normalization, output_folder_path_base)
 
     ######## STEP 2: Calcualte embeddings ################################
 
