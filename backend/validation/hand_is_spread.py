@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def hand_is_spread(landmarks, thresholds={"thumb-index": 1.20, "pinky-ring": 1.40, "rest": 1.15}, debug=False):
+def hand_is_spread(landmarks, thresholds={"thumb-index": 1.15, "pinky-ring": 1.35, "rest": 1.10}, debug=False):
     """
     Check if the fingers are sufficiently spread.
 
