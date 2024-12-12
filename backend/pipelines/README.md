@@ -25,8 +25,10 @@ Then, the pipeline can be run from the `/backend`-folder via console:
 This pipeline (inference_pipeline.py) is used to predict the age and gender of an image.
 
 The following diagram shows the flow of the pipeline:
+
 ![A diagram showing the pipeline steps of validation (provides image), hand normalisation (which provides a region dataset), calculation of embeddings, search for the knn (provides k nearest neighbours) and classification (prediction of age and gender).](readme_data/inference_pipeline_concept.png)
 The following diagram shows the inputs and outputs of the individual steps:
+
 ![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.png)
 
 TODO: Add knn-search and classification to diagram
@@ -46,9 +48,11 @@ Pipeline is triggered by the frontend after the ‘Analyse starten’ button has
 This pipeline (add_new_embeddings_pipeline.py) is used after checking the metadata for age and gender to add the embeddings of a new image to the vectortrees. It also saves the images of each region.
 
 The following diagram shows the flow of the pipeline:
+
 ![A diagram showing the pipeline steps of validation (provides image and metadata), hand normalisation (which provides a region dataset and saves images), calculation of embeddings and adding to the vector tree.](readme_data/add_new_embeddings_pipeline_concept.png)
 
 The following diagram shows the inputs and outputs of the individual steps:
+
 ![A diagram describing the input and output data types of the pipeline shown above. First part until normalization ](readme_data/add_new_embeddings_pipeline_datatypes_1.png)
 ![Shows the second part of the datatyp diagram ](readme_data/add_new_embeddings_pipeline_datatypes_2.png)
 
