@@ -5,7 +5,9 @@
 - [HandScanAI Backend](#handscanai-backend)
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
   - [Installation](#installation)
+    - [MongoDB installieren](#mongodb-installieren)
     - [Python installieren](#python-installieren)
+    - [Enviroment Datei erstellen](#enviroment-datei-erstellen)
     - [Virtuelle Umgebung erstellen](#virtuelle-umgebung-erstellen)
     - [Virtuelle Umgebung aktivieren](#virtuelle-umgebung-aktivieren)
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
@@ -27,9 +29,29 @@
 
 ## Installation
 
+### MongoDB installieren
+
+#### MongoDB mit Docker Compose starten
+Um MongoDB mit Docker zu starten, verwenden Sie den folgenden Befehl:
+
+```sh
+docker-compose up mongodb
+```
+
+Dieser Befehl startet den MongoDB-Dienst, wie er in der docker-compose.yml-Datei definiert ist.
+
+#### MongoDB manuell installieren
+Alternativ können Sie die offizielle Anleitung zur Installation der MongoDB-Community-Edition befolgen. Die Anleitung finden Sie hier:
+[MongoDB Community Edition installieren](https://www.mongodb.com/docs/manual/administration/install-community/)
+
 ### Python installieren
 
 Stellen Sie sicher, dass Python auf Ihrem System installiert ist. Sie können die neueste Version von [python.org](https://www.python.org/downloads/) herunterladen und installieren.
+
+### Enviroment Datei erstellen
+
+Die Datei `.env.sample` duplizieren und umbenennen in `.env`
+Falls nötig, die Attribute in der Datei entsprechend der Konfiguration anpassen.
 
 ### Virtuelle Umgebung erstellen
 
@@ -101,10 +123,12 @@ Das Verzeichnis `app` enthält die Hauptanwendung und die Routen für das FastAP
 
 - `main.py`: Der Einstiegspunkt der Anwendung. Hier wird die FastAPI-Instanz erstellt und die Routen werden registriert.
 - `routes.py`: Hier sind die verschiedenen Router-Module registriert, die die Endpunkte der API definieren.
+- `lifetime.py`: Hier werden Funktionen definiert, die beim Starten und Beenden der Anwendung ausgeführt werden.
 - `api/`: Hier sind die Geschäftslogik und die Service-Funktionen implementiert, die von den Routern verwendet werden.
 - `static/`: Hier befinden sich statische Dateien, wie z.B. Bilder usw.
 - `utils/`: Hier sind Hilfsfunktionen der Anwendung zu finden.
 - `core/`: Dieses Verzeichnis enthält die Konfigurationsdateien.
+- `db/`: Dieses Verzeichnis ist für die Datenhaltung zuständig.
 - `media/`: Erstellte Medien durch die Anwendung, gehört nicht ins Repo.
 
 Diese Struktur hilft dabei, den Code sauber und modular zu halten, was die Wartung und Erweiterung der Anwendung erleichtert.
