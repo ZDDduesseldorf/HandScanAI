@@ -27,6 +27,7 @@ This pipeline (inference_pipeline.py) is used to predict the age and gender of a
 The following diagram shows the flow of the pipeline:
 
 ![A diagram showing the pipeline steps of validation (provides image), hand normalisation (which provides a region dataset), calculation of embeddings, search for the knn (provides k nearest neighbours) and classification (prediction of age and gender).](readme_data/inference_pipeline_concept.png)
+
 The following diagram shows the inputs and outputs of the individual steps:
 
 ![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.png)
