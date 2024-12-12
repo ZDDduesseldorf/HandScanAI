@@ -16,4 +16,3 @@ scikit-learn==1.6.0
 torch==2.5.1
 torchvision==0.20.1
 pymilvus==2.5.0
-
