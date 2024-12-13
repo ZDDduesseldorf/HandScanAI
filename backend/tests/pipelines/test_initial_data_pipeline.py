@@ -9,4 +9,4 @@ def test_initial_data_pipeline(path_to_base_images, path_to_region_images):
         filter_initial_dataset=False,
         save_results_in_temp_folders=False,
     )
-    assert len(embeddings) == 2
+    assert len(embeddings) == 4
