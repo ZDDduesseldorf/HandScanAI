@@ -15,21 +15,26 @@ from app.db.models import MetadataModel, ImagesModel
 ### 2. Create a New Document and Insert It
 You can create a new document and insert it into the database as follows:
 ```python
-entry = ImagesModel(id="test", original_image="Testbild")
+entry = MetadataModel(
+        id= "0a767b07-147d-42f8-ae42-ab37e9bbe7f2", 
+        age=10, 
+        gender= "Female", 
+        camera_configuration_id= 1)
+
 await entry.insert()
 ```
 
 ### 3. Query for an Entry
 To query the database for specific entries, use the following syntax:
 ```python
-result = await ImagesModel.find(ImagesModel.id == 'test').to_list()
+result = await MetadataModel.find(MetadataModel.id == UUID("0a767b07-147d-42f8-ae42-ab37e9bbe7f2")).to_list()
 ```
 This will return a list of all matching documents.
 
 ### 4. Delete a Collection
 To delete an entire collection from the database:
 ```python
-await ImagesModel.get_motor_collection().drop()
+await MetadataModel.get_motor_collection().drop()
 ```
 
 ---
