@@ -5,7 +5,7 @@ import HorizStepper from '@/components/Stepper';
 import { Title } from './Home';
 import { BodyLayout, HorizontalBar } from './Information';
 
-const FontText = styled(Typography)`
+export const FontText = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
   color: #1a3ab8;
   margin: 0 0 1 rem;
@@ -47,6 +47,14 @@ const Berechnung: React.FC = () => {
         // sx={{ marginTop: 2 }}
       >
         Weiter
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/Bildaufnahme')}
+        // sx={{ marginTop: 2 }}
+      >
+        Bildaufnahme
       </Button>
 
       <HorizStepper pageNumber={2}></HorizStepper>
