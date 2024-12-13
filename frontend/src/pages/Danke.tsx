@@ -3,7 +3,7 @@ import { Button, Typography, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import TitleBar from '@/components/TitleBar';
-import { FontText } from './Berechnung';
+// import { FontText } from './Berechnung';
 
 const SecondaryHeading = styled(Typography)`
   display: flex;
@@ -40,6 +40,14 @@ const ErgebnisGender: React.FC = () => {
           variant="contained"
           color="primary"
           onClick={() => navigate('/Home')}
+          disableElevation
+          sx={{
+            borderRadius: 0,
+            backgroundColor: '#0F3EB5',
+            width: '20em',
+            height: '3.5em',
+            fontFamily: 'Delius Unicase',
+          }}
           // sx={{ marginTop: 2 }}
         >
           Beenden

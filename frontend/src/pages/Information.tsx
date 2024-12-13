@@ -104,7 +104,12 @@ const Information: React.FC = () => {
               variant="contained"
               color="primary"
               onClick={() => navigate('/Berechnung')}
-              // sx={{ marginTop: 2 }}
+              disableElevation
+              sx={{
+                borderRadius: 0,
+                backgroundColor: '#0F3EB5',
+                fontFamily: 'Delius Unicase',
+              }}
             >
               Weiter
             </Button>

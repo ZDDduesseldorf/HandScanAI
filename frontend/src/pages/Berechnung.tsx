@@ -44,7 +44,11 @@ const Berechnung: React.FC = () => {
         variant="contained"
         color="primary"
         onClick={() => navigate('/ErgebnisAge')}
-        // sx={{ marginTop: 2 }}
+        sx={{
+          borderRadius: 0,
+          backgroundColor: '#0F3EB5',
+          fontFamily: 'Delius Unicase',
+        }}
       >
         Weiter
       </Button>
@@ -52,7 +56,11 @@ const Berechnung: React.FC = () => {
         variant="contained"
         color="primary"
         onClick={() => navigate('/Bildaufnahme')}
-        // sx={{ marginTop: 2 }}
+        sx={{
+          borderRadius: 0,
+          backgroundColor: '#0F3EB5',
+          fontFamily: 'Delius Unicase',
+        }}
       >
         Bildaufnahme
       </Button>
