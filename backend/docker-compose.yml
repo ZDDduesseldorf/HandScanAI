@@ -12,6 +12,8 @@ services:
       - DATABASE_HOST=mongodb
     depends_on:
       - mongodb
+    volumes:
+      - .:/backend
 
   mongodb:
     image: mongo:latest
@@ -21,7 +23,4 @@ services:
     env_file:
       - .env
     volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mongodb:/data/db

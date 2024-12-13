@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -21,8 +21,11 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . .
 
+# Make the entry point script executable
+RUN chmod +x docker-entrypoint.sh
+
+# Entry point
+ENTRYPOINT [ "./docker-entrypoint.sh" ]
+
 # Expose port
 EXPOSE 8000
-
-# Run server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
