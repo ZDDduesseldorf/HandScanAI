@@ -1,8 +1,8 @@
 uuid,old_id,age,gender,skinColor,accessories,aspectOfHand,imageName,irregularities
-514f53d0-6aab-4da1-b929-8f1dc0817289,27,male,fair,0,0,dorsal right,Hand_0000002.jpg,0
-614f53d0-6aab-4da1-b929-8f1dc0817289,27,male,fair,0,0,dorsal right,Hand_0000002.jpg,0
-714f53d0-6aab-4da1-b929-8f1dc0817289,20,female,medium,0,0,dorsal left,Hand_0000523.jpg,0
-814f53d0-6aab-4da1-b929-8f1dc0817289,20,female,medium,0,0,dorsal right,Hand_0000658.jpg,0
+514f53d0-6aab-4da1-b929-8f1dc0817289,0,27,male,fair,0,dorsal right,Hand_0000002.jpg,0
+614f53d0-6aab-4da1-b929-8f1dc0817289,0,27,male,fair,0,dorsal right,Hand_0000002.jpg,0
+714f53d0-6aab-4da1-b929-8f1dc0817289,11,20,female,medium,0,dorsal left,Hand_0000523.jpg,0
+814f53d0-6aab-4da1-b929-8f1dc0817289,1593,20,female,medium,0,dorsal right,Hand_0000658.jpg,0
 7e5100c3-9de8-4303-a414-8393eb374bd8,55,20,female,medium,0,dorsal left,Hand_0000219.jpg,0
 4ef9efa8-fd8c-4bd5-ae8a-0733e2b5ac4a,55,20,female,medium,0,dorsal left,Hand_0000220.jpg,0
 40da14f8-4e74-4838-abfa-107d68e9d0ae,55,20,female,medium,0,dorsal right,Hand_0000229.jpg,0
