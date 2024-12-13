@@ -22,6 +22,14 @@ const About: React.FC = () => {
       >
         Information
       </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/berechnung')}
+        sx={{ marginTop: 2 }}
+      >
+        Berechnung
+      </Button>
     </Container>
   );
 };

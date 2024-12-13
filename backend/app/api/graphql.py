@@ -1,7 +1,8 @@
-from typing import List, Optional
-from fastapi import APIRouter
-import strawberry
 from datetime import datetime
+from typing import Optional
+
+import strawberry
+from fastapi import APIRouter
 from strawberry.fastapi import GraphQLRouter
 
 from app.db.models import TestModel
@@ -24,7 +25,7 @@ class TestModelInput:
 @strawberry.type
 class Query:
     @strawberry.field
-    async def get_test_models(self) -> List[TestModelType]:
+    async def get_test_models(self) -> list[TestModelType]:
         test_models = await TestModel.find_all().to_list()
         return [TestModelType(**model.model_dump()) for model in test_models]
 

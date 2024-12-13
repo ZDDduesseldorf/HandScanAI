@@ -1,4 +1,4 @@
-import * as React from 'react';
+//import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -6,18 +6,33 @@ import StepLabel from '@mui/material/StepLabel';
 
 const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis'];
 
-//Momentan noch alles hardcoded, just testing
+import './Stepper.css';
 
-export default function HorizontalLinearAlternativeLabelStepper() {
+//still needs to be customized
+
+interface Props {
+  pageNumber: number;
+}
+
+export default function HorizStepper({ pageNumber }: Props) {
+  const footerStyle: React.CSSProperties = {
+    position: 'fixed',
+    bottom: '0',
+    width: '100%',
+    marginBottom: '15px',
+  };
+
   return (
-    <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={1} alternativeLabel>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-    </Box>
+    <div style={footerStyle}>
+      <Box sx={{ width: '100%' }}>
+        <Stepper activeStep={pageNumber} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+    </div>
   );
 }

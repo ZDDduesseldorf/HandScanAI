@@ -14,6 +14,9 @@ def hand_is_spread(landmarks, thresholds=None, debug=False):
     if(thresholds is None):
         thresholds = {"thumb-index": 1.15, "pinky-ring": 1.35, "rest": 1.10}
 
+    if thresholds is None:
+        thresholds = {"thumb-index": 1.20, "pinky-ring": 1.40, "rest": 1.15}
+
     # Define indices for PIP (proximal interphalangeal) and MCP (metacarpophalangeal) joints
     # Note: The thumb does not have a PIP joint; its IP (interphalangeal) joint is used instead.
     # Source: Mediapipe API docs: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer
