@@ -1,5 +1,5 @@
 from . import functions
-from pipelines.regions_utils import HandRegions, PipelineDictKeys
+from pipelines.regions_utils import HandRegions
 import cv2
 import numpy as np
 import os
@@ -11,12 +11,10 @@ def normalize_hand_image(image_path):
     Pipeline to segment image into 7 images, resize them and return them as a dict.
     Format output dictionary from build_regions_dict:
     ```
-    {
-      'uuid': str,
-      'image_tensors': dict{
-            name (str): segment_image (should be a NumPy array)
-        }
+    dict{
+        region_key (str): segment_image (should be a NumPy array)
     }
+
     ```
     """
     segmented_image_list = segment_hand_image(image_path)
@@ -29,6 +27,9 @@ def normalize_hand_image(image_path):
 def segment_hand_image(image_path):
     # image loading
     original_image = cv2.imread(image_path)  # -> Abhängig von Bilderübergabe Frontend
+    # TODO: improve default error handling
+    if (original_image) is None:
+        raise Exception("Could not load image from path", image_path)
     grey_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
 
     # Create placeholder image
@@ -180,7 +181,7 @@ def segment_hand_image(image_path):
         ## crop original image to bounding box
         cropped_segment_image = functions.crop_to_bounding_box(image_rotated, bounding_box)
         ## write the cropped image and the segment mask to regions dict
-        region.update({"segment_image": cropped_segment_image})
+        region.update({"segment_image": cv2.cvtColor(cropped_segment_image, cv2.COLOR_BGR2RGB)})
 
     """
     regions at this point is a list of dicts.
@@ -252,30 +253,22 @@ def build_regions_dict(regions: list[dict]) -> dict:
     return {region["name"]: region["image"] for region in regions}
 
 
-def save_image_with_name(images_with_names):
-    output_directory = "E:\OneDrive\Bilder"  # Change to image output directory
-
-    if os.path.isdir(output_directory):
-        for entry in images_with_names:
-            filename = os.path.join(
-                output_directory, f"{entry['name']}.jpg"
-            )  # Combine directory and file name; for UUID switch to: os.path.join(output_directory, f"{unique_id}_{entry['name']}.jpg")
-            cv2.imwrite(filename, entry["image"])
-    return
-
-
-# TODO: join with above function/ eine Version und auslagern in utils
+# TODO: ggf. auslagern in utils, docstring updaten
 def save_region_images(uuid: str, regions_dict: dict, output_directory):
-    print(regions_dict)
+    """
+    Saves images as .bmp with name {uuid}_{region_key}.bmp.
+    Function expects image in RGB-color-format and changes it to BGR for imwrite.
+    """
     if os.path.isdir(output_directory):
         for region_key, image in regions_dict.items():
-            filename = os.path.join(output_directory, f"{uuid}_{region_key}.jpg")
-            cv2.imwrite(filename, image)
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            filename = os.path.join(output_directory, f"{uuid}_{region_key}.bmp")
+            cv2.imwrite(filename, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
     return
 
 
 #####################################################################################
-# TODO: Auslagern in hand-normalization tests
+# TODO: Auslagern in hand-normalization tests, change .jpg to .bmp
 # Code for Tests
 # images = segment_hand_image("J:\VSCODE\HandScanAI-1\hand_normalization\TestImages\Hand_0000064.jpg")
 # images = resize_images(images)

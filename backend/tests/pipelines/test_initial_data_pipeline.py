@@ -7,6 +7,6 @@ def test_initial_data_pipeline(path_to_base_images, path_to_region_images):
         base_dataset_path=path_to_base_images,
         region_dataset_path=path_to_region_images,
         filter_initial_dataset=False,
-        save_results_in_temp_folders=False,
+        save_results_in_temp_folders=True,
     )
     assert len(embeddings) == 4

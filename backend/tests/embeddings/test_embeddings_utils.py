@@ -1,9 +1,11 @@
 import pytest
 import torch
+import os
 
 from embeddings import embeddings_utils
 from embeddings import image_utils
 from embeddings import models_utils
+from pipelines.regions_utils import HandRegions
 
 ### FIXTURES ######################################################
 
@@ -102,16 +104,27 @@ def test_calculate_embeddings_with_resnet(test_image_name_array, path_to_images,
     assert len(test_embeddings) == len(test_image_name_array)
 
 
-# TODO: update with region-enums
-def test_calculate_embeddings_from_dict(path_to_region_images: str):
+def calculate_embeddings_from_dict(path_to_region_images: str):
     region_dict = {
-        "Hand": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_Hand.jpg",
-        "HandBody": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_HandBody.jpg",
-        "IndexFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_IndexFinger.jpg",
-        "LittleFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_LittleFinger.jpg",
-        "MiddleFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_MiddleFinger.jpg",
-        "RingFinger": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_RingFinger.jpg",
-        "Thumb": path_to_region_images + "\\614f53d0-6aab-4da1-b929-8f1dc0817289_Thumb.jpg",
+        HandRegions.HAND_0.value: os.path.join(path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_Hand.bmp"),
+        HandRegions.HANDBODY_1.value: os.path.join(
+            path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_HandBody.bmp"
+        ),
+        HandRegions.INDEXFINGER_3.value: os.path.join(
+            path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_IndexFinger.bmp"
+        ),
+        HandRegions.LITTLEFINGER_6.value: os.path.join(
+            path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_LittleFinger.bmp"
+        ),
+        HandRegions.MIDDLEFINGER_4.value: os.path.join(
+            path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_MiddleFinger.bmp"
+        ),
+        HandRegions.RINGFINGER_5.value: os.path.join(
+            path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_RingFinger.bmp"
+        ),
+        HandRegions.THUMB_2.value: os.path.join(
+            path_to_region_images, "614f53d0-6aab-4da1-b929-8f1dc0817289_Thumb.bmp"
+        ),
     }
     embeddings_dict: dict[str, torch.Tensor] = embeddings_utils.calculate_embeddings_from_path_dict(region_dict)
     # expect the result dict to have the same amount of keys as the input dict
@@ -119,4 +132,4 @@ def test_calculate_embeddings_from_dict(path_to_region_images: str):
     # expect the result dict to have the same keys as the input dict
     assert embeddings_dict.keys() == region_dict.keys()
     # expect the embedding-value to have the correct length for the densenet used per default (1024)
-    assert embeddings_dict["Hand"].shape[1] == 1024
+    assert embeddings_dict[HandRegions.HAND_0.value].shape[1] == 1024

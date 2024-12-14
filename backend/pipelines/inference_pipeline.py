@@ -4,10 +4,10 @@ import statistics
 import pandas as pd
 import numpy as np
 
-from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict, calculate_embeddings_from_path_dict
+from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 
-from .datasets import DatasetRegionClusters, ImagePathDataset
+from .datasets import ImagePathDataset
 from .regions_utils import PipelineDictKeys as DictKeys
 from .regions_utils import HandRegions as RegionKeys
 
@@ -104,7 +104,7 @@ def get_image_path(temp_base_dir, uuid):
 
 
 # test funktion ohne csv aller embeddings
-# TODO: nach Integration csv kann diese Funktion gelöscht werden
+# TODO: nach Integration embeddings-csv kann diese Funktion gelöscht werden
 def util_test_embeddings_calculate(temp_base_dir):
     base_dataset_path = temp_base_dir / "tests" / "data" / "TestBaseDataset"
 
@@ -121,8 +121,6 @@ def util_test_embeddings_calculate(temp_base_dir):
 
     for image_path_dict in dataset_base:
         dict_normalization = normalization.normalize_hand_image(image_path_dict[DictKeys.IMAGE_PATH.value])
-        print("---inference---")
-        print(dict_normalization)
         embeddings_regions_dict = calculate_embeddings_from_tensor_dict(dict_normalization)
         uuid = image_path_dict[DictKeys.UUID.value]
 
@@ -165,6 +163,7 @@ def calculate_distance(dict_embedding, dict_all_embeddings: dict, k):
     return distance_dict
 
 
+# TODO: fix deprecation warnings
 def build_info_knn(temp_base_dir, dict_all_dist: dict):
     # return dict {'Hand' : dataframe(uuid, distance, age,gender)}
     dict_all_info_knn = {
