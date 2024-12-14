@@ -1,4 +1,3 @@
-import torch
 import os
 from embeddings import image_utils
 from pathlib import Path
@@ -24,6 +23,8 @@ def test_load_image_from_full_path(image_name, path_to_images):
         raise AssertionError("Expected loaded_image to have 3 dimensions, but got", loaded_image)
 
 
+# TODO: paths correct despite first c (one lowercase, one uppercase). decide on Test-Fix in utils-issue
+# until then, correct construction of path is demonstrated in other unit tests that load images
 def test_construct_image_path(image_name, path_to_images):
     # expected is the correct path to the image
     image_path = image_utils.construct_image_path(image_name, path_to_images)
