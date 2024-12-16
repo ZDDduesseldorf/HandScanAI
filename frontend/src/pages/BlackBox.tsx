@@ -6,6 +6,8 @@ import HorizStepper from '@/components/Stepper';
 import { Title } from './Home';
 import { HorizontalBar } from './Information';
 import { BodyLayout } from './Information';
+import TitleBar from '@/components/TitleBar';
+import NavButton from '@/components/NavButton';
 
 // this is just the Layout
 const BottomMiddleLayout = styled(Box)`
@@ -42,14 +44,7 @@ const BlackBox: React.FC = () => {
 
   return (
     <BodyLayout>
-      <HorizontalBar>
-        <Title variant="h1">Bevor wir Beginnen</Title>
-        <img
-          src="/HandLogo.png"
-          alt="Logo von der Hand"
-          style={{ maxWidth: '12%' }}
-        />
-      </HorizontalBar>
+      <TitleBar>Black-Box KI</TitleBar>
       <UpperMiddleLayout>
         <SecondaryHeading>K-nearest neighbor modell</SecondaryHeading>
         {/* <Title variant="h1">Daten statt Gebühren</Title> */}
@@ -99,6 +94,7 @@ const BlackBox: React.FC = () => {
           </div>
         </BottomMiddleLayout>
       </UpperMiddleLayout>
+      <NavButton>Ich stimme zu</NavButton>
 
       <Button
         variant="contained"

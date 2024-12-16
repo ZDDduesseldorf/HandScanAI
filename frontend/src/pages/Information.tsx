@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 //import Stepper from '@/pages/Stepper';
 import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
-import { Title } from './Home';
+import TitleBar from '@/components/TitleBar';
 
 export const BodyLayout = styled(Box)`
   margin: 20px;
@@ -46,15 +46,7 @@ const Information: React.FC = () => {
 
   return (
     <BodyLayout>
-      <HorizontalBar>
-        <Title variant="h1">Bevor wir Beginnen</Title>
-        <img
-          src="/HandLogo.png"
-          alt="Logo von der Hand"
-          style={{ maxWidth: '12%' }}
-        />
-      </HorizontalBar>
-
+      <TitleBar>Bevor wir Beginnen</TitleBar>
       <BoxLayout>
         <BoxSx>
           <SecondaryHeading>Daten statt Gebühren</SecondaryHeading>
