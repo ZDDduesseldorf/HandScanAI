@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import TitleBar from '@/components/TitleBar';
+import NavButton from '@/components/NavButton';
 
 const ErgebnisGender: React.FC = () => {
   const navigate = useNavigate();
@@ -10,19 +10,7 @@ const ErgebnisGender: React.FC = () => {
   return (
     <div>
       <TitleBar>Ergebnis</TitleBar>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/Danke')}
-        disableElevation
-        sx={{
-          borderRadius: 0,
-          backgroundColor: '#0F3EB5',
-          fontFamily: 'Delius Unicase',
-        }}
-      >
-        Weiter
-      </Button>
+      <NavButton RouteTo="/Danke">Weiter</NavButton>
       <HorizStepper pageNumber={3}></HorizStepper>
     </div>
   );

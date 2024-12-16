@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import { Title } from './Home';
 import { BodyLayout, HorizontalBar } from './Information';
+import NavButton from '@/components/NavButton';
 
 export const FontText = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
@@ -40,18 +41,8 @@ const Berechnung: React.FC = () => {
         wobei die Handdominanz oft in der frühen Kindheit <br></br>
         festgelegt wird und teilweise genetisch beeinflusst<br></br> ist.
       </FontText>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/ErgebnisAge')}
-        sx={{
-          borderRadius: 0,
-          backgroundColor: '#0F3EB5',
-          fontFamily: 'Delius Unicase',
-        }}
-      >
-        Weiter
-      </Button>
+      <NavButton RouteTo="/ErgebnisAge">Weiter</NavButton>
+
       <Button
         variant="contained"
         color="primary"
