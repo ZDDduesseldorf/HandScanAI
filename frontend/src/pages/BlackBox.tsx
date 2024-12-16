@@ -94,21 +94,7 @@ const BlackBox: React.FC = () => {
           </div>
         </BottomMiddleLayout>
       </UpperMiddleLayout>
-      <NavButton>Ich stimme zu</NavButton>
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/ErgebnisAge')}
-        disableElevation
-        sx={{
-          borderRadius: 0,
-          backgroundColor: '#0F3EB5',
-          fontFamily: 'Delius Unicase',
-        }}
-      >
-        Zurück
-      </Button>
+      <NavButton RouteTo="/ErgebnisAge">Zurück</NavButton>
       <br></br>
       <HorizStepper pageNumber={3}></HorizStepper>
     </BodyLayout>

@@ -15,13 +15,13 @@ const CustomButton = styled(Button)({
 
 interface Props {
   children: ReactNode;
-  //   RouteTo: string;
+  RouteTo: string;
 }
 
-const NavButton: React.FC<Props> = ({ children }) => {
+const NavButton: React.FC<Props> = ({ children, RouteTo }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate('/ErgebnisAge');
+    navigate(RouteTo);
   };
 
   return (
