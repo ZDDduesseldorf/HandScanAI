@@ -11,6 +11,9 @@ const CustomButton = styled(Button)({
   color: 'white',
   disableElevation: true,
   fontFamily: 'Delius Unicase',
+  position: 'fixed', // Fixed position for now will adjust this later to be more flexible
+  bottom: '120px', // Distance from bottom
+  right: '80px',
 });
 
 interface Props {

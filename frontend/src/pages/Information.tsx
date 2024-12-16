@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
 import TitleBar from '@/components/TitleBar';
+import NavButton from '@/components/NavButton';
 
 export const BodyLayout = styled(Box)`
   margin: 20px;
@@ -90,21 +91,7 @@ const Information: React.FC = () => {
             <BoxText className="checkbox">
               Ich akzeptiere die Datenverarbeitung
             </BoxText>
-
-            {/* Need to add Conditional Rendering here based on the checkbox */}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate('/Berechnung')}
-              disableElevation
-              sx={{
-                borderRadius: 0,
-                backgroundColor: '#0F3EB5',
-                fontFamily: 'Delius Unicase',
-              }}
-            >
-              Weiter
-            </Button>
+            <NavButton RouteTo="/Berechnung">Weiter</NavButton>
           </HorizontalBar>
         </BoxSx>
       </BoxLayout>

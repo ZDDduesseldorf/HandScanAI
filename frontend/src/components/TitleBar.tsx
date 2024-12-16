@@ -12,7 +12,6 @@ const HorizontalBar = styled(Box)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  max-width: 95%;
   margin: 0 auto;
 `;
 
