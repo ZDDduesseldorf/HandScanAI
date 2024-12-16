@@ -3,6 +3,7 @@ import { Button, Typography, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import TitleBar from '@/components/TitleBar';
+import { BodyLayout } from './Information';
 // import { FontText } from './Berechnung';
 
 const SecondaryHeading = styled(Typography)`
@@ -25,9 +26,9 @@ const ErgebnisGender: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <BodyLayout>
       <TitleBar>Danke</TitleBar>
-      <div style={{ padding: '2rem' }}>
+      <div>
         <SecondaryHeading>Wir hoffen du hattest Spaß</SecondaryHeading>
         <BoxText>
           Über den untenstehenden QR kannst du dir deine Ergebnisse der
@@ -55,7 +56,7 @@ const ErgebnisGender: React.FC = () => {
       </div>
 
       <HorizStepper pageNumber={3}></HorizStepper>
-    </div>
+    </BodyLayout>
   );
 };
 
