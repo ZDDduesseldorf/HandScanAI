@@ -14,9 +14,11 @@ import Sandbox from '@/pages/Sandbox';
 import ErgebnisAge from '@/pages/ErgebnisAge';
 import ErgebnisGender from './pages/ErgebnisGender';
 import Danke from './pages/Danke';
+import Blackbox from './pages/BlackBox';
 
 import '@/assets/fonts.css';
 import '@/App.css';
+import BlackBox from './pages/BlackBox';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -69,6 +71,7 @@ const App: React.FC = () => {
             <Route path="ergebnisage" element={<ErgebnisAge />} />
             <Route path="ergebnisgender" element={<ErgebnisGender />} />
             <Route path="danke" element={<Danke />} />
+            <Route path="/blackbox" element={<BlackBox />} />
           </Routes>
         </motion.div>
       </AnimatePresence>

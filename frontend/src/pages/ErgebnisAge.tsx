@@ -23,6 +23,22 @@ const ErgebnisAge: React.FC = () => {
       >
         Weiter
       </Button>
+      <br></br>
+      <br></br>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/BlackBox')}
+        disableElevation
+        sx={{
+          borderRadius: 0,
+          backgroundColor: '#0F3EB5',
+          fontFamily: 'Delius Unicase',
+        }}
+      >
+        Erklärung
+      </Button>
       <HorizStepper pageNumber={3}></HorizStepper>
     </div>
   );
