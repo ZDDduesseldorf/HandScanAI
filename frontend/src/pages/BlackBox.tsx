@@ -1,10 +1,8 @@
 import React from 'react';
-import { Typography, Button, Box, styled } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Typography, Box, styled } from '@mui/material';
 //import Stepper from '@/pages/Stepper';
 import HorizStepper from '@/components/Stepper';
-import { Title } from './Home';
-import { HorizontalBar } from './Information';
+
 import { BodyLayout } from './Information';
 import TitleBar from '@/components/TitleBar';
 import NavButton from '@/components/NavButton';
@@ -40,8 +38,6 @@ const SecondaryHeading = styled(Typography)`
 `;
 
 const BlackBox: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <BodyLayout>
       <TitleBar>Black-Box KI</TitleBar>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, Box, styled } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import HorizStepper from '@/components/Stepper';
 import BoxSx from '@/components/Box';
 import TitleBar from '@/components/TitleBar';
@@ -42,8 +41,6 @@ const SecondaryHeading = styled(Typography)`
 `;
 
 const Information: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <BodyLayout>
       <TitleBar>Bevor wir Beginnen</TitleBar>
