@@ -423,8 +423,26 @@ def assign_regions(sorted_segments, image, landmarks):
     Returns:
         List[Dict[str, np.ndarray]]: Regions with segment images.
     """
-    orientation_hand = calculate_hand_orientation(landmarks)
+    regions = assign_masks_to_regions(sorted_segments, landmarks)
 
+    for region in regions:
+        cropped_image = rotate_and_crop_region(region, image, landmarks)
+        region.update({"segment_image": cropped_image})
+
+    return [{"name": region["name"], "image": region["segment_image"]} for region in regions]
+
+
+def assign_masks_to_regions(sorted_segments, landmarks) -> list:
+    """
+    Assigns masks to specific regions based on reference points.
+
+    Args:
+        sorted_segments (list): List of sorted masks.
+        landmarks (list): List of landmarks.
+
+    Returns:
+        list: List of regions with assigned masks.
+    """
     regions = [
         {"name": HandRegions.HAND_0.value, "reference_point": []},
         {"name": HandRegions.HANDBODY_1.value, "reference_point": landmarks[13]},
@@ -435,31 +453,40 @@ def assign_regions(sorted_segments, image, landmarks):
         {"name": HandRegions.LITTLEFINGER_6.value, "reference_point": landmarks[19]},
     ]
 
-    # Assign the masks to regions by checking reference points
-    for region in regions:
-        for segment in sorted_segments:
-            if region["reference_point"]:
-                if points_in_mask(segment, region["reference_point"]):
-                    region.update({"mask": segment})
-                    break
-            else:
-                region.update({"mask": sorted_segments[0]})  # Whole hand image
-    
-    # Rotate and crop the images for each region
-    for region in regions:
-        angle = calculate_region_angle(region["name"], landmarks, orientation_hand)
-        mask = region["mask"]
-        
-        rotated_image = functions.rotate_image_no_crop(image, angle)
-        rotated_mask = functions.rotate_image_no_crop(mask, angle)
-        bounding_box = functions.get_bounding_box_with_margin(rotated_mask, 5)
-        cropped_image = functions.crop_to_bounding_box(rotated_image, bounding_box)
-        
-        region.update({"segment_image": cropped_image})
+    regions[0].update(
+        {"mask": sorted_segments[0]}
+    )
+    for region in regions[1:]:
+        region_reference_point = region["reference_point"]
+        for segments in sorted_segments[1:]:
+            points_in_segment = points_in_mask(segments, region_reference_point)
+            if points_in_segment:
+                region.update({"mask": segments})
 
+    return regions
+
+
+def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
+    """
+    Rotates and crops a single region based on its mask and orientation.
+
+    Args:
+        region (dict): Region containing mask and name.
+        image (np.ndarray): Original image.
+        landmarks (list): Hand landmarks.
+
+    Returns:
+        np.ndarray: Cropped and rotated image segment.
+    """
+    orientation_hand = calculate_hand_orientation(landmarks)
+    angle = calculate_region_angle(region["name"], landmarks, orientation_hand)
+    mask = region["mask"]
     
-    # Return the final result
-    return [{"name": region["name"], "image": region["segment_image"]} for region in regions]
+    rotated_image = functions.rotate_image_no_crop(image, angle)
+    rotated_mask = functions.rotate_image_no_crop(mask, angle)
+    bounding_box = functions.get_bounding_box_with_margin(rotated_mask, 5)
+    cropped_image = functions.crop_to_bounding_box(rotated_image, bounding_box)
+    return cropped_image
 
 
 def calculate_hand_orientation(landmarks):
