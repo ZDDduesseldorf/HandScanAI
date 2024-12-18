@@ -274,7 +274,7 @@ def insert_points_into_contour(sliced_contour, new_points, position="end"):
     return new_contour
 
 
-def vector_agle(point1, point2):
+def vector_angle(point1, point2):
     vector = (point2[0] - point1[0], point2[1] - point1[1])
     vector_angle = cv2.fastAtan2(vector[0], vector[1])
     return vector_angle

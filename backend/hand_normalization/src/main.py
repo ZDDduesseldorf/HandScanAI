@@ -124,37 +124,37 @@ def segment_hand_image(image_path):
             "name": HandRegions.HAND_0.value,
             "reference_point": [],
             ## the refence points that calculate the angle of hand and palm are shifted by -90°
-            "angle": 90 - orientation_hand * functions.vector_agle(landmarks[5], landmarks[13]),
+            "angle": 90 - orientation_hand * functions.vector_angle(landmarks[5], landmarks[13]),
         },
         {
             "name": HandRegions.HANDBODY_1.value,
             "reference_point": landmarks[13],
-            "angle": 90 - orientation_hand * functions.vector_agle(landmarks[5], landmarks[13]),
+            "angle": 90 - orientation_hand * functions.vector_angle(landmarks[5], landmarks[13]),
         },
         {
             "name": HandRegions.THUMB_2.value,
             "reference_point": landmarks[3],
-            "angle": 180 - functions.vector_agle(landmarks[2], landmarks[4]),
+            "angle": 180 - functions.vector_angle(landmarks[2], landmarks[4]),
         },
         {
             "name": HandRegions.INDEXFINGER_3.value,
             "reference_point": landmarks[7],
-            "angle": 180 - functions.vector_agle(landmarks[6], landmarks[8]),
+            "angle": 180 - functions.vector_angle(landmarks[6], landmarks[8]),
         },
         {
             "name": HandRegions.MIDDLEFINGER_4.value,
             "reference_point": landmarks[11],
-            "angle": 180 - functions.vector_agle(landmarks[10], landmarks[12]),
+            "angle": 180 - functions.vector_angle(landmarks[10], landmarks[12]),
         },
         {
             "name": HandRegions.RINGFINGER_5.value,
             "reference_point": landmarks[15],
-            "angle": 180 - functions.vector_agle(landmarks[14], landmarks[16]),
+            "angle": 180 - functions.vector_angle(landmarks[14], landmarks[16]),
         },
         {
             "name": HandRegions.LITTLEFINGER_6.value,
             "reference_point": landmarks[19],
-            "angle": 180 - functions.vector_agle(landmarks[18], landmarks[20]),
+            "angle": 180 - functions.vector_angle(landmarks[18], landmarks[20]),
         },
     ]
 
