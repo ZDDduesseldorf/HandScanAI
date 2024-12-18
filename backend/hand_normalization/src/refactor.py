@@ -58,6 +58,8 @@ def segment_hand_image(image_path: str) -> List[Dict[str, np.ndarray]]:
     contour_mask, largest_contour = detect_hand_contours(hand_mask, original_image.shape)
     region_defining_points = calculate_region_defining_points(landmarks, contour_mask, largest_contour)
 
+    print(region_defining_points)
+
     # Detect missing defects
     additional_defects = calculate_additional_defects(region_defining_points, landmarks, contour_mask)
     region_defining_points = integrate_defects(region_defining_points, additional_defects)
@@ -296,7 +298,7 @@ def detect_missing_point(
     intersection_coords = np.column_stack(np.where(intersection_mask == 255))
 
     intersection_points: List[Tuple[int, int]] = [(x, y) for y, x in intersection_coords]
-    detected_point = get_sorted_points_by_distance(intersection_points, moved_point)
+    detected_point = get_sorted_points_by_distance(intersection_points, moved_point, return_closest=True)
 
     return detected_point
 
