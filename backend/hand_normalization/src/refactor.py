@@ -7,7 +7,18 @@ import functions
 from enum import Enum
 
 # TODO: Fix region_defining_points @ segment_hand_image func
+# Utils draw point
+def draw_point(image, point):
+    cv2.circle(image, point, radius=5, color=(0, 255, 0), thickness=-1)
+    cv2.imshow("Image with Point", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
+def show_images(images):
+    for image in images:
+        cv2.imshow("Images", image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 class HandRegions(Enum):
     """
@@ -58,13 +69,11 @@ def segment_hand_image(image_path: str) -> List[Dict[str, np.ndarray]]:
     contour_mask, largest_contour = detect_hand_contours(hand_mask, original_image.shape)
     region_defining_points = calculate_region_defining_points(landmarks, contour_mask, largest_contour)
 
-    print(region_defining_points)
-
-    # Detect missing defects
     additional_defects = calculate_additional_defects(region_defining_points, landmarks, contour_mask)
     region_defining_points = integrate_defects(region_defining_points, additional_defects)
 
-    segmented_regions = extract_hand_segments(region_defining_points, original_image, contour_mask, landmarks)
+    sorted_segments = extract_segements(region_defining_points, original_image, contour_mask, landmarks)
+    segmented_regions = assign_regions(sorted_segments, original_image, landmarks)
     return segmented_regions
 
 
@@ -175,7 +184,6 @@ def calculate_region_defining_points(landmarks: List[Tuple[int, int]], contour_m
         mask = contour_to_bitmask(np.array(area), contour_mask.shape)
         points = points_in_mask(mask, largest_defects)
         defining_points.append(points[0])
-        print(defining_points)
     return defining_points
 
 
@@ -260,10 +268,9 @@ def calculate_additional_defects(region_defining_points, landmarks, contour_mask
     """
     blank = np.zeros_like(contour_mask)
     outer_thumb_defect = detect_missing_point(region_defining_points[0], landmarks[2], contour_mask, blank)
-    print(outer_thumb_defect)
-
     index_defect = detect_missing_point(region_defining_points[2], region_defining_points[1], contour_mask, blank)
     pinkie_defect = detect_missing_point(region_defining_points[2], region_defining_points[3], contour_mask, blank)
+   
     return [outer_thumb_defect, index_defect, pinkie_defect]
 
 
@@ -348,7 +355,7 @@ def integrate_defects(region_defining_points, defects):
     return region_defining_points
 
 
-def extract_hand_segments(region_defining_points, image, contour_mask, landmarks):
+def extract_segements(region_defining_points, image, contour_mask, landmarks):
     """
     Extracts individual hand segments and assigns to regions.
 
@@ -361,47 +368,47 @@ def extract_hand_segments(region_defining_points, image, contour_mask, landmarks
     Returns:
         List[Dict[str, np.ndarray]]: List of segmented hand regions.
     """
-    segmented_contour_mask = contour_mask.copy()
-    print(np.sum(segmented_contour_mask))
-    for idx in range(len(region_defining_points) - 1):
-        cv2.line(segmented_contour_mask, region_defining_points[idx], region_defining_points[idx + 1], 255, 2)
-
-    hand_segments = []
-    contours, _ = cv2.findContours(segmented_contour_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
-    for contour in contours:
-        mask = contour_to_bitmask(contour, segmented_contour_mask.shape)
-        hand_segments.append(mask)
-
+    segmented_contour_mask = draw_lines_on_mask(contour_mask, region_defining_points)
+    hand_segments = extract_segment_masks(segmented_contour_mask)
     sorted_segments = sorted(hand_segments, key=functions.count_white_pixels, reverse=True)[:7]
-    return assign_regions(sorted_segments, image, landmarks)
+    return sorted_segments
 
 
-def calculate_hand_orientation(landmarks):
+def draw_lines_on_mask(mask: np.ndarray, points: list, color: int = 255, thickness: int = 2) -> np.ndarray:
     """
-    Determine hand orientation based on ring and index finger base landmarks.
+    Draws lines connecting points on a given mask.
+
+    Args:
+        mask (np.ndarray): The binary mask where lines are drawn.
+        points (list): List of (x, y) tuples representing the points to connect.
+        color (int): Color of the lines (default is 255 for white).
+        thickness (int): Thickness of the lines (default is 2).
+
+    Returns:
+        np.ndarray: Updated mask with lines drawn.
     """
-    ring_finger_base = landmarks[13]
-    index_finger_base = landmarks[5]
-    return -1 if ring_finger_base[0] > index_finger_base[0] else 1
+    mask_copy = mask.copy()
+    for idx in range(len(points) - 1):
+        cv2.line(mask_copy, points[idx], points[idx + 1], color, thickness)
+    return mask_copy
 
 
-def calculate_region_angle(region_name, landmarks, orientation_hand):
+def extract_segment_masks(mask: np.ndarray) -> list:
     """
-    Calculate the rotation angle for a specific hand region.
+    Extracts individual segment masks from a binary mask.
+
+    Args:
+        mask (np.ndarray): Binary mask from which contours are extracted.
+
+    Returns:
+        list: List of binary masks, each representing a separate segment.
     """
-    if region_name == (HandRegions.HAND_0.value or HandRegions.HANDBODY_1.value):
-        return 90 - orientation_hand * functions.vector_angle(landmarks[5], landmarks[13])
-    elif region_name == HandRegions.THUMB_2.value:
-        return 180 - functions.vector_angle(landmarks[2], landmarks[4])
-    elif region_name == HandRegions.INDEXFINGER_3.value:
-        return 180 - functions.vector_angle(landmarks[6], landmarks[8])
-    elif region_name == HandRegions.MIDDLEFINGER_4.value:
-        return 180 - functions.vector_angle(landmarks[10], landmarks[12])
-    elif region_name == HandRegions.RINGFINGER_5.value:
-        return 180 - functions.vector_angle(landmarks[14], landmarks[16])
-    elif region_name == HandRegions.LITTLEFINGER_6.value:
-        return 180 - functions.vector_angle(landmarks[18], landmarks[20])
-    return 90  # Default angle for unknown regions
+    hand_segments = []
+    contours, _ = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    for contour in contours:
+        segment_mask = contour_to_bitmask(contour, mask.shape)
+        hand_segments.append(segment_mask)
+    return hand_segments
 
 
 def assign_regions(sorted_segments, image, landmarks):
@@ -453,6 +460,34 @@ def assign_regions(sorted_segments, image, landmarks):
     
     # Return the final result
     return [{"name": region["name"], "image": region["segment_image"]} for region in regions]
+
+
+def calculate_hand_orientation(landmarks):
+    """
+    Determine hand orientation based on ring and index finger base landmarks.
+    """
+    ring_finger_base = landmarks[13]
+    index_finger_base = landmarks[5]
+    return -1 if ring_finger_base[0] > index_finger_base[0] else 1
+
+
+def calculate_region_angle(region_name, landmarks, orientation_hand):
+    """
+    Calculate the rotation angle for a specific hand region.
+    """
+    if region_name == (HandRegions.HAND_0.value or HandRegions.HANDBODY_1.value):
+        return 90 - orientation_hand * functions.vector_angle(landmarks[5], landmarks[13])
+    elif region_name == HandRegions.THUMB_2.value:
+        return 180 - functions.vector_angle(landmarks[2], landmarks[4])
+    elif region_name == HandRegions.INDEXFINGER_3.value:
+        return 180 - functions.vector_angle(landmarks[6], landmarks[8])
+    elif region_name == HandRegions.MIDDLEFINGER_4.value:
+        return 180 - functions.vector_angle(landmarks[10], landmarks[12])
+    elif region_name == HandRegions.RINGFINGER_5.value:
+        return 180 - functions.vector_angle(landmarks[14], landmarks[16])
+    elif region_name == HandRegions.LITTLEFINGER_6.value:
+        return 180 - functions.vector_angle(landmarks[18], landmarks[20])
+    return 90  # Default angle for unknown regions
 
 
 def resize_images(images_with_names: List[Dict[str, np.ndarray]], size: int = 224, fill_color: Tuple[int, int, int] = (255, 255, 255)) -> List[Dict[str, np.ndarray]]:
