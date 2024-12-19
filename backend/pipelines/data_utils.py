@@ -2,45 +2,19 @@ import pandas as pd
 
 from .regions_utils import PipelineDictKeys as DictKeys
 from .regions_utils import HandRegions as RegionKeys
-from embeddings.embeddings_utils import calculate_embeddings_from_path_dict
-from .datasets import DatasetRegionClusters
 
 
-# test funktion ohne csv aller embeddings
-# TODO: nach Integration embeddings-csv kann diese Funktion gelöscht werden
-def util_test_embeddings_calculate(temp_base_dir):
-    region_dataset_path = temp_base_dir / "tests" / "data" / "TestRegionDataset"
+def region_embeddings_from_csv(regionkey, embedding_csv_path):
+    name_csv = regionkey + "_Embeddings.csv"
+    path_to_embeddings_csv = embedding_csv_path / name_csv
+    embeddings_df = pd.read_csv(path_to_embeddings_csv, sep=",")
+    embeddings_df["Embedding"] = embeddings_df["Embedding"].apply(
+        lambda s: [float(x.strip(" []")) for x in s.split(",")]
+    )
+    list_uuid = embeddings_df["UUID"].tolist()
+    list_embedding = embeddings_df["Embedding"].tolist()
 
-    embeddings_dict = {
-        RegionKeys.HAND_0.value: {},
-        RegionKeys.HANDBODY_1.value: {},
-        RegionKeys.THUMB_2.value: {},
-        RegionKeys.INDEXFINGER_3.value: {},
-        RegionKeys.MIDDLEFINGER_4.value: {},
-        RegionKeys.RINGFINGER_5.value: {},
-        RegionKeys.LITTLEFINGER_6.value: {},
-    }
-
-    dataset = DatasetRegionClusters(region_dataset_path)
-
-    for image_path_regions_cluster in dataset:
-        uuid = image_path_regions_cluster[DictKeys.UUID.value]
-        embeddings_regions_dict = calculate_embeddings_from_path_dict(
-            image_path_regions_cluster[DictKeys.IMAGE_PATHS_INITIAL.value]
-        )
-
-        for region_key, embedding in embeddings_regions_dict.items():
-            embeddings_dict[region_key][uuid] = embedding
-
-    return embeddings_dict
-
-
-# TODO: erstellen
-# def region_embeddings_from_csv (regionkey):
-# pro regionkey in ordner pd.Dataframe csv laden
-# uuid in liste
-# embeddings in liste
-# return list_uuid, list_embeddings
+    return list_uuid, list_embedding
 
 
 def map_gender(df):
@@ -63,7 +37,7 @@ def map_gender(df):
 
 
 # TODO: fix deprecation warnings
-def build_info_knn(temp_base_dir, dict_all_dist: dict):
+def build_info_knn(metadata_csv_path, dict_all_dist: dict):
     """
     Query of gender and age for knn of the image from csv.
     Dictation of a dict that contains the k nearest neighbours with uuid, dist, age and gender
@@ -87,17 +61,20 @@ def build_info_knn(temp_base_dir, dict_all_dist: dict):
     }
 
     # TODO: Abfrage aus MongoDB?
-    # TODO: Pfad ändern
-    metadata_path = temp_base_dir / "tests" / "data" / "csv" / "Test_Hands_filtered_metadata.csv"
-    metadata_df = pd.read_csv(metadata_path, sep=",")
+
+    metadata_df = pd.read_csv(metadata_csv_path, sep=",")
     metadata_df = map_gender(metadata_df)
 
     for regionkey, dist_dict in dict_all_dist.items():
         region_df = pd.DataFrame(columns=[DictKeys.UUID.value, "distance", "age", "gender"])
         for index in dist_dict["distance_ids_sorted"]:
+            print(index)
             uuid = dist_dict[DictKeys.UUID.value][index]
             dist = dist_dict["distance"][index]
             row = metadata_df.loc[metadata_df["uuid"] == uuid]
+            print(uuid)
+            print(row["age"])
+            print(row)
             # .iloc[0] notwendig sonst wird eindimensionale column gespeichert, nur Wert aus Zelle wird benötigt
             age = row["age"].iloc[0]
             gender = row["gender"].iloc[0]

@@ -3,10 +3,11 @@ from scipy.spatial import distance
 
 from .regions_utils import PipelineDictKeys as DictKeys
 from .regions_utils import HandRegions as RegionKeys
+from .data_utils import region_embeddings_from_csv
 
 
 # TODO: wird durch Vektordatenbank später ersetzt
-def calculate_distance(dict_embedding, dict_all_embeddings: dict, k):
+def calculate_distance(dict_embedding: dict, k, embedding_csv_path):
     """
         Calculates cosine distances between the embedding of the new image and the embeddings of the data set and
         saves the results in a structured format.
@@ -28,17 +29,13 @@ def calculate_distance(dict_embedding, dict_all_embeddings: dict, k):
         RegionKeys.LITTLEFINGER_6.value: {},
     }
 
-    # TODO: Anpassung an csv
     # für jede Region distanzen berechnen
-    for regionkey, embedding_dict in dict_all_embeddings.items():
+    for regionkey, embedding in dict_embedding.items():
         # aufruf region_embeddings_from_csv(regionkey)
-        list_uuid = []
-        list_embeddings = []
+        print(regionkey)
+        list_uuid, list_embeddings = region_embeddings_from_csv(regionkey, embedding_csv_path)
 
-        for uuid, embedding in embedding_dict.items():  # kann weg
-            list_uuid.append(uuid)
-            list_embeddings.append(embedding[0])
-        image_embedding = dict_embedding[regionkey]
+        image_embedding = embedding
         list_dist = distance.cdist(image_embedding, list_embeddings, "cosine")
         list_dist = list_dist[0]
         # sortiert distanzen und speichert deren indexe ab

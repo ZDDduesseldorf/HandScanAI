@@ -16,6 +16,6 @@ from pipelines.inference_pipeline import run_inference_pipeline
 
 def test_run_inference_pipeline():
     uuid = "514f53d0-6aab-4da1-b929-8f1dc0817289"
-    classification_results_age, classification_results_gender = run_inference_pipeline(uuid)
+    classification_results_age, classification_results_gender = run_inference_pipeline(uuid, testing=True)
     assert len(classification_results_age) == 7
     assert len(classification_results_gender) == 7
