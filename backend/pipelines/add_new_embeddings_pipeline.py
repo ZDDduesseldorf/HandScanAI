@@ -1,13 +1,11 @@
-from pathlib import Path
-
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from .inference_pipeline import get_image_path
+from .inference_pipeline import get_image_path, _path_manager
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
 
-def run_add_new_embeddings_pipeline(uuid):
+def run_add_new_embeddings_pipeline(uuid, testing=False):
     """
     pipeline to add classified and checked image to vektortree
     checking if the age and gender details are logical
@@ -20,18 +18,17 @@ def run_add_new_embeddings_pipeline(uuid):
 
 
     """
+    folder_path_query, folder_path_region, _, _ = _path_manager(testing)
 
-    temp_base_dir = Path(__file__).resolve().parent.parent
-    output_folder_path_base = temp_base_dir / "tests" / "data" / "TestRegionDataset"
     ######## STEP 0: build path to image #################################
 
-    image_path = get_image_path(temp_base_dir, uuid)
+    image_path = get_image_path(folder_path_query, uuid)
 
     ######## STEP 1: image normalization #################################
 
     dict_normalization = normalization.normalize_hand_image(image_path)
 
-    normalization.save_region_images(uuid, dict_normalization, output_folder_path_base)
+    normalization.save_region_images(uuid, dict_normalization, folder_path_region)
 
     ######## STEP 2: Calcualte embeddings ################################
 

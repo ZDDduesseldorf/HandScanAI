@@ -39,7 +39,7 @@ def run_inference_pipeline(uuid, testing=False):
         actual: age_dict = {region(str): mean_age (float)}
                 gender_dict = {region(str): mode_gender(0,1)}
     """
-    folder_path_query, folder_path_region, embedding_csv_path, metadata_csv_path = _path_manager(testing)
+    folder_path_query, _, embedding_csv_path, metadata_csv_path = _path_manager(testing)
 
     ######## STEP 0: build path to image #################################
 
