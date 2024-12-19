@@ -6,8 +6,8 @@ from typing import List, Dict, Tuple
 import functions
 from enum import Enum
 
-# TODO: Fix region_defining_points @ segment_hand_image func
-# Utils draw point
+# TODO: Fix rotation of images, refactor all rotation and cropping functions -> rotate_and_crop_region()
+# Utils 
 def draw_point(image, point):
     cv2.circle(image, point, radius=5, color=(0, 255, 0), thickness=-1)
     cv2.imshow("Image with Point", image)
@@ -482,10 +482,10 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
     angle = calculate_region_angle(region["name"], landmarks, orientation_hand)
     mask = region["mask"]
     
-    rotated_image = functions.rotate_image_no_crop(image, angle)
-    rotated_mask = functions.rotate_image_no_crop(mask, angle)
-    bounding_box = functions.get_bounding_box_with_margin(rotated_mask, 5)
-    cropped_image = functions.crop_to_bounding_box(rotated_image, bounding_box)
+    rotated_image = rotate_image_no_crop(image, angle)
+    rotated_mask = rotate_image_no_crop(mask, angle)
+    bounding_box = get_bounding_box_with_margin(rotated_mask, 5)
+    cropped_image = crop_to_bounding_box(rotated_image, bounding_box)
     return cropped_image
 
 
@@ -503,18 +503,95 @@ def calculate_region_angle(region_name, landmarks, orientation_hand):
     Calculate the rotation angle for a specific hand region.
     """
     if region_name == (HandRegions.HAND_0.value or HandRegions.HANDBODY_1.value):
-        return 90 - orientation_hand * functions.vector_angle(landmarks[5], landmarks[13])
+        return 90 - orientation_hand * calculate_vector_angle(landmarks[5], landmarks[13])
     elif region_name == HandRegions.THUMB_2.value:
-        return 180 - functions.vector_angle(landmarks[2], landmarks[4])
+        return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
-        return 180 - functions.vector_angle(landmarks[6], landmarks[8])
+        return 180 - calculate_vector_angle(landmarks[6], landmarks[8])
     elif region_name == HandRegions.MIDDLEFINGER_4.value:
-        return 180 - functions.vector_angle(landmarks[10], landmarks[12])
+        return 180 - calculate_vector_angle(landmarks[10], landmarks[12])
     elif region_name == HandRegions.RINGFINGER_5.value:
-        return 180 - functions.vector_angle(landmarks[14], landmarks[16])
+        return 180 - calculate_vector_angle(landmarks[14], landmarks[16])
     elif region_name == HandRegions.LITTLEFINGER_6.value:
-        return 180 - functions.vector_angle(landmarks[18], landmarks[20])
+        return 180 - calculate_vector_angle(landmarks[18], landmarks[20])
     return 90  # Default angle for unknown regions
+
+
+def calculate_vector_angle(point1, point2):
+    vector = (point2[0] - point1[0], point2[1] - point1[1])
+    vector_angle = cv2.fastAtan2(vector[0], vector[1])
+    return vector_angle
+
+
+def rotate_image_no_crop(image, angle, center_of_rotation=[]):
+    angle = float(angle)
+    (h, w) = image.shape[:2]
+    if center_of_rotation == []:
+        center_of_rotation = (w // 2, h // 2)
+
+    # Calculate the rotation matri
+    rotation_matrix = cv2.getRotationMatrix2D(center_of_rotation, angle, scale=1.0)
+
+    # Calculate the new bounding dimensions of the image
+    cos = abs(rotation_matrix[0, 0])
+    sin = abs(rotation_matrix[0, 1])
+    new_w = int((h * sin) + (w * cos))
+    new_h = int((h * cos) + (w * sin))
+
+    # Adjust the rotation matrix to account for translation
+    rotation_matrix[0, 2] += (new_w / 2) - center_of_rotation[0]
+    rotation_matrix[1, 2] += (new_h / 2) - center_of_rotation[1]
+
+    # Perform the rotation
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
+
+    return rotated_image
+
+
+def get_bounding_box_with_margin(mask, margin=0):
+    """
+    Calculate a bounding box around a mask with an added margin.
+
+    Parameters:
+    - mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    - margin (int): Margin to add around the bounding box.
+
+    Returns:
+    - (x, y, w, h): Tuple representing the bounding box coordinates with the margin.
+                    (x, y) is the top-left corner, and (w, h) are the width and height.
+    """
+    # Ensure the mask is binary
+    mask = (mask > 0).astype(np.uint8)  # Convert to binary if needed
+
+    # Step 1: Find the bounding box of the mask
+    x, y, w, h = cv2.boundingRect(mask)
+
+    # Step 2: Add the margin to the bounding box
+    x = max(x - margin, 0)
+    y = max(y - margin, 0)
+    w = min(w + 2 * margin, mask.shape[1] - x)
+    h = min(h + 2 * margin, mask.shape[0] - y)
+
+    return x, y, w, h
+
+
+def crop_to_bounding_box(image, bounding_box):
+    """
+    Crop an image to a bounding box.
+
+    Parameters:
+    - image (numpy.ndarray): The input image.
+    - x, y (int): Top-left corner coordinates of the bounding box.
+    - w, h (int): Width and height of the bounding box.
+
+    Returns:
+    - numpy.ndarray: The cropped image.
+    """
+    x, y, w, h = bounding_box
+    # Crop the image using array slicing
+    cropped_image = image[y : y + h, x : x + w]
+    return cropped_image
+
 
 
 def resize_images(images_with_names: List[Dict[str, np.ndarray]], size: int = 224, fill_color: Tuple[int, int, int] = (255, 255, 255)) -> List[Dict[str, np.ndarray]]:
@@ -531,8 +608,49 @@ def resize_images(images_with_names: List[Dict[str, np.ndarray]], size: int = 22
     """
     return [{
         "name": region["name"],
-        "image": functions.dynamic_resize_image_to_target(region["image"], size, fill_color)
+        "image": resize_to_target(region["image"], size, fill_color)
     } for region in images_with_names]
+
+
+def resize_to_target(input_image, size, fill_color):
+    """
+    Resizes the input image to fit within the target resolution, maintaining its aspect ratio.
+    The resized image is then placed on a square canvas, with the lower part of the image aligned
+    to the bottom of the canvas. The remaining space is filled with the specified background color.
+
+    Parameters:
+    - input_image: The image to resize (should be a NumPy array).
+    - size: The target resolution size for the square canvas (e.g., 224).
+    - fill_color: The background color (as a tuple of (B, G, R)) to fill the empty space.
+
+    Returns:
+    - new_image: The new image with the resized input image placed on a square canvas.
+    """
+    # Get the original image dimensions (height and width)
+    original_height, original_width = input_image.shape[:2]
+
+    # Determine scaling factor based on the larger dimension
+    if original_width > original_height:
+        new_width = size
+        new_height = int(original_height * (size / original_width))
+    else:
+        new_height = size
+        new_width = int(original_width * (size / original_height))
+
+    # Resize the input image using OpenCV
+    resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+
+    # Create a new square image with the background color
+    new_image = np.full((size, size, 3), fill_color, dtype=np.uint8)  # Background filled with the specified color
+
+    # Calculate the position for placing the resized image in the new square canvas
+    top_left_x = (size - new_width) // 2  # Centering horizontally
+    top_left_y = size - new_height  # Aligning the bottom of the image with the bottom of the square canvas
+
+    # Copy the resized image onto the new square canvas
+    new_image[top_left_y : top_left_y + new_height, top_left_x : top_left_x + new_width] = resized_image
+
+    return new_image
 
 
 def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.ndarray]:
