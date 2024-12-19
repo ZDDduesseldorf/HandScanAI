@@ -1,5 +1,5 @@
 import os
-from torchvision.io import read_image, ImageReadMode
+import cv2
 
 
 def load_image_from_full_path(path_to_image):
@@ -10,10 +10,11 @@ def load_image_from_full_path(path_to_image):
         path_to_image: full path to the image
 
     Returns:
-        A 3 dimensional RGB Tensor of the image. The values of the output tensor are uint8 in [0, 255].
+        A 3 dimensional RGB numpy array of the image. The values of the output tensor are uint8 in [0, 255].
     """
     # Read the image file
-    image_tensor = read_image(path_to_image, ImageReadMode.RGB)
+    image_tensor = cv2.imread(path_to_image)
+    image_tensor = cv2.cvtColor(image_tensor, cv2.COLOR_BGR2RGB)
     # returns a tensor with rgb values
     return image_tensor
 
@@ -27,13 +28,13 @@ def load_image_from_path_fragments(image_name, path_to_images):
         path_to_images: path to the image folder, where the image lies
 
     Returns:
-        A 3 dimensional RGB Tensor of the image. The values of the output tensor are uint8 in [0, 255].
+        A 3 dimensional RGB numpy array of the image. The values of the output tensor are uint8 in [0, 255].
     """
     img_path = construct_image_path(image_name, path_to_images)
 
     # Read the image file
-    image_tensor = read_image(img_path, ImageReadMode.RGB)
-    # returns a tensor with rgb values
+    image_tensor = load_image_from_full_path(img_path)
+    # returns a numpy array with rgb values
     return image_tensor
 
 

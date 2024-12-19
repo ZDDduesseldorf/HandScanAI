@@ -13,7 +13,7 @@ def test_if_loads_image_paths_correctly(path_to_base_images):
     uuid = "514f53d0-6aab-4da1-b929-8f1dc0817289"
     dataset = ImagePathDataset(path_to_base_images)
     # expect to load 1 image
-    assert len(dataset) == 2
+    assert len(dataset) == 4
     # expect it to be a dict and to have the correct uuid
     assert dataset[0][PipelineDictKeys.UUID.value] == uuid
 
@@ -25,7 +25,7 @@ def test_if_loads_image_paths_correctly(path_to_base_images):
 def test_correct_clusters(path_to_region_images):
     dataset = DatasetRegionClusters(path_to_region_images)
     # expected to load two clusters from testdata
-    assert len(dataset) == 2
+    assert len(dataset) == 4
 
 
 def test_correct_cluster_structure(path_to_region_images):
