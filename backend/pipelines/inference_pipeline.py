@@ -59,9 +59,7 @@ def run_inference_pipeline(uuid, testing=False):
     k = 3  # anzahl nächster Nachbarn
     dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
-    print(dict_all_dist)
     dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
-    print(dict_all_info_knn)
     ######## STEP 4: make a decision for prediction ######################
 
     age_dict = classify_age(dict_all_info_knn)

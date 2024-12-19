@@ -36,7 +36,6 @@ def map_gender(df):
     return df
 
 
-# TODO: fix deprecation warnings
 def build_info_knn(metadata_csv_path, dict_all_dist: dict):
     """
     Query of gender and age for knn of the image from csv.
@@ -61,20 +60,15 @@ def build_info_knn(metadata_csv_path, dict_all_dist: dict):
     }
 
     # TODO: Abfrage aus MongoDB?
-
     metadata_df = pd.read_csv(metadata_csv_path, sep=",")
     metadata_df = map_gender(metadata_df)
 
     for regionkey, dist_dict in dict_all_dist.items():
         region_df = pd.DataFrame(columns=[DictKeys.UUID.value, "distance", "age", "gender"])
         for index in dist_dict["distance_ids_sorted"]:
-            print(index)
             uuid = dist_dict[DictKeys.UUID.value][index]
             dist = dist_dict["distance"][index]
             row = metadata_df.loc[metadata_df["uuid"] == uuid]
-            print(uuid)
-            print(row["age"])
-            print(row)
             # .iloc[0] notwendig sonst wird eindimensionale column gespeichert, nur Wert aus Zelle wird benötigt
             age = row["age"].iloc[0]
             gender = row["gender"].iloc[0]

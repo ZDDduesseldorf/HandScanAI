@@ -32,7 +32,6 @@ def calculate_distance(dict_embedding: dict, k, embedding_csv_path):
     # für jede Region distanzen berechnen
     for regionkey, embedding in dict_embedding.items():
         # aufruf region_embeddings_from_csv(regionkey)
-        print(regionkey)
         list_uuid, list_embeddings = region_embeddings_from_csv(regionkey, embedding_csv_path)
 
         image_embedding = embedding
