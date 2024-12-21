@@ -4,7 +4,9 @@
   "name": "HandScanAI-Backend",
   // Update the 'dockerComposeFile' list if you have more compose files or use different names.
   // The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
-  "dockerComposeFile": ["../docker-compose.yml"],
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
   // closing the container when the workspace is closed
   "shutdownAction": "stopCompose",
   // The 'service' property is the name of the service for the container that VS Code should
@@ -31,7 +33,10 @@
         "charliermarsh.ruff"
       ],
       "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
       }
     }
   }
