@@ -1,24 +1,98 @@
 import os
+# from pipelines.regions_utils import HandRegions, PipelineDictKeys
 import cv2
 import numpy as np
 import mediapipe as mp
 from typing import List, Dict, Tuple
-import functions
 from enum import Enum
 
-# TODO: Fix rotation of images, refactor all rotation and cropping functions -> rotate_and_crop_region()
-# Utils 
-def draw_point(image, point):
+# TODO: Decide with frontend on final implementation and use of get_landmarks-function
+# TODO: Remove enum and change to pipeline utitls from imports
+
+################################## Debug & Test Utils ##################################
+
+
+def draw_point(image: np.ndarray, point: Tuple[int, int]) -> None:
+    """
+    Draws a point on an image and displays the result.
+
+    Args:
+        image (np.ndarray): The image on which the point will be drawn.
+        point (Tuple[int, int]): The (x, y) coordinates of the point to be drawn.
+
+    Returns:
+        None: This function modifies the input image in-place and displays it.
+    """
     cv2.circle(image, point, radius=5, color=(0, 255, 0), thickness=-1)
     cv2.imshow("Image with Point", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def show_images(images):
+
+def show_images(images: List[np.ndarray]) -> None:
+    """
+    Displays a list of images sequentially in a window.
+
+    Args:
+        images (List[np.ndarray]): A list of images, where each image is represented as a NumPy array.
+
+    Returns:
+        None: This function does not return anything. It displays each image in a window until a key is pressed.
+    """
     for image in images:
         cv2.imshow("Images", image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+
+def draw_images_in_grid(image_list: list, rows: int, cols: int, image_size: Tuple[int, int] = (224, 224), 
+                        padding: int = 10, bg_color: Tuple[int, int, int] = (13, 17, 23)) -> np.ndarray:
+    """
+    Arranges a list of images in a grid format on a single canvas.
+
+    Args:
+        image_list (list): List of images as NumPy arrays.
+        rows (int): Number of rows in the grid.
+        cols (int): Number of columns in the grid.
+        image_size (Tuple[int, int], optional): Target size (width, height) for resizing each image. Default is (224, 224).
+        padding (int, optional): Padding (in pixels) between images in the grid. Default is 10.
+        bg_color (Tuple[int, int, int], optional): Background color as a BGR tuple (blue, green, red). Default is (13, 17, 23).
+
+    Returns:
+        np.ndarray: The resulting image canvas with the arranged grid of images.
+
+    Notes:
+        - If the number of images in `image_list` exceeds `rows * cols`, the excess images will be ignored.
+        - Grayscale images in the list are automatically converted to color (BGR format).
+        - The canvas size is calculated based on the grid dimensions, image size, and padding.
+
+    Example:
+        images = [cv2.imread("image1.jpg"), cv2.imread("image2.jpg")]
+        grid = draw_images_in_grid(images, rows=2, cols=2)
+        cv2.imshow("Image Grid", grid)
+        cv2.waitKey(0)
+    """
+    canvas_height = rows * (image_size[1] + padding) + padding
+    canvas_width = cols * (image_size[0] + padding) + padding
+
+    canvas = np.full((canvas_height, canvas_width, 3), bg_color, dtype=np.uint8)
+
+    for i, img in enumerate(image_list):
+        if i >= rows * cols:
+            break  # Avoid adding more images than the grid can hold
+        if len(img.shape) == 2:  # Check if image is grayscale
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        img_resized = cv2.resize(img, image_size)
+
+        row = i // cols
+        col = i % cols
+        y = padding + row * (image_size[1] + padding)
+        x = padding + col * (image_size[0] + padding)
+
+        canvas[y : y + image_size[1], x : x + image_size[0]] = img_resized
+
+    return canvas
+
 
 class HandRegions(Enum):
     """
@@ -310,8 +384,21 @@ def detect_missing_point(
     return detected_point
 
 
-def find_direction_vector(point1, point2):
+def find_direction_vector(point1: Tuple[int, int], point2: Tuple[int, int]) -> Tuple[int, int]:
+    """
+    Calculates the direction vector from the first point to the second point in a 2D space.
+
+    Args:
+        point1 (Tuple[int, int]): The starting point as (x, y) coordinates.
+        point2 (Tuple[int, int]): The ending point as (x, y) coordinates.
+
+    Returns:
+        Tuple[int, int]: The direction vector as (dx, dy), where:
+                         dx = point2[0] - point1[0]
+                         dy = point2[1] - point1[1].
+    """
     return (point2[0] - point1[0], point2[1] - point1[1])
+
 
 
 def get_sorted_points_by_distance(array_of_points: List[Tuple[int, int]], given_point: Tuple[int, int], return_closest: bool = False) -> List[Tuple[int, int]]:
@@ -334,8 +421,18 @@ def get_sorted_points_by_distance(array_of_points: List[Tuple[int, int]], given_
     return sorted_points
 
 
-def calculate_euclidean_distance(point1, point2):
-    return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** (0.5)
+def calculate_euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int]) -> float:
+    """
+    Calculates the Euclidean distance between two points in a 2D space.
+
+    Args:
+        point1 (Tuple[int, int]): The first point as (x, y) coordinates.
+        point2 (Tuple[int, int]): The second point as (x, y) coordinates.
+
+    Returns:
+        float: The Euclidean distance between the two points.
+    """
+    return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
 
 
 def integrate_defects(region_defining_points, defects):
@@ -370,7 +467,7 @@ def extract_segements(region_defining_points, image, contour_mask, landmarks):
     """
     segmented_contour_mask = draw_lines_on_mask(contour_mask, region_defining_points)
     hand_segments = extract_segment_masks(segmented_contour_mask)
-    sorted_segments = sorted(hand_segments, key=functions.count_white_pixels, reverse=True)[:7]
+    sorted_segments = sorted(hand_segments, key=count_white_pixels, reverse=True)[:7]
     return sorted_segments
 
 
@@ -409,6 +506,20 @@ def extract_segment_masks(mask: np.ndarray) -> list:
         segment_mask = contour_to_bitmask(contour, mask.shape)
         hand_segments.append(segment_mask)
     return hand_segments
+
+
+def count_white_pixels(image: np.ndarray) -> int:
+    """
+    Counts the number of white pixels (value 255) in a binary or grayscale image.
+
+    Args:
+        image (np.ndarray): The input image as a NumPy array. Expected to be a binary 
+                            or grayscale image where white pixels have the value 255.
+
+    Returns:
+        int: The total count of white pixels in the image.
+    """
+    return np.sum(image == 255)
 
 
 def assign_regions(sorted_segments, image, landmarks):
@@ -482,31 +593,42 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
     angle = calculate_region_angle(region["name"], landmarks, orientation_hand)
 
     rotated_image = rotate_image_no_crop(image, angle)
-
-    cv2.imshow("Images", rotated_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
     rotated_mask = rotate_image_no_crop(region["mask"], angle)
+
     bounding_box = get_bounding_box_with_margin(rotated_mask, 5)
     cropped_image = crop_to_bounding_box(rotated_image, bounding_box)
-
 
     return cropped_image
 
 
-def calculate_hand_orientation(landmarks):
+def calculate_hand_orientation(landmarks: list) -> int:
     """
-    Determine hand orientation based on ring and index finger base landmarks.
+    Determines the hand orientation based on ring and index finger base landmarks.
+
+    Args:
+        landmarks (list): List of hand landmarks, where each landmark is a tuple (x, y).
+
+    Returns:
+        int: Orientation of the hand. Returns -1 if the ring finger base is to the right
+             of the index finger base (thumb on the left side), otherwise 1.
     """
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
     return -1 if ring_finger_base[0] > index_finger_base[0] else 1
 
 
-def calculate_region_angle(region_name, landmarks, orientation_hand):
+def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: int) -> float:
     """
-    Calculate the rotation angle for a specific hand region.
+    Calculates the rotation angle for a specific hand region based on its name and landmarks.
+
+    Args:
+        region_name (str): The name of the hand region (e.g., HAND_0, THUMB_2).
+        landmarks (list): List of hand landmarks, where each landmark is a tuple (x, y).
+        orientation_hand (int): Orientation of the hand, typically -1 or 1, based on thumb position.
+
+    Returns:
+        float: The calculated rotation angle in degrees for the specified region. Returns
+               a default angle of 90 degrees if the region name is not recognized.
     """
     if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
         return 90 - calculate_vector_angle(landmarks[5], landmarks[13])
@@ -523,13 +645,35 @@ def calculate_region_angle(region_name, landmarks, orientation_hand):
     return 90
 
 
-def calculate_vector_angle(point1, point2):
+def calculate_vector_angle(point1: Tuple[int, int], point2: Tuple[int, int]) -> float:
+    """
+    Calculates the angle of a vector defined by two points in a 2D space.
+
+    Args:
+        point1 (Tuple[int, int]): The starting point of the vector as (x, y) coordinates.
+        point2 (Tuple[int, int]): The ending point of the vector as (x, y) coordinates.
+
+    Returns:
+        float: The angle of the vector in degrees, measured counterclockwise from the positive x-axis.
+    """
     vector = (point2[0] - point1[0], point2[1] - point1[1])
     vector_angle = cv2.fastAtan2(vector[0], vector[1])
     return vector_angle
 
 
-def rotate_image_no_crop(image, angle, center_of_rotation=[]):
+def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = []) -> np.ndarray:
+    """
+    Rotates an image around a specified center without cropping the edges.
+
+    Args:
+        image (np.ndarray): The input image to be rotated.
+        angle (float): The rotation angle in degrees (clockwise is positive).
+        center_of_rotation (list, optional): The center point for the rotation as [x, y]. 
+                                             If not provided, the image center is used.
+
+    Returns:
+        np.ndarray: The rotated image with adjusted dimensions to prevent cropping.
+    """
     angle = float(angle)
     (h, w) = image.shape[:2]
     if center_of_rotation == []:
@@ -554,20 +698,17 @@ def get_bounding_box_with_margin(mask, margin=0):
     Calculate a bounding box around a mask with an added margin.
 
     Parameters:
-    - mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
-    - margin (int): Margin to add around the bounding box.
+    mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    margin (int): Margin to add around the bounding box.
 
     Returns:
-    - (x, y, w, h): Tuple representing the bounding box coordinates with the margin.
+    (x, y, w, h): Tuple representing the bounding box coordinates with the margin.
                     (x, y) is the top-left corner, and (w, h) are the width and height.
     """
-    # Ensure the mask is binary
-    mask = (mask > 0).astype(np.uint8)  # Convert to binary if needed
+    mask = (mask > 0).astype(np.uint8)
 
-    # Step 1: Find the bounding box of the mask
     x, y, w, h = cv2.boundingRect(mask)
 
-    # Step 2: Add the margin to the bounding box
     x = max(x - margin, 0)
     y = max(y - margin, 0)
     w = min(w + 2 * margin, mask.shape[1] - x)
@@ -581,12 +722,12 @@ def crop_to_bounding_box(image, bounding_box):
     Crop an image to a bounding box.
 
     Parameters:
-    - image (numpy.ndarray): The input image.
-    - x, y (int): Top-left corner coordinates of the bounding box.
-    - w, h (int): Width and height of the bounding box.
+    image (numpy.ndarray): The input image.
+    x, y (int): Top-left corner coordinates of the bounding box.
+    w, h (int): Width and height of the bounding box.
 
     Returns:
-    - numpy.ndarray: The cropped image.
+    numpy.ndarray: The cropped image.
     """
     x, y, w, h = bounding_box
     # Crop the image using array slicing
@@ -594,18 +735,25 @@ def crop_to_bounding_box(image, bounding_box):
     return cropped_image
 
 
-
-def resize_images(images_with_names: List[Dict[str, np.ndarray]], size: int = 224, fill_color: Tuple[int, int, int] = (255, 255, 255)) -> List[Dict[str, np.ndarray]]:
+def resize_images(
+    images_with_names: List[Dict[str, np.ndarray]], 
+    size: int = 224, 
+    fill_color: Tuple[int, int, int] = (255, 255, 255)
+) -> List[Dict[str, np.ndarray]]:
     """
-    Resizes images to a square target size with padding.
+    Resizes a list of images to a square target size with optional padding.
 
     Args:
-        images_with_names: List of region dictionaries with images.
-        size: Target image size.
-        fill_color: Padding fill color.
+        images_with_names (List[Dict[str, np.ndarray]]): A list of dictionaries, where each dictionary contains:
+            "name" (str): The name of the image or region.
+            "image" (np.ndarray): The image data as a NumPy array.
+        size (int, optional): The target size of the output image (height and width will be equal). Defaults to 224.
+        fill_color (Tuple[int, int, int], optional): The RGB color used to fill padding areas. Defaults to white (255, 255, 255).
 
     Returns:
-        List[Dict[str, np.ndarray]]: Resized images.
+        List[Dict[str, np.ndarray]]: A list of dictionaries, where each dictionary contains:
+            "name" (str): The name of the image or region.
+            "image" (np.ndarray): The resized and padded image as a NumPy array.
     """
     return [{
         "name": region["name"],
@@ -613,24 +761,20 @@ def resize_images(images_with_names: List[Dict[str, np.ndarray]], size: int = 22
     } for region in images_with_names]
 
 
-def resize_to_target(input_image, size, fill_color):
+def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, int, int]) -> np.ndarray:
     """
-    Resizes the input image to fit within the target resolution, maintaining its aspect ratio.
-    The resized image is then placed on a square canvas, with the lower part of the image aligned
-    to the bottom of the canvas. The remaining space is filled with the specified background color.
+    Resizes the input image to fit within a square canvas of the target resolution, maintaining its aspect ratio.
+    The resized image is placed on the canvas, aligned to the bottom center. Empty areas are filled with the specified color.
 
-    Parameters:
-    - input_image: The image to resize (should be a NumPy array).
-    - size: The target resolution size for the square canvas (e.g., 224).
-    - fill_color: The background color (as a tuple of (B, G, R)) to fill the empty space.
+    Args:
+        input_image (np.ndarray): The input image to be resized, as a NumPy array.
+        size (int): The target resolution for the square canvas (e.g., 224 for a 224x224 canvas).
+        fill_color (Tuple[int, int, int]): The color to fill the empty areas, specified as a (B, G, R) tuple.
 
     Returns:
-    - new_image: The new image with the resized input image placed on a square canvas.
+        np.ndarray: The resized image placed on a square canvas with the specified background color.
     """
-    # Get the original image dimensions (height and width)
     original_height, original_width = input_image.shape[:2]
-
-    # Determine scaling factor based on the larger dimension
     if original_width > original_height:
         new_width = size
         new_height = int(original_height * (size / original_width))
@@ -638,17 +782,12 @@ def resize_to_target(input_image, size, fill_color):
         new_height = size
         new_width = int(original_width * (size / original_height))
 
-    # Resize the input image using OpenCV
     resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+    new_image = np.full((size, size, 3), fill_color, dtype=np.uint8)
 
-    # Create a new square image with the background color
-    new_image = np.full((size, size, 3), fill_color, dtype=np.uint8)  # Background filled with the specified color
-
-    # Calculate the position for placing the resized image in the new square canvas
-    top_left_x = (size - new_width) // 2  # Centering horizontally
-    top_left_y = size - new_height  # Aligning the bottom of the image with the bottom of the square canvas
-
-    # Copy the resized image onto the new square canvas
+    top_left_x = (size - new_width) // 2  
+    top_left_y = size - new_height
+    
     new_image[top_left_y : top_left_y + new_height, top_left_x : top_left_x + new_width] = resized_image
 
     return new_image
@@ -673,7 +812,7 @@ image_list = []
 for _, image in images.items():
     image_list.append(image)
 
-grid_image = functions.draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
+grid_image = draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
 
 cv2.imshow('Image Grid', grid_image)
 cv2.waitKey(0)
