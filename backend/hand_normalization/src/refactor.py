@@ -480,12 +480,18 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
     """
     orientation_hand = calculate_hand_orientation(landmarks)
     angle = calculate_region_angle(region["name"], landmarks, orientation_hand)
-    mask = region["mask"]
-    
+
     rotated_image = rotate_image_no_crop(image, angle)
-    rotated_mask = rotate_image_no_crop(mask, angle)
+
+    cv2.imshow("Images", rotated_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    rotated_mask = rotate_image_no_crop(region["mask"], angle)
     bounding_box = get_bounding_box_with_margin(rotated_mask, 5)
     cropped_image = crop_to_bounding_box(rotated_image, bounding_box)
+
+
     return cropped_image
 
 
@@ -502,8 +508,8 @@ def calculate_region_angle(region_name, landmarks, orientation_hand):
     """
     Calculate the rotation angle for a specific hand region.
     """
-    if region_name == (HandRegions.HAND_0.value or HandRegions.HANDBODY_1.value):
-        return 90 - orientation_hand * calculate_vector_angle(landmarks[5], landmarks[13])
+    if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
+        return 90 - calculate_vector_angle(landmarks[5], landmarks[13])
     elif region_name == HandRegions.THUMB_2.value:
         return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
@@ -514,7 +520,7 @@ def calculate_region_angle(region_name, landmarks, orientation_hand):
         return 180 - calculate_vector_angle(landmarks[14], landmarks[16])
     elif region_name == HandRegions.LITTLEFINGER_6.value:
         return 180 - calculate_vector_angle(landmarks[18], landmarks[20])
-    return 90  # Default angle for unknown regions
+    return 90
 
 
 def calculate_vector_angle(point1, point2):
@@ -529,20 +535,15 @@ def rotate_image_no_crop(image, angle, center_of_rotation=[]):
     if center_of_rotation == []:
         center_of_rotation = (w // 2, h // 2)
 
-    # Calculate the rotation matri
     rotation_matrix = cv2.getRotationMatrix2D(center_of_rotation, angle, scale=1.0)
 
-    # Calculate the new bounding dimensions of the image
     cos = abs(rotation_matrix[0, 0])
     sin = abs(rotation_matrix[0, 1])
     new_w = int((h * sin) + (w * cos))
     new_h = int((h * cos) + (w * sin))
-
-    # Adjust the rotation matrix to account for translation
     rotation_matrix[0, 2] += (new_w / 2) - center_of_rotation[0]
     rotation_matrix[1, 2] += (new_h / 2) - center_of_rotation[1]
 
-    # Perform the rotation
     rotated_image = cv2.warpAffine(image, rotation_matrix, (new_w, new_h))
 
     return rotated_image
