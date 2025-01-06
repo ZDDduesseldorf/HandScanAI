@@ -21,12 +21,7 @@ const FooterContainer = styled(Box)`
   color: #0f3eb5;
 `;
 
-// const StyledStepLabel = styled(StepLabel)`
-//   // color: #0f3eb5;
-//   color: #000000;
-// `;
-
-const StyledStepLabel = styled(StepLabel)(({ theme }) => ({
+const StyledStepLabel = styled(StepLabel)(() => ({
   //overwrites label currently active
   '& .MuiStepLabel-label.Mui-active': {
     color: '#0f3eb5', // changes the font color
