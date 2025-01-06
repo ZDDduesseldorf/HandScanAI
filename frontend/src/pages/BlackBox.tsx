@@ -1,13 +1,9 @@
 import React from 'react';
 import { Typography, Box, styled } from '@mui/material';
-//import Stepper from '@/pages/Stepper';
-import HorizStepper from '@/components/Stepper';
 
-import { BodyLayout } from './Information';
-import TitleBar from '@/components/TitleBar';
 import NavButton from '@/components/NavButton';
+import StyledTitle from '@/styles/StyledTitle';
 
-// this is just the Layout
 const BottomMiddleLayout = styled(Box)`
   display: flex;
   flex-direction: row;
@@ -39,8 +35,8 @@ const SecondaryHeading = styled(Typography)`
 
 const BlackBox: React.FC = () => {
   return (
-    <BodyLayout>
-      <TitleBar>Black-Box KI</TitleBar>
+    <Box>
+      <StyledTitle>Black-Box KI</StyledTitle>
       <UpperMiddleLayout>
         <SecondaryHeading>K-nearest neighbor modell</SecondaryHeading>
         {/* <Title variant="h1">Daten statt Gebühren</Title> */}
@@ -90,10 +86,9 @@ const BlackBox: React.FC = () => {
           </div>
         </BottomMiddleLayout>
       </UpperMiddleLayout>
-      <NavButton RouteTo="/ErgebnisAge">Zurück</NavButton>
+      <NavButton RouteTo="/results-age">Zurück</NavButton>
       <br></br>
-      <HorizStepper pageNumber={3}></HorizStepper>
-    </BodyLayout>
+    </Box>
   );
 };
 

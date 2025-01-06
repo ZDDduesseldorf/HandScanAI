@@ -1,28 +1,25 @@
+import React, { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
-import * as React from 'react';
-import { ReactNode } from 'react';
-import { Title } from '@/pages/Home';
-
-interface Props {
-  children: ReactNode;
-}
+import StyledTitle from '@/styles/StyledTitle';
 
 const HorizontalBar = styled(Box)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 0 auto;
+  max-width: 95%;
+  margin: 1rem auto;
+  padding: 0;
 `;
 
-const TitleBar: React.FC<Props> = ({ children }) => {
+const TitleBar: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <HorizontalBar>
-      <Title variant="h1">{children}</Title>
+      <StyledTitle variant="h1">{children}</StyledTitle>
       <img
         src="/HandLogo.png"
-        alt="Logo von der Hand"
-        style={{ maxWidth: '12%' }}
+        alt="HandScan AI Logo"
+        style={{ maxWidth: '12%', height: 'auto' }}
       />
     </HorizontalBar>
   );

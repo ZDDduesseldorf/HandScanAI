@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import StyledTitle from '@/styles/StyledTitle';
 
 interface ServerMessage {
   flow?: string;
@@ -9,21 +11,25 @@ interface ServerMessage {
   [key: string]: unknown;
 }
 
-const Container = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100vh',
-  backgroundColor: theme.palette.background.default,
-  color: theme.palette.text.primary,
-}));
+const ScrollableBox = styled(Box)`
+  margin: 20px 30px;
+  overflow-y: auto;
+  max-height: calc(100vh - 300px); /* Adjust based on your layout */
+`;
 
-const Video = styled('video')({
-  maxWidth: '100%',
-  borderRadius: '8px',
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
-});
+const VideoWrapper = styled(Box)`
+  display: flex;
+  width: 100%;
+`;
+
+const Video = styled('video')`
+  width: 40%;
+  height: auto;
+  margin: 0 auto;
+  max-height: 50vh;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+`;
 
 const Message = styled('p')(({ theme }) => ({
   marginTop: theme.spacing(2),
@@ -38,9 +44,7 @@ const Bildaufnahme = () => {
     width: number;
     height: number;
   }>();
-  const [serverMessage, setServerMessage] = useState<
-    ServerMessage | undefined
-  >();
+  const [serverMessage, setServerMessage] = useState<ServerMessage | undefined>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,13 +77,7 @@ const Bildaufnahme = () => {
 
               setInterval(() => {
                 if (context && currentVideoRef) {
-                  context.drawImage(
-                    currentVideoRef,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height,
-                  );
+                  context.drawImage(currentVideoRef, 0, 0, canvas.width, canvas.height);
                   canvas.toBlob((blob) => {
                     if (blob && ws.readyState === WebSocket.OPEN) {
                       ws.send(blob);
@@ -130,16 +128,15 @@ const Bildaufnahme = () => {
   }, [navigate]);
 
   return (
-    <Container>
-      <h1>Bildaufnahme</h1>
-      {resolution && (
-        <Message>
-          Auflösung: {resolution.width}x{resolution.height}
-        </Message>
-      )}
-      <Video ref={videoRef} autoPlay />
-      <Message>Server Antwort: {JSON.stringify(serverMessage)}</Message>
-    </Container>
+    <ScrollableBox>
+      <StyledTitle>Bildaufnahme</StyledTitle>
+      <VideoWrapper>
+        <Video ref={videoRef} autoPlay />
+      </VideoWrapper>
+      <Button variant="contained" color="primary" onClick={() => navigate('/processing')} sx={{ marginTop: 2 }}>
+        Weiter
+      </Button>
+    </ScrollableBox>
   );
 };
 
