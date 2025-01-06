@@ -1,8 +1,8 @@
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper'; // Stepper component for creating progress indicators
+import Step from '@mui/material/Step'; // Represents an individual step in the Stepper
+import StepLabel from '@mui/material/StepLabel'; // Label for each step in the Stepper
 
 const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis', 'Abschluss'];
 
@@ -21,17 +21,39 @@ const FooterContainer = styled(Box)`
   color: #0f3eb5;
 `;
 
-const StyledStepLabel = styled(StepLabel)`
-  color: #0f3eb5;
-`;
+// const StyledStepLabel = styled(StepLabel)`
+//   // color: #0f3eb5;
+//   color: #000000;
+// `;
+
+const StyledStepLabel = styled(StepLabel)(({ theme }) => ({
+  //label currently active
+  '& .MuiStepLabel-label.Mui-active': {
+    color: '#0f3eb5', // changes the font color
+  },
+  '& .MuiStepLabel-label': {
+    //all Labels
+    color: '#000000', // changes the font color
+    fontFamily: 'Delius Unicase, serif',
+  },
+  '& .MuiStepLabel-label.Mui-completed': {
+    //labels we have already passed
+    color: '#0f3eb5', // changes the font color
+  },
+}));
 
 export default function FooterStepper({ pageNumber }: Props) {
   return (
     <FooterContainer>
+      {/* pageNumber sets which Stepper circle we are currently at  */}
       <Stepper activeStep={pageNumber} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
-            <StyledStepLabel>{label}</StyledStepLabel>
+            <StyledStepLabel
+            // sx={{ '& .MuiStepLabel-IconContainer': { color: '#0f3eb5' } }}
+            >
+              {label}
+            </StyledStepLabel>
           </Step>
         ))}
       </Stepper>
