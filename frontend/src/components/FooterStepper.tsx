@@ -27,18 +27,30 @@ const FooterContainer = styled(Box)`
 // `;
 
 const StyledStepLabel = styled(StepLabel)(({ theme }) => ({
-  //label currently active
+  //overwrites label currently active
   '& .MuiStepLabel-label.Mui-active': {
     color: '#0f3eb5', // changes the font color
   },
   '& .MuiStepLabel-label': {
-    //all Labels
+    //covers all Labels if not overwritten
     color: '#000000', // changes the font color
     fontFamily: 'Delius Unicase, serif',
   },
   '& .MuiStepLabel-label.Mui-completed': {
-    //labels we have already passed
+    //overwrites labels we have already passed
     color: '#0f3eb5', // changes the font color
+  },
+  '& .MuiStepIcon-root.Mui-active': {
+    color: '#0f3eb5', // changes the circle color
+  },
+  '& .MuiStepIcon-root.Mui-completed': {
+    color: '#0f3eb5', // changes the circle color
+    outerWidth: '40px',
+    innerHeight: '40px',
+  },
+  '& .MuiStepIcon-text': {
+    // work around to hide the numbers in the circles, color transparency set to 0
+    fill: '#00000000',
   },
 }));
 
