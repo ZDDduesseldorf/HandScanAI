@@ -40,17 +40,30 @@ const StyledStepLabel = styled(StepLabel)(({ theme }) => ({
     //overwrites labels we have already passed
     color: '#0f3eb5', // changes the font color
   },
+  //Dealing with Icons
+  // the icons with a checkered sign, dont use circle + text but a path pointing to an svg!!!
   '& .MuiStepIcon-root.Mui-active': {
     color: '#0f3eb5', // changes the circle color
   },
   '& .MuiStepIcon-root.Mui-completed': {
     color: '#0f3eb5', // changes the circle color
-    outerWidth: '40px',
-    innerHeight: '40px',
+    //height: '3em',
   },
   '& .MuiStepIcon-text': {
     // work around to hide the numbers in the circles, color transparency set to 0
     fill: '#00000000',
+  },
+
+  //Horizontal Line Between Circles
+  '& .MuiStepConnector-line': {
+    //not inside Step Label but inside of the step class!!!
+    borderTopColor: '#0f3eb5', // Set the line color
+    borderColor: '#0f3eb5', // Set the line color
+
+    // fill: '#00000000',
+    // lineHeight: '5em',
+    // bordertopwidth: '5px',
+    borderTopWidth: '20px', // Set the thickness of the horizontal line
   },
 }));
 
