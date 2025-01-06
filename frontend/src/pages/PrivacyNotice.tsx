@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Button, Box, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import StyledTitle from '@/styles/StyledTitle';
+import NavButton from '@/components/NavButton';
 
 const BoxLayout = styled(Box)`
   display: flex;
@@ -104,15 +105,14 @@ const PrivacyNotice: React.FC = () => {
           </BoxText>
 
           <AcceptContainer>
-            <BoxText className="checkbox">
-              Ich akzeptiere die Datenverarbeitung.
-            </BoxText>
+            <BoxText>Ich akzeptiere die Datenverarbeitung.</BoxText>
             <ContinueButton onClick={() => navigate('/image-capture')}>
               Weiter
             </ContinueButton>
           </AcceptContainer>
         </ContentBox>
       </BoxLayout>
+      <NavButton RouteTo="/image-capture">Weiter</NavButton>
     </Box>
   );
 };

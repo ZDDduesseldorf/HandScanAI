@@ -1,22 +1,14 @@
 import React from 'react';
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import StyledTitle from '@/styles/StyledTitle';
+import NavButton from '@/components/NavButton';
+import { Box } from '@mui/material';
 
 const ResultsGender: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
-    <div>
+    <Box>
       <StyledTitle>Ergebnis</StyledTitle>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/submission-complete')}
-      >
-        Weiter
-      </Button>
-    </div>
+      <NavButton RouteTo="/submission-complete">Weiter</NavButton>
+    </Box>
   );
 };
 

@@ -8,7 +8,6 @@ const BottomMiddleLayout = styled(Box)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
   gap: 20px; /* Optional: adds space between the two boxes */
 }
 `;
@@ -23,14 +22,15 @@ const BoxText = styled(Typography)`
   font-family: 'Poppins', sans-serif;
   margin: 0 0 1 rem;
   text-align: justify;
-  // font-size: clamp(1rem, 2vw, 1.5rem);
   font-size: 0.8rem;
+  color: #1a3ab8;
 `;
 const SecondaryHeading = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
   margin: 0 0 0.5rem;
   text-align: left;
   font-size: clamp(1rem, 2vw, 1.5rem);
+  color: #1a3ab8;
 `;
 
 const BlackBox: React.FC = () => {

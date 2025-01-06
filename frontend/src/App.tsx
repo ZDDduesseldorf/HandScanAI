@@ -13,7 +13,7 @@ import ResultsAge from '@/pages/ResultsAge';
 import ResultsGender from '@/pages/ResultsGender';
 import SubmissionComplete from '@/pages/SubmissionComplete';
 import Sandbox from '@/pages/Sandbox';
-import BlackBox from './pages/BlackBox';
+import BlackBox from '@/pages/BlackBox';
 import Layout from '@/components/Layout';
 
 import '@/assets/fonts.css';

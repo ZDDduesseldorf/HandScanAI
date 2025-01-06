@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import StyledTitle from '@/styles/StyledTitle';
+import NavButton from '@/components/NavButton';
 
 const ResultsAge: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <Box>
       <StyledTitle>Ergebnis</StyledTitle>
       <Button
         variant="contained"
@@ -16,14 +17,8 @@ const ResultsAge: React.FC = () => {
       >
         Erklärung
       </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/results-gender')}
-      >
-        Weiter
-      </Button>
-    </div>
+      <NavButton RouteTo="/results-gender">Weiter</NavButton>
+    </Box>
   );
 };
 

@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Button, Box } from '@mui/material';
+import { useEffect, useRef } from 'react';
+import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
+import NavButton from '@/components/NavButton';
 
 interface ServerMessage {
   flow?: string;
@@ -31,20 +32,9 @@ const Video = styled('video')`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 `;
 
-const Message = styled('p')(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  fontSize: theme.typography.h6.fontSize,
-  textAlign: 'center',
-}));
-
 const Bildaufnahme = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const [resolution, setResolution] = useState<{
-    width: number;
-    height: number;
-  }>();
-  const [serverMessage, setServerMessage] = useState<ServerMessage | undefined>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,11 +63,16 @@ const Bildaufnahme = () => {
               const videoHeight = currentVideoRef.videoHeight;
               canvas.width = videoWidth;
               canvas.height = videoHeight;
-              setResolution({ width: videoWidth, height: videoHeight });
 
               setInterval(() => {
                 if (context && currentVideoRef) {
-                  context.drawImage(currentVideoRef, 0, 0, canvas.width, canvas.height);
+                  context.drawImage(
+                    currentVideoRef,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height,
+                  );
                   canvas.toBlob((blob) => {
                     if (blob && ws.readyState === WebSocket.OPEN) {
                       ws.send(blob);
@@ -97,7 +92,6 @@ const Bildaufnahme = () => {
       try {
         const eventData = event.data as string;
         const data = JSON.parse(eventData) as ServerMessage;
-        setServerMessage(data);
 
         // Redirect if hand detection is successful
         if (data.landmarks_detected) {
@@ -133,9 +127,7 @@ const Bildaufnahme = () => {
       <VideoWrapper>
         <Video ref={videoRef} autoPlay />
       </VideoWrapper>
-      <Button variant="contained" color="primary" onClick={() => navigate('/processing')} sx={{ marginTop: 2 }}>
-        Weiter
-      </Button>
+      <NavButton RouteTo="/processing">Weiter</NavButton>
     </ScrollableBox>
   );
 };

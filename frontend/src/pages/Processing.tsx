@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Typography, styled, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Typography, styled, Box } from '@mui/material';
+import NavButton from '@/components/NavButton';
 
 const CenteredInformationText = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
@@ -11,8 +11,6 @@ const CenteredInformationText = styled(Typography)`
 `;
 
 const Processing: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <Box>
       <CenteredInformationText>
@@ -23,14 +21,7 @@ const Processing: React.FC = () => {
         <br /> ist.
       </CenteredInformationText>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/results-age')}
-        sx={{ marginTop: 2 }}
-      >
-        Weiter
-      </Button>
+      <NavButton RouteTo="/results-age">Weiter</NavButton>
     </Box>
   );
 };

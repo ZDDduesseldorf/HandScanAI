@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Box, Typography, styled } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Typography, styled } from '@mui/material';
 import StyledTitle from '@/styles/StyledTitle';
+import NavButton from '@/components/NavButton';
 
 const SecondaryHeading = styled(Typography)`
   display: flex;
@@ -21,8 +21,6 @@ const BoxText = styled(Typography)`
 `;
 
 const SubmissionComplete: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <Box>
       <StyledTitle>Danke</StyledTitle>
@@ -33,9 +31,7 @@ const SubmissionComplete: React.FC = () => {
         einen eigenen Bericht für dich erstellt. Vielen Dank, dass du mit deiner
         Nutzung geholfen hast, HandScan AI zu verbessern. Bis bald!
       </BoxText>
-      <Button variant="contained" color="primary" onClick={() => navigate('/')}>
-        Beenden
-      </Button>
+      <NavButton RouteTo="/">Beenden</NavButton>
     </Box>
   );
 };
