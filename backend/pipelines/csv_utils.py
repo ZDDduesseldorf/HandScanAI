@@ -36,7 +36,7 @@ def add_entry_to_csv(file_path, entry):
     """
     try:
         # Open the CSV file in read mode to get the header
-        with open(file_path, mode="r", newline="") as file:
+        with open(file_path, newline="") as file:
             reader = csv.DictReader(file)
             header = reader.fieldnames
 
@@ -60,7 +60,6 @@ def add_entry_to_csv(file_path, entry):
         print(f"Error adding entry to CSV file: {e}")
 
 
-
 def add_embedding_dict_to_css(embedding_csvs_folder_path, embeddings_dict):
     """
     Adds embeddings from a dictionary to the corresponding CSV files.
@@ -70,7 +69,7 @@ def add_embedding_dict_to_css(embedding_csvs_folder_path, embeddings_dict):
         embeddings_dict (dict): A dictionary with the following structure:
             {
                 "uuid": str,  # Unique identifier for the embeddings
-                "embeddings": dict { 
+                "embeddings": dict {
                     region (str): embedding (torch.Tensor)
                 }
             }
@@ -85,9 +84,9 @@ def add_embedding_dict_to_css(embedding_csvs_folder_path, embeddings_dict):
             continue
         else:
             raise FileNotFoundError(f"CSV file not found while saving the ebeddings: {file_path}")
-    
+
     uuid = embeddings_dict["uuid"]
     for region, embedding in embeddings_dict["embeddings"].items():
         csv_name = region + "_Embeddings.csv"
         file_path = os.path.join(embedding_csvs_folder_path, csv_name)
-        add_entry_to_csv(file_path,{"UUID":uuid, "Embedding": embedding.numpy().tolist()})
+        add_entry_to_csv(file_path, {"UUID": uuid, "Embedding": embedding.numpy().tolist()})
