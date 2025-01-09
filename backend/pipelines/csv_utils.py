@@ -60,23 +60,21 @@ def add_entry_to_csv(file_path, entry):
         print(f"Error adding entry to CSV file: {e}")
 
 
-def add_embedding_dict_to_css(embedding_csvs_folder_path, embeddings_dict):
+def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_dict: dict):
     """
-    Adds embeddings from a dictionary to the corresponding CSV files.
+    Adds embeddings from a dictionary to the corresponding CSV files per region key.
 
     Args:
-        embedding_csvs_folder_path (str): Path to the folder containing the all embedding CSV files that are mentioned by region name in the embeddings_dict .
+        embedding_csvs_folder_path (str): Path to folder containing one embedding CSV file per region in embeddings_dict
+        uuid (str): identifier for image and corresponding data and metadata
         embeddings_dict (dict): A dictionary with the following structure:
-            {
-                "uuid": str,  # Unique identifier for the embeddings
-                "embeddings": dict {
-                    region (str): embedding (torch.Tensor)
-                }
+            dict {
+                region (str): embedding (torch.Tensor)
             }
 
     """
 
-    for region, _ in embeddings_dict["embeddings"].items():
+    for region in embeddings_dict.keys():
         csv_name = region + "_Embeddings.csv"
         file_path = os.path.join(embedding_csvs_folder_path, csv_name)
 
@@ -85,8 +83,7 @@ def add_embedding_dict_to_css(embedding_csvs_folder_path, embeddings_dict):
         else:
             raise FileNotFoundError(f"CSV file not found while saving the ebeddings: {file_path}")
 
-    uuid = embeddings_dict["uuid"]
-    for region, embedding in embeddings_dict["embeddings"].items():
+    for region, embedding in embeddings_dict.items():
         csv_name = region + "_Embeddings.csv"
         file_path = os.path.join(embedding_csvs_folder_path, csv_name)
         add_entry_to_csv(file_path, {"UUID": uuid, "Embedding": embedding.numpy().tolist()})
