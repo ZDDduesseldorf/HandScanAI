@@ -23,4 +23,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mongodb:/data/db
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
