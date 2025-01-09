@@ -61,7 +61,7 @@ def add_entry_to_csv(file_path, entry):
 
 
 
-def add_EmbeddingDict_to_CSVs(embedding_csvs_folder_path, embeddings_dict):
+def add_embedding_dict_to_css(embedding_csvs_folder_path, embeddings_dict):
     """
     Adds embeddings from a dictionary to the corresponding CSV files.
 
