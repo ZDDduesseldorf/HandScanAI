@@ -40,6 +40,7 @@ def run_add_new_embeddings_pipeline(uuid, testing=False):
 
     ######## STEP 3: Update vektortree ################################
 
-    # TODO: add embeddings to vektortree
+    # TODO: add embeddings to region_csv
 
-    # TODO: calculate distances
+    # TODO: Bild im richtigen Ordner speichern
+    # TODO: Metadaten aus Frontend in Metadata.csv abspeichern

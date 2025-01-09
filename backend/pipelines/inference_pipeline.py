@@ -4,7 +4,7 @@ from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
-from classifier.simple_classification import classify_age, classify_gender
+from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
 
 # this file is used to generate the prediction of an image
 
@@ -56,16 +56,24 @@ def run_inference_pipeline(uuid, testing=False):
 
     ######## STEP 3: search nearest neighbours ###########################
 
-    k = 3  # anzahl nächster Nachbarn
+    k = 5  # anzahl nächster Nachbarn
     dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
     dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
+    print(dict_all_info_knn)
     ######## STEP 4: make a decision for prediction ######################
 
     age_dict = classify_age(dict_all_info_knn)
+    print(age_dict)
     gender_dict = classify_gender(dict_all_info_knn)
-    return age_dict, gender_dict
-    # TODO: Mapping von 0,1 zu female und male am Ende für Ausgabe
+    print(gender_dict)
+    # return age_dict, gender_dict
+
+    # TODO: Ensemble-Classifier für age und gender
+    ensemble_df = ensemble_classifier(age_dict, gender_dict)
+    return ensemble_df
+    # TODO: Mapping von 0,1 zu female und male am Ende für Ausgabe?
+    # TODO: simple Ausgabe Alter, Alterrange, Geschlecht und Confidence für API zu frontend
 
 
 # TODO: Verschieben in image_utils Datei
