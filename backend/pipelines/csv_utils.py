@@ -1,4 +1,5 @@
 import csv
+import os
 
 
 def create_csv_with_header(file_path, header):
@@ -57,3 +58,36 @@ def add_entry_to_csv(file_path, entry):
             writer.writerow(filtered_entry)
     except Exception as e:
         print(f"Error adding entry to CSV file: {e}")
+
+
+
+def add_EmbeddingDict_to_CSVs(embedding_csvs_folder_path, embeddings_dict):
+    """
+    Adds embeddings from a dictionary to the corresponding CSV files.
+
+    Args:
+        embedding_csvs_folder_path (str): Path to the folder containing the all embedding CSV files that are mentioned by region name in the embeddings_dict .
+        embeddings_dict (dict): A dictionary with the following structure:
+            {
+                "uuid": str,  # Unique identifier for the embeddings
+                "embeddings": dict { 
+                    region (str): embedding (torch.Tensor)
+                }
+            }
+
+    """
+
+    for region, _ in embeddings_dict["embeddings"].items():
+        csv_name = region + "_Embeddings.csv"
+        file_path = os.path.join(embedding_csvs_folder_path, csv_name)
+
+        if os.path.isfile(file_path):
+            continue
+        else:
+            raise FileNotFoundError(f"CSV file not found while saving the ebeddings: {file_path}")
+    
+    uuid = embeddings_dict["uuid"]
+    for region, embedding in embeddings_dict["embeddings"].items():
+        csv_name = region + "_Embeddings.csv"
+        file_path = os.path.join(embedding_csvs_folder_path, csv_name)
+        add_entry_to_csv(file_path,{"UUID":uuid, "Embedding": embedding.numpy().tolist()})
