@@ -56,8 +56,10 @@ def add_entry_to_csv(file_path, entry):
 
             # Write the filtered entry to the CSV file
             writer.writerow(filtered_entry)
+            return True
     except Exception as e:
         print(f"Error adding entry to CSV file: {e}")
+        return False
 
 
 def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_dict: dict):
@@ -83,7 +85,11 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
         else:
             raise FileNotFoundError(f"CSV file not found while saving the ebeddings: {file_path}")
 
+    success = True
     for region, embedding in embeddings_dict.items():
         csv_name = region + "_Embeddings.csv"
         file_path = os.path.join(embedding_csvs_folder_path, csv_name)
-        add_entry_to_csv(file_path, {"UUID": uuid, "Embedding": embedding.numpy().tolist()})
+        if not add_entry_to_csv(file_path, {"UUID": uuid, "Embedding": embedding.numpy().tolist()}):
+            success = False
+
+    return success
