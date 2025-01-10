@@ -10,6 +10,7 @@ from classifier.simple_classification import classify_age, classify_gender, ense
 
 
 # is triggered by the ‘Analyse Starten’ button in the frontend. Transfer of the uuid of the current image
+# TODO: Wo werden Bilder aus Frontend gespeichert?
 def _path_manager(testing):
     temp_base_dir = Path(__file__).resolve().parent.parent
     if testing:
@@ -69,10 +70,12 @@ def run_inference_pipeline(uuid, testing=False):
     print(gender_dict)
     # return age_dict, gender_dict
 
-    # TODO: Ensemble-Classifier für age und gender
     ensemble_df = ensemble_classifier(age_dict, gender_dict)
+    # TODO: Json hier oder in API?
+    result = ensemble_df.to_json(orient="index")
+    print(result)
     return ensemble_df
-    # TODO: Mapping von 0,1 zu female und male am Ende für Ausgabe?
+
     # TODO: simple Ausgabe Alter, Alterrange, Geschlecht und Confidence für API zu frontend
 
 
