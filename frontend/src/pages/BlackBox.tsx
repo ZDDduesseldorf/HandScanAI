@@ -39,7 +39,6 @@ const BlackBox: React.FC = () => {
       <StyledTitle>Black-Box KI</StyledTitle>
       <UpperMiddleLayout>
         <SecondaryHeading>K-nearest neighbor modell</SecondaryHeading>
-        {/* <Title variant="h1">Daten statt Gebühren</Title> */}
         <BoxText>
           Wie bei vielen digitalen Diensten gilt auch hier: Statt eines
           klassischen Preises zahlen Sie mit etwas anderem – Ihren Daten. In
