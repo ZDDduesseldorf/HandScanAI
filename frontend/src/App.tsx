@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Home from '@/pages/Home';
 import PrivacyNotice from '@/pages/PrivacyNotice';
 import ImageCapture from '@/pages/ImageCapture';
+import ImagePostCapture from '@/pages/ImagePostCapture';
 import Processing from '@/pages/Processing';
 import ResultsAge from '@/pages/ResultsAge';
 import ResultsGender from '@/pages/ResultsGender';
@@ -57,6 +58,7 @@ const App: React.FC = () => {
             <Route element={<Layout />}>
               <Route path="/privacy-notice" element={<PrivacyNotice />} />
               <Route path="/image-capture" element={<ImageCapture />} />
+              <Route path="/image-post-capture" element={<ImagePostCapture />} />
               <Route path="/processing" element={<Processing />} />
               <Route path="/results-age" element={<ResultsAge />} />
               <Route path="/results-gender" element={<ResultsGender />} />

@@ -16,6 +16,7 @@ const Layout: React.FC = () => {
   const stepMap: Record<string, number> = {
     '/privacy-notice': 0,
     '/image-capture': 1,
+    '/image-post-capture': 1,
     '/processing': 2,
     '/results-age': 3,
     '/results-gender': 3,

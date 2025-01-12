@@ -1,135 +1,83 @@
-import { useEffect, useRef } from 'react';
-import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
 import NavButton from '@/components/NavButton';
 
-interface ServerMessage {
-  flow?: string;
-  landmarks_detected?: boolean;
-  spread_check?: boolean;
-  [key: string]: unknown;
-}
-
-const ScrollableBox = styled(Box)`
-  margin: 20px 30px;
-  overflow-y: auto;
-  max-height: calc(100vh - 300px); /* Adjust based on your layout */
+const Container = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const VideoWrapper = styled(Box)`
+  flex: 1;
   display: flex;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 60vh;
 `;
 
 const Video = styled('video')`
-  width: 40%;
-  height: auto;
-  margin: 0 auto;
-  max-height: 50vh;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 `;
 
-const Bildaufnahme = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const navigate = useNavigate();
+const InfoSection = styled(Box)`
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 20px;
+`;
 
-  useEffect(() => {
-    const currentVideoRef = videoRef.current;
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    const ws = new WebSocket('ws://localhost:8000/ws/');
-    wsRef.current = ws;
+const InstructionBox = styled(Box)`
+  width: 100%;
+  height: 80px;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+`;
 
-    ws.onopen = () => {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: {
-            width: { ideal: 4096 },
-            height: { ideal: 2160 },
-          },
-        })
-        .then((stream) => {
-          if (currentVideoRef) {
-            currentVideoRef.srcObject = stream;
-            currentVideoRef.play().catch((error) => {
-              console.error('Error playing video:', error);
-            });
-            currentVideoRef.onloadedmetadata = () => {
-              const videoWidth = currentVideoRef.videoWidth;
-              const videoHeight = currentVideoRef.videoHeight;
-              canvas.width = videoWidth;
-              canvas.height = videoHeight;
+const StyledText = styled(Typography)`
+  color: black;
+  font-size: 1.6rem;
+`;
 
-              setInterval(() => {
-                if (context && currentVideoRef) {
-                  context.drawImage(
-                    currentVideoRef,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height,
-                  );
-                  canvas.toBlob((blob) => {
-                    if (blob && ws.readyState === WebSocket.OPEN) {
-                      ws.send(blob);
-                    }
-                  }, 'image/jpeg');
-                }
-              }, 100);
-            };
-          }
-        })
-        .catch((error) => {
-          console.error('Error accessing camera:', error);
-        });
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const eventData = event.data as string;
-        const data = JSON.parse(eventData) as ServerMessage;
-
-        // Redirect if hand detection is successful
-        if (data.landmarks_detected) {
-          navigate('/berechnung');
-        }
-      } catch (error) {
-        console.error('Error parsing JSON:', error);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket connection closed');
-      if (currentVideoRef?.srcObject) {
-        const tracks = (currentVideoRef.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
-
-    return () => {
-      if (currentVideoRef?.srcObject) {
-        const tracks = (currentVideoRef.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, [navigate]);
-
+const ImageCapture = () => {
   return (
-    <ScrollableBox>
-      <StyledTitle>Bildaufnahme</StyledTitle>
+    <Container>
       <VideoWrapper>
-        <Video ref={videoRef} autoPlay />
+        <Video autoPlay playsInline />
       </VideoWrapper>
-      <NavButton RouteTo="/processing">Weiter</NavButton>
-    </ScrollableBox>
+      <InfoSection>
+        <StyledTitle>Bildaufnahme</StyledTitle>
+        <StyledText>
+          HandScan AI nimmt automatisch Bilder deiner Hand auf. Sobald die
+          Kamera eine Hand erkennt, wird der Countdown gestartet.
+        </StyledText>
+        <StyledText sx={{ mt: 1 }}>
+          👉 Bitte lege deine Hand mit der Handfläche nach unten in die Fotobox.
+        </StyledText>
+        <StyledText sx={{ mt: 1 }}>
+          👉 Es ist egal, ob du die rechte oder linke Hand nimmst.
+        </StyledText>
+        <InstructionBox />
+        <NavButton RouteTo="/image-post-capture">Weiter</NavButton>
+      </InfoSection>
+    </Container>
   );
 };
 
-export default Bildaufnahme;
+export default ImageCapture;
