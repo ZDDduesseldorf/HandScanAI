@@ -4,7 +4,7 @@
 
 - [HandScanAI Backend](#handscanai-backend)
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
-  - [Installation](#installation)
+  - [Installation Ohne Docker](#installation-ohne-docker)
     - [MongoDB installieren](#mongodb-installieren)
     - [Python installieren](#python-installieren)
     - [Enviroment Datei erstellen](#enviroment-datei-erstellen)
@@ -27,7 +27,30 @@
     - [Code formatieren](#code-formatieren)
   - [Tests ausführen](#tests-ausführen)
 
-## Installation
+## Installation mit Docker und Dev Container
+### Schritte zur Installation
+
+**1. Docker Desktop installieren**: Laden Sie Docker Desktop von der [offiziellen Website](https://www.docker.com/products/docker-desktop) herunter und installieren Sie es.
+
+**2. Dev Container VSCode Extension installieren**: Installieren Sie die Dev Container Extension in Visual Studio Code. Diese Erweiterung ermöglicht es Ihnen, Entwicklungscontainer zu verwenden.
+
+**3. Im Container entwickeln**: Um im Container entwickeln zu können, öffnen Sie den Backend-Ordner als eigenes Fenster, dann bekommen Sie einen Popup "Reopen in Container", falls nicht dann mit `STRG + UMSCHALT + P` `Dev Container: Reopen in container`. Der Container wird gebaut und VSCode wird automatisch mit Einstellungen und Extensions entprechend der `devcontainer.json` konfiguriert.
+
+Alternativ können Sie mit dem folgenden Befehl das Projekt starten:
+```sh
+docker-compose up
+```
+
+Falls ein Zugriff auf das Terminal des Containers gewünscht ist, dann führen Sie folgenden Befehl in einem Terminal aus:
+```sh
+docker exec -it backend /bin/bash
+```
+
+**4. Zugriff auf den Server**: Der Server sollte nun automatisch unter `http://127.0.0.1:8000` erreichbar sein.
+
+
+
+## Installation Ohne Docker
 
 ### MongoDB installieren
 
