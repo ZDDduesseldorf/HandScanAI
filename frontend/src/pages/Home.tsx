@@ -59,7 +59,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const handleStartClick = () => {
-    navigate('/information');
+    navigate('/privacy-notice');
   };
 
   return (

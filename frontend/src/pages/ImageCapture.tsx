@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import StyledTitle from '@/styles/StyledTitle';
+import NavButton from '@/components/NavButton';
 
 interface ServerMessage {
   flow?: string;
@@ -9,38 +12,29 @@ interface ServerMessage {
   [key: string]: unknown;
 }
 
-const Container = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100vh',
-  backgroundColor: theme.palette.background.default,
-  color: theme.palette.text.primary,
-}));
+const ScrollableBox = styled(Box)`
+  margin: 20px 30px;
+  overflow-y: auto;
+  max-height: calc(100vh - 300px); /* Adjust based on your layout */
+`;
 
-const Video = styled('video')({
-  maxWidth: '100%',
-  borderRadius: '8px',
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
-});
+const VideoWrapper = styled(Box)`
+  display: flex;
+  width: 100%;
+`;
 
-const Message = styled('p')(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  fontSize: theme.typography.h6.fontSize,
-  textAlign: 'center',
-}));
+const Video = styled('video')`
+  width: 40%;
+  height: auto;
+  margin: 0 auto;
+  max-height: 50vh;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+`;
 
 const Bildaufnahme = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const [resolution, setResolution] = useState<{
-    width: number;
-    height: number;
-  }>();
-  const [serverMessage, setServerMessage] = useState<
-    ServerMessage | undefined
-  >();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +63,6 @@ const Bildaufnahme = () => {
               const videoHeight = currentVideoRef.videoHeight;
               canvas.width = videoWidth;
               canvas.height = videoHeight;
-              setResolution({ width: videoWidth, height: videoHeight });
 
               setInterval(() => {
                 if (context && currentVideoRef) {
@@ -99,7 +92,6 @@ const Bildaufnahme = () => {
       try {
         const eventData = event.data as string;
         const data = JSON.parse(eventData) as ServerMessage;
-        setServerMessage(data);
 
         // Redirect if hand detection is successful
         if (data.landmarks_detected) {
@@ -130,16 +122,13 @@ const Bildaufnahme = () => {
   }, [navigate]);
 
   return (
-    <Container>
-      <h1>Bildaufnahme</h1>
-      {resolution && (
-        <Message>
-          Auflösung: {resolution.width}x{resolution.height}
-        </Message>
-      )}
-      <Video ref={videoRef} autoPlay />
-      <Message>Server Antwort: {JSON.stringify(serverMessage)}</Message>
-    </Container>
+    <ScrollableBox>
+      <StyledTitle>Bildaufnahme</StyledTitle>
+      <VideoWrapper>
+        <Video ref={videoRef} autoPlay />
+      </VideoWrapper>
+      <NavButton RouteTo="/processing">Weiter</NavButton>
+    </ScrollableBox>
   );
 };
 
