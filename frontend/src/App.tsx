@@ -12,6 +12,7 @@ import Processing from '@/pages/Processing';
 import ResultsAge from '@/pages/ResultsAge';
 import ResultsGender from '@/pages/ResultsGender';
 import SubmissionComplete from '@/pages/SubmissionComplete';
+import Explanation from './pages/Explanation';
 import Sandbox from '@/pages/Sandbox';
 import BlackBox from '@/pages/BlackBox';
 import Layout from '@/components/Layout';
@@ -61,6 +62,8 @@ const App: React.FC = () => {
               <Route path="/results-age" element={<ResultsAge />} />
               <Route path="/results-gender" element={<ResultsGender />} />
               <Route path="/blackbox" element={<BlackBox />} />
+              <Route path="/explanation" element={<Explanation />} />
+
               <Route
                 path="/submission-complete"
                 element={<SubmissionComplete />}
