@@ -4,6 +4,23 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
+class PipelineDataframeKeys(Enum):
+    """
+    Used as keys for dataframe, which is output to frontend.
+    """
+
+    CLASSIFIED_AGE = "classified_age"
+    MIN_AGE = "min_age"
+    MAX_AGE = "max_age"
+    CONFIDENCE_AGE = "confidence_age"
+    CLASSIFIED_GENDER = "classified_gender"
+    CONFIDENCE_GENDER = "confidence_gender"
+    UUID = "uuid"
+    IMAGE_PATH = "image_path"
+    METADATA_GENDER = "gender"
+    METADATA_AGE = "age"
+
+
 class PipelineDictKeys(Enum):
     """
     Used as keys to dicts that pass data down the pipelines.

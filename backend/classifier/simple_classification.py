@@ -2,6 +2,8 @@ import numpy as np
 import statistics
 import pandas as pd
 
+from pipelines.regions_utils import PipelineDataframeKeys as DfKeys
+
 
 def classify_age(dict_all_info_knn):
     """
@@ -74,25 +76,34 @@ def ensemble_gender(gender_dict):
     return mode_gender, mean_distance
 
 
-def ensemble_classifier(age_dict, gender_dict):
+def ensemble_classifier(dict_age, dict_gender):
+    """
+    ensemble classifier of the prediction of age and gender from the individual hand regions forms.
+    Returns dataframe for frontend
+
+    Args:
+        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+
+    Returns:
+        ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
+        classified_gender(0,1), confidence_gender(float))
+        0:female, 1:male
+    """
+    mean_age, min_age, max_age, mean_distance_age = ensemble_age(dict_age)
+    mode_gender, mean_distance_gender = ensemble_gender(dict_gender)
+
     ensemble_df = pd.DataFrame(
-        columns=["classified_age", "min_age", "max_age", "confidence_age", "classified_gender", "confidence_gender"]
+        [
+            {
+                DfKeys.CLASSIFIED_AGE.value: mean_age,
+                DfKeys.MIN_AGE.value: min_age,
+                DfKeys.MAX_AGE.value: max_age,
+                DfKeys.CONFIDENCE_AGE.value: mean_distance_age,
+                DfKeys.CLASSIFIED_GENDER.value: mode_gender,
+                DfKeys.CONFIDENCE_GENDER.value: mean_distance_gender,
+            }
+        ]
     )
-    mean_age, min_age, max_age, mean_distance_age = ensemble_age(age_dict)
-    mode_gender, mean_distance_gender = ensemble_gender(gender_dict)
 
-    # TODO: benötigt man 2 Distanzangaben? Da die Bilder und Distanzen von age und gender ja identisch sind
-    # TODO: Muss UUID mitgespeichert werden?
-    # TODO: zurückmapen Geschlecht?
-
-    new_row = {
-        "classified_age": mean_age,
-        "min_age": min_age,
-        "max_age": max_age,
-        "confidence_age": mean_distance_age,
-        "classified_gender": mode_gender,
-        "confidence_gender": mean_distance_gender,
-    }
-
-    ensemble_df = pd.concat([ensemble_df, pd.DataFrame([new_row])])
     return ensemble_df
