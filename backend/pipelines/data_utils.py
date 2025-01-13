@@ -36,10 +36,6 @@ def map_gender_string_to_int(df):
     return df
 
 
-# def map_gender_int_to_string(gender_int):
-# map_gender = {0:"female", 1:"male"}
-
-
 def build_info_knn(metadata_csv_path, dict_all_dist: dict):
     """
     Query of gender and age for knn of the image from csv.
