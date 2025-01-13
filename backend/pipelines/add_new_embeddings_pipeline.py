@@ -40,7 +40,13 @@ def run_add_new_embeddings_pipeline(uuid, testing=False):
 
     ######## STEP 3: Update vektortree ################################
 
-    return add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
+    # TODO: normal return can be used for local testing, test and saving-methods need to be adjusted for
+    # pipeline testing in a later issue to not actually save in the csv-files or set the saving back
+    # while still using the correct testing-paths
+    if testing:
+        return True
+    else:
+        return add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
 
     # TODO: Bild im richtigen Ordner speichern (QueryImages -> BaseImages)
     # TODO: save_image() funktion schreiben
