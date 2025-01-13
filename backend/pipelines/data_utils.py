@@ -17,7 +17,7 @@ def region_embeddings_from_csv(regionkey, embedding_csv_path):
     return list_uuid, list_embedding
 
 
-def map_gender(df):
+def map_gender_string_to_int(df):
     """
         Map gender values in a DataFrame to numerical values
         'female' mapped to 0
@@ -61,7 +61,7 @@ def build_info_knn(metadata_csv_path, dict_all_dist: dict):
 
     # TODO: Abfrage aus MongoDB?
     metadata_df = pd.read_csv(metadata_csv_path, sep=",")
-    metadata_df = map_gender(metadata_df)
+    metadata_df = map_gender_string_to_int(metadata_df)
 
     for regionkey, dist_dict in dict_all_dist.items():
         region_df = pd.DataFrame(columns=[DictKeys.UUID.value, "distance", "age", "gender"])

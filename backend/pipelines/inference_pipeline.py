@@ -4,12 +4,13 @@ from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
-from classifier.simple_classification import classify_age, classify_gender
+from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
 
 # this file is used to generate the prediction of an image
 
 
 # is triggered by the ‘Analyse Starten’ button in the frontend. Transfer of the uuid of the current image
+# TODO: Wo werden Bilder aus Frontend gespeichert? -> QueryImages
 def _path_manager(testing):
     temp_base_dir = Path(__file__).resolve().parent.parent
     if testing:
@@ -36,8 +37,9 @@ def run_inference_pipeline(uuid, testing=False):
         uuid (str): Unique identifier for the image
 
     Returns:
-        actual: age_dict = {region(str): mean_age (float)}
-                gender_dict = {region(str): mode_gender(0,1)}
+        ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
+        classified_gender(0,1), confidence_gender(float))
+        0:female, 1:male
     """
     folder_path_query, _, embedding_csv_path, metadata_csv_path = _path_manager(testing)
 
@@ -56,7 +58,7 @@ def run_inference_pipeline(uuid, testing=False):
 
     ######## STEP 3: search nearest neighbours ###########################
 
-    k = 3  # anzahl nächster Nachbarn
+    k = 5  # anzahl nächster Nachbarn
     dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
     dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
@@ -64,8 +66,8 @@ def run_inference_pipeline(uuid, testing=False):
 
     age_dict = classify_age(dict_all_info_knn)
     gender_dict = classify_gender(dict_all_info_knn)
-    return age_dict, gender_dict
-    # TODO: Mapping von 0,1 zu female und male am Ende für Ausgabe
+    ensemble_df = ensemble_classifier(age_dict, gender_dict)
+    return ensemble_df
 
 
 # TODO: Verschieben in image_utils Datei

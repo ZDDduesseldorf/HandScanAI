@@ -1,6 +1,7 @@
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from .inference_pipeline import get_image_path, _path_manager
+from .csv_utils import add_embedding_dict_to_csv
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
@@ -18,7 +19,7 @@ def run_add_new_embeddings_pipeline(uuid, testing=False):
 
 
     """
-    folder_path_query, folder_path_region, _, _ = _path_manager(testing)
+    folder_path_query, folder_path_region, embedding_csv_path, _ = _path_manager(testing)
 
     ######## STEP 0: build path to image #################################
 
@@ -36,10 +37,21 @@ def run_add_new_embeddings_pipeline(uuid, testing=False):
     dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization)
 
     # TODO: delete when adding knn-search
-    return dict_embedding
 
     ######## STEP 3: Update vektortree ################################
 
-    # TODO: add embeddings to vektortree
+    # TODO: normal return can be used for local testing, test and saving-methods need to be adjusted for
+    # pipeline testing in a later issue to not actually save in the csv-files or set the saving back
+    # while still using the correct testing-paths
+    if testing:
+        return True
+    else:
+        return add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
 
-    # TODO: calculate distances
+    # TODO: Bild im richtigen Ordner speichern (QueryImages -> BaseImages)
+    # TODO: save_image() funktion schreiben
+    # TODO: Metadaten aus Frontend in Metadata.csv abspeichern
+    # input_age, input_gender
+    # add_entry_to_csv(file_path, {"uuid": uuid, "age":input_age,"gender":input_gender})
+
+    # für uns report sinnvoll mit vorhergesagtem und bestimmten Alter und Geschlecht, Timestamp?
