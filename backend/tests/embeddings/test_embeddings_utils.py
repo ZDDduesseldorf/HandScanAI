@@ -3,9 +3,9 @@ import torch
 import os
 
 from embeddings import embeddings_utils
-from embeddings import image_utils
 from embeddings import models_utils
 from pipelines.regions_utils import HandRegions
+from utils import image_utils
 
 ### FIXTURES ######################################################
 

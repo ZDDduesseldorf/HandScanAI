@@ -1,16 +1,18 @@
 import os
-import uuid
 from beanie import Delete, Document, Save, before_event, after_event
 from pydantic import Field, field_validator
 from datetime import datetime, timezone
 from typing import Optional
 from app.core.config import settings
+from pipelines.regions_utils import PipelineAPIKeys
+from pipelines.add_new_embeddings_pipeline import run_add_new_embeddings_pipeline
+from utils.uuid import generate_uuid
 
 
 class ScanEntry(Document):
     """Scan Entry Model"""
 
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    id: str = Field(default_factory=lambda: generate_uuid())
     real_age: Optional[int] = Field(default=None)
     real_gender: Optional[int] = Field(default=None)
     confirmed: bool = Field(default=False)
@@ -45,10 +47,10 @@ class ScanEntry(Document):
         if old_instance and old_instance.confirmed:
             raise ValueError("Cannot modify a confirmed ScanEntry.")
 
-        if self.real_age and self.real_age < 0:
+        if self.real_age is not None and self.real_age < 0:
             raise ValueError("real age must be a positive number")
 
-        if self.real_gender and self.real_gender not in [0, 1]:
+        if self.real_gender is not None and self.real_gender not in [0, 1]:
             raise ValueError("real gender must be either 0 (female) or 1 (male)")
 
         if self.confirmed and (not self.image_exists or self.real_age is None or self.real_gender is None):
@@ -57,11 +59,11 @@ class ScanEntry(Document):
     @after_event(Save)
     async def after_save(self):
         """after saving action"""
-        if self.image_exists and self.confirmed and self.real_age and self.real_gender:
+
+        if self.image_exists and self.confirmed and self.real_age is not None and self.real_gender is not None:
             ground_truth_data = {
-                "real_age": self.real_age,
-                "real_gender": self.real_gender,
+                PipelineAPIKeys.REAL_AGE.value: self.real_age,
+                PipelineAPIKeys.REAL_GENDER.value: self.real_gender,
             }
 
-            # TODO: Call add_new_embeddings_pipeline and pass the ground truth data
-            # run_add_new_embeddings_pipeline(id, testing=False)
+            run_add_new_embeddings_pipeline(self.id, ground_truth_data, testing=False)
