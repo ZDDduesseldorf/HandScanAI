@@ -24,6 +24,7 @@ class ScanEntryType:
         scan_entry = await ScanEntry.get(self.id)
         return scan_entry.image_exists
 
+
 @strawberry.input
 class ScanEntryInput:
     real_age: Optional[int] = None
@@ -59,16 +60,16 @@ class Query:
     @strawberry.field
     async def get_scan_result(self, id: strawberry.ID) -> ScanResultType:
         scan_entry_model = await ScanEntry.get(id)
+
         if scan_entry_model is None:
             raise ValueError("ScanEntry not found")
 
         if not scan_entry_model.image_exists:
             raise ValueError("ScanEntry doesn't have a query image")
 
-        # TODO: Check if the inference pipeline is running correctly
         result = run_inference_pipeline(id, testing=False)
 
-        if not result:
+        if result.empty:
             raise ValueError("No result from inference pipeline")
 
         result_dict = result.to_dict(orient="records")[0]
