@@ -38,12 +38,12 @@ const SecondaryHeading = styled(Typography)`
 // Alter Accuracy (Wie sicher ist sich KI?)
 // Geschlecht Accuracy (Wie sicher ist sich KI?)
 
-const genderGuess:number = 0;
-const ageGuess:number = 26;
-const min_age:number = 20;
-const max_age:number = 26;
-const age_confidence:number = 97;
-const gender_confidence:number = 95;
+const genderGuess = 0;
+const ageGuess = 26;
+const min_age = 20;
+const max_age = 26;
+const age_confidence = 97;
+const gender_confidence = 95;
 
 const age_marks:{label:string,value:number}[] = [
   {value:15, label:"<15"},

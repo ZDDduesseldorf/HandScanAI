@@ -11,8 +11,8 @@ import { Typography, TextField, MenuItem, Box, styled } from '@mui/material';
 // actual age
 // actual gender
 
-const genderGuess:string = "weiblich";
-const ageGuess:number = 26;
+const genderGuess = "weiblich";
+const ageGuess = 26;
 
 export const BoxForm = styled(Box)`
   display: flex;
