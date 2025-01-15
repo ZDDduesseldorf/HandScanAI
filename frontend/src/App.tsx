@@ -19,6 +19,33 @@ import Layout from '@/components/Layout';
 import '@/assets/fonts.css';
 import '@/App.css';
 
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+  from,
+} from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) => {
+      alert(`Graphql error ${message}`);
+    });
+  }
+});
+
+const link = from([
+  errorLink,
+  new HttpLink({ uri: 'http://localhost:6969/graphql' }), //ask salam for http address
+]);
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link, //according to documentation I could also put uri with graphql endpoint here
+});
+
 const App: React.FC = () => {
   const location = useLocation();
 
@@ -74,10 +101,13 @@ const App: React.FC = () => {
   );
 };
 
+// added Apollo Wrapper below
 const AppWrapper: React.FC = () => (
-  <Router>
-    <App />
-  </Router>
+  <ApolloProvider client={client}>
+    <Router>
+      <App />
+    </Router>
+  </ApolloProvider>
 );
 
 export default AppWrapper;
