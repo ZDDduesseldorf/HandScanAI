@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import GetModels from '@/components/TestGraphQL';
 
 const Container = styled(Box)`
   display: flex;
@@ -68,6 +69,7 @@ const Home: React.FC = () => {
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
       <StartButton onClick={handleStartClick}>Start</StartButton>
+      {/* <GetModels></GetModels> */}
     </Container>
   );
 };

@@ -27,6 +27,7 @@ import {
   from,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import GetModels from './components/TestGraphQL';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -38,7 +39,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const link = from([
   errorLink,
-  new HttpLink({ uri: 'http://localhost:6969/graphql' }), //ask salam for http address
+  new HttpLink({ uri: 'http://localhost:8000/graphql' }),
 ]);
 
 const client = new ApolloClient({
@@ -104,6 +105,9 @@ const App: React.FC = () => {
 // added Apollo Wrapper below
 const AppWrapper: React.FC = () => (
   <ApolloProvider client={client}>
+    {''}
+    {/* Get Models will likely be removed later on I beliee*/}
+    <GetModels />
     <Router>
       <App />
     </Router>
