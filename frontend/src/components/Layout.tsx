@@ -17,8 +17,8 @@ const Layout: React.FC = () => {
     '/privacy-notice': 0,
     '/image-capture': 1,
     '/processing': 2,
-    '/results-age': 3,
-    '/results-gender': 3,
+    '/result-1': 3,
+    '/result-2': 3,
     '/blackbox': 3,
     '/submission-complete': 4,
   };
