@@ -4,7 +4,7 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-class PipelineDataframeKeys(Enum):
+class PipelineAPIKeys(Enum):
     """
     Used as keys for dataframe, which is output to frontend.
     """
@@ -19,6 +19,8 @@ class PipelineDataframeKeys(Enum):
     IMAGE_PATH = "image_path"
     METADATA_GENDER = "gender"
     METADATA_AGE = "age"
+    REAL_AGE = "real_age"
+    REAL_GENDER = "real_gender"
 
 
 class PipelineDictKeys(Enum):

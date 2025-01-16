@@ -1,6 +1,6 @@
 import torch
 
-from .image_utils import load_image_from_full_path, construct_image_path
+from utils.image_utils import load_image_from_full_path, construct_image_path
 from .models_utils import transforms_default, load_model
 
 ###############################################

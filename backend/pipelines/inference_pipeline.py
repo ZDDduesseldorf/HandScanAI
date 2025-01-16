@@ -18,14 +18,16 @@ def _path_manager(testing):
         folder_path_region = temp_base_dir / "tests" / "data" / "TestRegionDataset"
         embedding_csv_path = temp_base_dir / "tests" / "data" / "csv"
         metadata_csv_path = temp_base_dir / "tests" / "data" / "csv" / "Test_Hands_filtered_metadata.csv"
+        folder_path_base = temp_base_dir / "tests" / "data" / "TestBaseDataset"
 
     else:
         folder_path_query = temp_base_dir / "app" / "media" / "QueryImages"
         folder_path_region = temp_base_dir / "app" / "media" / "RegionImages"
         embedding_csv_path = temp_base_dir / "app" / "media" / "csv"
         metadata_csv_path = temp_base_dir / "app" / "media" / "csv" / "Metadata.csv"
+        folder_path_base = temp_base_dir / "app" / "media" / "BaseImages"
 
-    return folder_path_query, folder_path_region, embedding_csv_path, metadata_csv_path
+    return folder_path_query, folder_path_region, embedding_csv_path, metadata_csv_path, folder_path_base
 
 
 # TODO pydoc
@@ -41,7 +43,7 @@ def run_inference_pipeline(uuid, testing=False):
         classified_gender(0,1), confidence_gender(float))
         0:female, 1:male
     """
-    folder_path_query, _, embedding_csv_path, metadata_csv_path = _path_manager(testing)
+    folder_path_query, _, embedding_csv_path, metadata_csv_path, _ = _path_manager(testing)
 
     ######## STEP 0: build path to image #################################
 
