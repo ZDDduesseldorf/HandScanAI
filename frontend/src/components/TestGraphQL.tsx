@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { TEST_QUERY } from '../GraphQL/Queries';
 
-function GetUsers() {
+function GetModels() {
   const { error, loading, data } = useQuery(TEST_QUERY);
   const [models, setModels] = useState([]);
   useEffect(() => {
@@ -22,4 +22,4 @@ function GetUsers() {
   );
 }
 
-export default GetUsers;
+export default GetModels;
