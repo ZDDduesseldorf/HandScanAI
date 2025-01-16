@@ -1,22 +1,7 @@
-// import {gql} from '@apollo/client'
-
-// export const LOAD_USERS = gql'
-// query{
-//     getAllUsers{
-//         Id
-//         firstName
-//         email
-//         password
-//     }
-// }
-// '
-// import { gql } from '@apollo/client';
-
-// export const TEST_QUERY = gql`
-//   query TestQuery {
-//     exampleField
-//   }
-// `;
+export interface HandData {
+  id: string;
+  createdAt: string;
+}
 import { gql } from '@apollo/client';
 export const TEST_QUERY = gql`
   query MyQuery {

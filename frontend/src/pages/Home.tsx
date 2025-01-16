@@ -1,10 +1,13 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import GetModels from '@/components/TestGraphQL';
+// import GetModels from '@/components/TestGraphQL';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { TEST_QUERY } from '../GraphQL/Queries';
+import { HandData } from '../GraphQL/Queries';
 
 const Container = styled(Box)`
   display: flex;
@@ -63,13 +66,37 @@ const Home: React.FC = () => {
     navigate('/privacy-notice');
   };
 
+  // const { error, loading, data } = useQuery<HandData>(TEST_QUERY);
+  const { error, loading, data } = useQuery<{ getTestModels: HandData[] }>(
+    TEST_QUERY,
+  );
+
+  const [models, setModels] = useState<HandData[]>([]);
+  useEffect(() => {
+    console.log(data);
+    if (data) {
+      setModels(data.getTestModels);
+    }
+  }, [data]);
+  // Unsure wheter to remove since Loading is not visible
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <Container>
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
       <StartButton onClick={handleStartClick}>Start</StartButton>
-      {/* <GetModels></GetModels> */}
+      <Subtitle variant="h3">Backend Check</Subtitle>
+
+      {data?.getTestModels.map((model) => (
+        <Subtitle variant="h2" key={model.id}>
+          ID: {model.id}, Created At: {model.createdAt}
+        </Subtitle>
+      ))}
+      {/* {<p key={data.id}>{data.createdAt}</p>} */}
+      {/* <h3>{data.id}</h3> */}
     </Container>
   );
 };

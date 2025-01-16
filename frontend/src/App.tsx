@@ -18,8 +18,8 @@ import Layout from '@/components/Layout';
 
 import '@/assets/fonts.css';
 import '@/App.css';
-import client from './GraphQL/apollo-client'; // Import the client from Apollo-client.tsx
-import GetModels from './components/TestGraphQL';
+import client from './GraphQL/Apollo-client';
+// import GetModels from './components/TestGraphQL';
 import { ApolloProvider } from '@apollo/client';
 
 const App: React.FC = () => {
@@ -82,7 +82,7 @@ const AppWrapper: React.FC = () => (
   <ApolloProvider client={client}>
     {''}
     {/* Get Models will likely be removed later on I beliee*/}
-    <GetModels />
+    {/* <GetModels /> */}
     <Router>
       <App />
     </Router>
