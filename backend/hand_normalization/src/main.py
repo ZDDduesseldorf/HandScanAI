@@ -43,8 +43,14 @@ def show_images(images: List[np.ndarray]) -> None:
         cv2.destroyAllWindows()
 
 
-def draw_images_in_grid(image_list: list, rows: int, cols: int, image_size: Tuple[int, int] = (224, 224), 
-                        padding: int = 10, bg_color: Tuple[int, int, int] = (13, 17, 23)) -> np.ndarray:
+def draw_images_in_grid(
+    image_list: list,
+    rows: int,
+    cols: int,
+    image_size: Tuple[int, int] = (224, 224),
+    padding: int = 10,
+    bg_color: Tuple[int, int, int] = (13, 17, 23),
+) -> np.ndarray:
     """
     Arranges a list of images in a grid format on a single canvas.
 
@@ -219,9 +225,7 @@ def detect_hand_contours(hand_mask: np.ndarray, image_shape: Tuple[int, int]) ->
 
 
 def calculate_region_defining_points(
-    landmarks: List[Tuple[int, int]], 
-    contour_mask: np.ndarray, 
-    contour: np.ndarray
+    landmarks: List[Tuple[int, int]], contour_mask: np.ndarray, contour: np.ndarray
 ) -> List[Tuple[int, int]]:
     """
     Calculates region-defining points from landmarks.
@@ -266,14 +270,9 @@ def detect_largest_defects(largest_contour):
     if defects is None or len(defects) == 0:
         return []
 
-    defect_distances = [
-        (defect[0][3], tuple(largest_contour[defect[0][2]][0]))
-        for defect in defects
-    ]
+    defect_distances = [(defect[0][3], tuple(largest_contour[defect[0][2]][0])) for defect in defects]
 
-    four_largest_defects = [
-        point for _, point in sorted(defect_distances, reverse=True)[:4]
-    ]
+    four_largest_defects = [point for _, point in sorted(defect_distances, reverse=True)[:4]]
 
     return four_largest_defects
 
@@ -290,7 +289,7 @@ def contour_to_bitmask(contour, image_shape):
         numpy.ndarray: A binary mask with the contour filled.
     """
     mask = np.zeros(image_shape, dtype=np.uint8)
-    cv2.fillPoly(mask, [contour], color=255) 
+    cv2.fillPoly(mask, [contour], color=255)
 
     return mask
 
@@ -310,7 +309,8 @@ def points_in_mask(mask: np.ndarray, points: List[Tuple[int, int]]) -> List[Tupl
         points = [points]
 
     inside_points = [
-        point for point in points
+        point
+        for point in points
         if 0 <= point[0] < mask.shape[1] and 0 <= point[1] < mask.shape[0] and mask[point[1], point[0]] > 0
     ]
 
@@ -333,18 +333,15 @@ def calculate_additional_defects(region_defining_points, landmarks, contour_mask
     outer_thumb_defect = detect_missing_point(region_defining_points[0], landmarks[2], contour_mask, blank)
     index_defect = detect_missing_point(region_defining_points[2], region_defining_points[1], contour_mask, blank)
     pinkie_defect = detect_missing_point(region_defining_points[2], region_defining_points[3], contour_mask, blank)
-   
+
     return [outer_thumb_defect, index_defect, pinkie_defect]
 
 
 def detect_missing_point(
-    first_defect: Tuple[int, int],
-    second_defect: Tuple[int, int],
-    contour_mask: np.ndarray,
-    blank_image: np.ndarray
+    first_defect: Tuple[int, int], second_defect: Tuple[int, int], contour_mask: np.ndarray, blank_image: np.ndarray
 ) -> Tuple[int, int]:
     """
-    Detects a missing point between two defects using a direction vector 
+    Detects a missing point between two defects using a direction vector
     and finds the closest intersection point on the contour.
 
     Args:
@@ -389,11 +386,8 @@ def find_direction_vector(point1: Tuple[int, int], point2: Tuple[int, int]) -> T
     return (point2[0] - point1[0], point2[1] - point1[1])
 
 
-
 def get_sorted_points_by_distance(
-    array_of_points: List[Tuple[int, int]], 
-    given_point: Tuple[int, int], 
-    return_closest: bool = False
+    array_of_points: List[Tuple[int, int]], given_point: Tuple[int, int], return_closest: bool = False
 ) -> List[Tuple[int, int]]:
     """
     Sorts a list of 2D points by their distance to a given reference point.
@@ -506,7 +500,7 @@ def count_white_pixels(image: np.ndarray) -> int:
     Counts the number of white pixels (value 255) in a binary or grayscale image.
 
     Args:
-        image (np.ndarray): The input image as a NumPy array. Expected to be a binary 
+        image (np.ndarray): The input image as a NumPy array. Expected to be a binary
                             or grayscale image where white pixels have the value 255.
 
     Returns:
@@ -557,9 +551,7 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
         {"name": HandRegions.LITTLEFINGER_6.value, "reference_point": landmarks[19]},
     ]
 
-    regions[0].update(
-        {"mask": sorted_segments[0]}
-    )
+    regions[0].update({"mask": sorted_segments[0]})
     for region in regions[1:]:
         region_reference_point = region["reference_point"]
         for segments in sorted_segments[1:]:
@@ -661,7 +653,7 @@ def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: li
     Args:
         image (np.ndarray): The input image to be rotated.
         angle (float): The rotation angle in degrees (clockwise is positive).
-        center_of_rotation (list, optional): The center point for the rotation as [x, y]. 
+        center_of_rotation (list, optional): The center point for the rotation as [x, y].
                                              If not provided, the image center is used.
 
     Returns:
@@ -728,9 +720,7 @@ def crop_to_bounding_box(image, bounding_box):
 
 
 def resize_images(
-    images_with_names: List[Dict[str, np.ndarray]], 
-    size: int = 224, 
-    fill_color: Tuple[int, int, int] = (255, 255, 255)
+    images_with_names: List[Dict[str, np.ndarray]], size: int = 224, fill_color: Tuple[int, int, int] = (255, 255, 255)
 ) -> List[Dict[str, np.ndarray]]:
     """
     Resizes a list of images to a square target size with optional padding.
@@ -747,10 +737,10 @@ def resize_images(
             "name" (str): The name of the image or region.
             "image" (np.ndarray): The resized and padded image as a NumPy array.
     """
-    return [{
-        "name": region["name"],
-        "image": resize_to_target(region["image"], size, fill_color)
-    } for region in images_with_names]
+    return [
+        {"name": region["name"], "image": resize_to_target(region["image"], size, fill_color)}
+        for region in images_with_names
+    ]
 
 
 def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, int, int]) -> np.ndarray:
@@ -777,9 +767,9 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
     resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
     new_image = np.full((size, size, 3), fill_color, dtype=np.uint8)
 
-    top_left_x = (size - new_width) // 2  
+    top_left_x = (size - new_width) // 2
     top_left_y = size - new_height
-    
+
     new_image[top_left_y : top_left_y + new_height, top_left_x : top_left_x + new_width] = resized_image
 
     return new_image
@@ -800,15 +790,16 @@ def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.nda
 
 ################################## Testing ##################################
 
+# TODO: Delete Testing part
 
-image_path = "C:\\Users\lukas\Documents\Hand_0000064.jpg" # TODO: Change path to local path for testing purpose
-images = normalize_hand_image(image_path)
-image_list = []
-for _, image in images.items():
-    image_list.append(image)
+# image_path = "C:\\Users\lukas\Documents\Hand_0000064.jpg" # TODO: Change path to local path for testing purpose
+# images = normalize_hand_image(image_path)
+# image_list = []
+# for _, image in images.items():
+#     image_list.append(image)
 
-grid_image = draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
+# grid_image = draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
 
-cv2.imshow('Image Grid', grid_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.imshow('Image Grid', grid_image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
