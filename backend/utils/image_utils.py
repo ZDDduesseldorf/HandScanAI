@@ -1,5 +1,24 @@
 import os
 import cv2
+import shutil
+
+
+def copy_image_to_folder(uuid, original_folder_path, target_folder_path):
+    image_name = uuid + ".jpg"
+    original = construct_image_path(image_name, original_folder_path)
+    target = construct_image_path(image_name, target_folder_path)
+    try:
+        shutil.copy(original, target)
+        print("File copied successfully.")
+        return True
+        # If source and destination are same
+    except shutil.SameFileError:
+        print("Source and destination represents the same file.")
+        return False
+        # If there is any permission issue
+    except PermissionError:
+        print("Permission denied.")
+        return False
 
 
 def load_image_from_full_path(path_to_image):

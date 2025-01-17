@@ -1,5 +1,6 @@
 import os
-from embeddings import image_utils
+
+from utils import image_utils
 from pathlib import Path
 
 
