@@ -184,6 +184,9 @@ def get_landmarks(image_path: str) -> List[Tuple[int, int]]:
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     landmarks.append((x, y))
 
+    if len(landmarks) != 21:
+        raise ValueError(f"Expected 21 landmarks, but detected {len(landmarks)}.")
+
     return landmarks
 
 
@@ -289,7 +292,9 @@ def contour_to_bitmask(contour, image_shape):
         numpy.ndarray: A binary mask with the contour filled.
     """
     mask = np.zeros(image_shape, dtype=np.uint8)
-    cv2.fillPoly(mask, [contour], color=255)
+
+    if contour is not None and len(contour) > 0:
+        cv2.fillPoly(mask, [contour], color=255)
 
     return mask
 
