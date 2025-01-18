@@ -310,6 +310,9 @@ def points_in_mask(mask: np.ndarray, points: List[Tuple[int, int]]) -> List[Tupl
     Returns:
         List[Tuple[int, int]]: List of points that are inside the mask.
     """
+    if not points:
+        return []
+
     if isinstance(points[0], int):
         points = [points]
 
@@ -424,6 +427,11 @@ def calculate_euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int
     Returns:
         float: The Euclidean distance between the two points.
     """
+    if not (isinstance(point1, (tuple, list)) and isinstance(point2, (tuple, list))):
+        raise TypeError("Both points must be tuples or lists of two numerical values.")
+    if not (len(point1) == 2 and len(point2) == 2):
+        raise ValueError("Both points must contain exactly two elements.")
+    
     return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
 
 
@@ -437,10 +445,27 @@ def integrate_defects(region_defining_points, defects):
 
     Returns:
         List[Tuple[int, int]]: Updated defining points list.
+
+    Raises:
+        ValueError: If defects list has fewer than 3 elements.
+        TypeError: If inputs are not lists of 2D points (tuples of two integers).
     """
-    region_defining_points.insert(0, defects[0])
-    region_defining_points.insert(2, defects[1])
-    region_defining_points.append(defects[2])
+    print(region_defining_points)
+    if not isinstance(region_defining_points, list) or not isinstance(defects, list):
+        raise TypeError("Both inputs must be lists of (x, y) coordinate tuples.")
+
+    for point in region_defining_points + defects:
+        if not (isinstance(point, tuple) and len(point) == 2 and 
+                all(isinstance(coord, np.integer) for coord in point)):
+            raise TypeError("All points must be tuples of two integers (x, y).")
+
+    if len(defects) < 3:
+        raise ValueError("At least 3 defect points are required.")
+
+    region_defining_points.insert(0, defects[0])  
+    region_defining_points.insert(2, defects[1])   
+    region_defining_points.append(defects[2])      
+
     return region_defining_points
 
 
@@ -545,7 +570,24 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
 
     Returns:
         list: List of regions with assigned masks.
+
+    Raises:
+        ValueError: If sorted_segments has fewer than 7 masks.
+        ValueError: If landmarks has fewer than 20 points.
+        TypeError: If inputs are not lists or masks are not numpy arrays.
     """
+    if not isinstance(sorted_segments, list) or not all(isinstance(mask, np.ndarray) for mask in sorted_segments):
+        raise TypeError("sorted_segments must be a list of NumPy arrays.")
+    
+    if not isinstance(landmarks, list) or not all(isinstance(point, tuple) and len(point) == 2 for point in landmarks):
+        raise TypeError("landmarks must be a list of (x, y) coordinate tuples.")
+
+    if len(sorted_segments) < 7:
+        raise ValueError("sorted_segments must contain at least 7 masks.")
+
+    if len(landmarks) < 20:
+        raise ValueError("landmarks must contain at least 20 points.")
+    
     regions = [
         {"name": HandRegions.HAND_0.value, "reference_point": []},
         {"name": HandRegions.HANDBODY_1.value, "reference_point": landmarks[13]},
@@ -586,6 +628,9 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
     rotated_mask = rotate_image_no_crop(region["mask"], angle)
 
     bounding_box = get_bounding_box_with_margin(rotated_mask, 5)
+    if bounding_box is None:
+        raise ValueError(f"No valid bounding box found for region: {region['name']}")
+
     cropped_image = crop_to_bounding_box(rotated_image, bounding_box)
 
     return cropped_image
