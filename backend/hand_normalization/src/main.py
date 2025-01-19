@@ -836,20 +836,3 @@ def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.nda
         Dict[str, np.ndarray]: Dictionary of region names and corresponding images.
     """
     return {region["name"]: region["image"] for region in regions}
-
-
-################################## Testing ##################################
-
-# TODO: Delete Testing part
-
-# image_path = "C:\\Users\lukas\Documents\Hand_0000064.jpg" # TODO: Change path to local path for testing purpose
-# images = normalize_hand_image(image_path)
-# image_list = []
-# for _, image in images.items():
-#     image_list.append(image)
-
-# grid_image = draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
-
-# cv2.imshow('Image Grid', grid_image)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
