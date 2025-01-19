@@ -11,6 +11,8 @@ def hand_is_spread(landmarks, thresholds=None, debug=False):
     :param debug: If set to True, logs are printed to the console for debugging. Default is False.
     :return: True if all fingers meet their specified or default threshold, False otherwise.
     """
+    if(thresholds is None):
+        thresholds = {"thumb-index": 1.15, "pinky-ring": 1.35, "rest": 1.10}
 
     if thresholds is None:
         thresholds = {"thumb-index": 1.20, "pinky-ring": 1.40, "rest": 1.15}

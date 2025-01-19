@@ -4,6 +4,9 @@ import subprocess
 import typer
 import uvicorn
 
+import pipelines.initial_data_pipeline as initial_pipeline
+import knn.anntree as anntree
+
 cli = typer.Typer()
 
 
@@ -28,7 +31,13 @@ def run_server(
 def format_code():
     """Format the code using ruff."""
     try:
-        subprocess.run(["ruff", "format", "app", "embeddings", "lib", "validation"], check=True)
+        subprocess.run(
+            [
+                "ruff", "format", "app", "embeddings", "hand_normalization", 
+                "knn", "lib", "pipelines", "tests", "validation"
+            ], 
+            check=True
+        )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
     finally:
@@ -39,7 +48,13 @@ def format_code():
 def check_code():
     """Check the code using ruff."""
     try:
-        subprocess.run(["ruff", "check", "app", "embeddings", "lib", "validation"], check=True)
+        subprocess.run(
+            [
+                "ruff", "check", "app", "embeddings", "hand_normalization", 
+                "knn", "lib", "pipelines", "tests", "validation"
+            ], 
+            check=True
+        )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
     finally:
@@ -50,6 +65,17 @@ def check_code():
 def run_tests():
     """Run the tests using pytest."""
     subprocess.run(["pytest", "tests"], check=True)
+
+
+@cli.command("initial_data_pipeline")
+def run_initial_data_pipeline():
+    """Run the initial data pipeline."""
+    initial_pipeline.run_initial_data_pipeline()
+
+@cli.command("anntree")
+def run_anntree():
+    """Run the ann tree."""
+    anntree.run_anntree()
 
 
 if __name__ == "__main__":
