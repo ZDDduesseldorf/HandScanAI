@@ -789,8 +789,33 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
     top_left_y = size - new_height
     
     new_image[top_left_y : top_left_y + new_height, top_left_x : top_left_x + new_width] = resized_image
+    
+    new_image = replace_color_in_range(new_image, [0, 0, 0], [15, 15, 15], [255, 255, 255])
 
     return new_image
+
+
+def replace_color_in_range(input_image: np.ndarray, lower_bound: Tuple[int, int, int], upper_bound: Tuple[int, int, int], replacement_color: Tuple[int, int, int]) -> np.ndarray:
+    """
+    Replaces all pixels in the specified color range with a replacement color.
+
+    Args:
+        input_image (np.ndarray): The input image as a NumPy array.
+        lower_bound (Tuple[int, int, int]): Lower bound of the color range (B, G, R).
+        upper_bound (Tuple[int, int, int]): Upper bound of the color range (B, G, R).
+        replacement_color (Tuple[int, int, int]): The color to replace pixels in the range with (B, G, R).
+
+    Returns:
+        np.ndarray: The image with pixels in the specified range replaced.
+    """
+    lower_bound_np = np.array(lower_bound, dtype=np.uint8)
+    upper_bound_np = np.array(upper_bound, dtype=np.uint8)
+
+    mask = cv2.inRange(input_image, lower_bound_np, upper_bound_np)
+
+    input_image[mask > 0] = replacement_color
+
+    return input_image
 
 
 def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.ndarray]:
