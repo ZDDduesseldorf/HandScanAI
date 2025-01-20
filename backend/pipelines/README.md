@@ -1,6 +1,6 @@
 # Pipelines
 
-TODO: Add information on pipelines
+TODO: Add information on pipelines.
 
 ## Initial Data Pipeline
 
