@@ -7,6 +7,7 @@ import uvicorn
 import pipelines.initial_data_pipeline as initial_pipeline
 from pipelines.initial_dataset_filter_pipeline import filter_11k_hands
 import knn.anntree as anntree
+from utils.logging_utils import setup_csv_logging
 
 cli = typer.Typer()
 
@@ -99,6 +100,12 @@ def filter_11k_dataset():
     filtered_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
     new_csv_path = "CSV_filtered.csv"
     filter_11k_hands(folder_path_initial_dataset, initial_csv_path, filtered_dataset_path, new_csv_path)
+
+
+@cli.command("setup_csv_logging")
+def initial_setup_csv_logging():
+    """Run the setup csv-logging funktion."""
+    setup_csv_logging()
 
 
 @cli.command("anntree")

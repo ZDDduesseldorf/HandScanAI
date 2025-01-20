@@ -17,8 +17,8 @@ class PipelineAPIKeys(Enum):
     CONFIDENCE_GENDER = "confidence_gender"
     UUID = "uuid"
     IMAGE_PATH = "image_path"
-    METADATA_GENDER = "gender"
-    METADATA_AGE = "age"
+    METADATA_GENDER = "meta_gender"
+    METADATA_AGE = "meta_age"
     REAL_AGE = "real_age"
     REAL_GENDER = "real_gender"
 
@@ -34,6 +34,12 @@ class PipelineDictKeys(Enum):
     IMAGE_PATHS_INITIAL = "image_paths"
     IMAGE_TENSORS = "image_tensors"
     SAVED_EMBEDDINGS = "saved_embeddings"
+    DISTANCE = "distance"
+    DISTANCE_IDS_SORTED = "distance_ids_sorted"
+    AGE = "age"
+    GENDER = "gender"
+    REGION = "region"
+    NEIGHBOUR_UUID = "neighbour_uuid"
 
 
 class HandRegions(Enum):
