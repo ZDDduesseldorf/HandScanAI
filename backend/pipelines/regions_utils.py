@@ -33,6 +33,7 @@ class PipelineDictKeys(Enum):
     IMAGE_PATH = "image_path"
     IMAGE_PATHS_INITIAL = "image_paths"
     IMAGE_TENSORS = "image_tensors"
+    SAVED_EMBEDDINGS = "saved_embeddings"
 
 
 class HandRegions(Enum):
