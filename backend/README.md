@@ -4,14 +4,19 @@
 
 - [HandScanAI Backend](#handscanai-backend)
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [Installation mit Docker und Dev Container](#installation-mit-docker-und-dev-container)
+    - [Schritte zur Installation](#schritte-zur-installation)
   - [Installation Ohne Docker](#installation-ohne-docker)
     - [MongoDB installieren](#mongodb-installieren)
+      - [MongoDB mit Docker Compose starten](#mongodb-mit-docker-compose-starten)
+      - [MongoDB manuell installieren](#mongodb-manuell-installieren)
     - [Python installieren](#python-installieren)
     - [Enviroment Datei erstellen](#enviroment-datei-erstellen)
     - [Virtuelle Umgebung erstellen](#virtuelle-umgebung-erstellen)
     - [Virtuelle Umgebung aktivieren](#virtuelle-umgebung-aktivieren)
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
     - [Server starten](#server-starten)
+  - [Setup](#setup)
   - [Entwicklung in VSCode](#entwicklung-in-vscode)
     - [Extensions](#extensions)
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
@@ -28,6 +33,7 @@
   - [Tests ausführen](#tests-ausführen)
 
 ## Installation mit Docker und Dev Container
+
 ### Schritte zur Installation
 
 **1. Docker Desktop installieren**: Laden Sie Docker Desktop von der [offiziellen Website](https://www.docker.com/products/docker-desktop) herunter und installieren Sie es.
@@ -37,24 +43,25 @@
 **3. Im Container entwickeln**: Um im Container entwickeln zu können, öffnen Sie den Backend-Ordner als eigenes Fenster, dann bekommen Sie einen Popup "Reopen in Container", falls nicht dann mit `STRG + UMSCHALT + P` `Dev Container: Reopen in container`. Der Container wird gebaut und VSCode wird automatisch mit Einstellungen und Extensions entprechend der `devcontainer.json` konfiguriert.
 
 Alternativ können Sie mit dem folgenden Befehl das Projekt starten:
+
 ```sh
 docker-compose up
 ```
 
 Falls ein Zugriff auf das Terminal des Containers gewünscht ist, dann führen Sie folgenden Befehl in einem Terminal aus:
+
 ```sh
 docker exec -it backend /bin/bash
 ```
 
 **4. Zugriff auf den Server**: Der Server sollte nun automatisch unter `http://127.0.0.1:8000` erreichbar sein.
 
-
-
 ## Installation Ohne Docker
 
 ### MongoDB installieren
 
 #### MongoDB mit Docker Compose starten
+
 Um MongoDB mit Docker zu starten, verwenden Sie den folgenden Befehl:
 
 ```sh
@@ -64,6 +71,7 @@ docker-compose up mongodb
 Dieser Befehl startet den MongoDB-Dienst, wie er in der docker-compose.yml-Datei definiert ist.
 
 #### MongoDB manuell installieren
+
 Alternativ können Sie die offizielle Anleitung zur Installation der MongoDB-Community-Edition befolgen. Die Anleitung finden Sie hier:
 [MongoDB Community Edition installieren](https://www.mongodb.com/docs/manual/administration/install-community/)
 
@@ -117,6 +125,23 @@ python manage.py runserver
 ```
 
 Der Server sollte nun unter `http://127.0.0.1:8000/` erreichbar sein.
+
+## Setup
+
+Ordnerstruktur anlegen
+
+backend/app/media
+
+- BaseImages: Alle Bilder des BaseDataset
+- csv: Metadata.csv und region_Embeddings.csv (erstellt durch initial_data_pipeline)
+- QueryImages: Bilder aus Frontend werden in diesem Ordner abgespeichert
+- RegionImages: Ergebnis Handnormalization
+
+backend/logs
+
+```sh
+  python manage.py setup_csv_logging
+```
 
 ## Entwicklung in VSCode
 
