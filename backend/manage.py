@@ -5,7 +5,9 @@ import typer
 import uvicorn
 
 import pipelines.initial_data_pipeline as initial_pipeline
+from pipelines.initial_dataset_filter_pipeline import filter_11k_hands
 import knn.anntree as anntree
+from utils.logging_utils import setup_csv_logging
 
 cli = typer.Typer()
 
@@ -33,10 +35,18 @@ def format_code():
     try:
         subprocess.run(
             [
-                "ruff", "format", "app", "embeddings", "hand_normalization", 
-                "knn", "lib", "pipelines", "tests", "validation"
-            ], 
-            check=True
+                "ruff",
+                "format",
+                "app",
+                "embeddings",
+                "hand_normalization",
+                "knn",
+                "lib",
+                "pipelines",
+                "tests",
+                "validation",
+            ],
+            check=True,
         )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
@@ -50,10 +60,18 @@ def check_code():
     try:
         subprocess.run(
             [
-                "ruff", "check", "app", "embeddings", "hand_normalization", 
-                "knn", "lib", "pipelines", "tests", "validation"
-            ], 
-            check=True
+                "ruff",
+                "check",
+                "app",
+                "embeddings",
+                "hand_normalization",
+                "knn",
+                "lib",
+                "pipelines",
+                "tests",
+                "validation",
+            ],
+            check=True,
         )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
@@ -71,6 +89,24 @@ def run_tests():
 def run_initial_data_pipeline():
     """Run the initial data pipeline."""
     initial_pipeline.run_initial_data_pipeline()
+
+
+@cli.command("initial_dataset_filter")
+def filter_11k_dataset():
+    """Run filter_11k function."""
+    # TODO: Pfade müssen vor Verwendung angepasst werden
+    folder_path_initial_dataset = "path/to/image/folder"  # current dataset
+    initial_csv_path = "path/to/csv"  # e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
+    filtered_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
+    new_csv_path = "CSV_filtered.csv"
+    filter_11k_hands(folder_path_initial_dataset, initial_csv_path, filtered_dataset_path, new_csv_path)
+
+
+@cli.command("setup_csv_logging")
+def initial_setup_csv_logging():
+    """Run the setup csv-logging funktion."""
+    setup_csv_logging()
+
 
 @cli.command("anntree")
 def run_anntree():

@@ -5,7 +5,7 @@ import hand_normalization.src.main as normalization
 from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
 from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
-
+from utils.logging_utils import logging_nearest_neighbours, logging_classification
 # this file is used to generate the prediction of an image
 
 
@@ -69,6 +69,11 @@ def run_inference_pipeline(uuid, testing=False):
     age_dict = classify_age(dict_all_info_knn)
     gender_dict = classify_gender(dict_all_info_knn)
     ensemble_df = ensemble_classifier(age_dict, gender_dict)
+
+    #### Logging ####
+    if not testing:
+        logging_nearest_neighbours(uuid, dict_all_info_knn)
+        logging_classification(uuid, age_dict, gender_dict, ensemble_df)
     return ensemble_df
 
 

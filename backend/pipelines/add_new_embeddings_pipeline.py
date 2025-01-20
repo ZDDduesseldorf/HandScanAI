@@ -2,9 +2,10 @@ from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from .inference_pipeline import get_image_path, _path_manager
 from .csv_utils import add_embedding_dict_to_csv, add_entry_to_csv
-from .regions_utils import PipelineAPIKeys
+from .regions_utils import PipelineAPIKeys, PipelineDictKeys
 from utils.image_utils import copy_image_to_folder
 from .data_utils import map_gender_int_to_string
+from utils.logging_utils import logging_input_data
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
@@ -53,12 +54,18 @@ def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False
         added_metadata = add_entry_to_csv(
             metadata_csv_path,
             {
-                "uuid": uuid,
-                "age": ground_truth_data[PipelineAPIKeys.REAL_AGE.value],
-                "gender": map_gender_int_to_string(ground_truth_data[PipelineAPIKeys.REAL_GENDER.value]),
+                PipelineDictKeys.UUID.value: uuid,
+                PipelineDictKeys.AGE.value: ground_truth_data[PipelineAPIKeys.REAL_AGE.value],
+                PipelineDictKeys.GENDER.value: map_gender_int_to_string(
+                    ground_truth_data[PipelineAPIKeys.REAL_GENDER.value]
+                ),
             },
         )
         added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
+
+        ### Logging ####
+        logging_input_data(uuid, ground_truth_data)
+
         return added_embeddings and added_metadata and copied_image
 
     # für uns report sinnvoll mit vorhergesagtem und bestimmten Alter und Geschlecht, Timestamp?
