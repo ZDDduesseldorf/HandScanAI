@@ -7,14 +7,19 @@ from pipelines.datasets import ImagePathWithCSVDataset
 from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
 
 
-### This pipeline is for filtering 11K dataset into a first base dataset of hand images
-
-# filters whole 11k dataset with validation_pipeline (valid hand image) and the hand being dorsal
-# saves metadata in a csv and the images in a folder as a new base dataset
-# image names are in the form of {UUID}.jpg
-
-
 def filter_11k_hands(folder_path, csv_path, new_dataset_path, new_csv_path):
+    """
+        This Funktion is for filtering 11K dataset into a first filtered dataset of hand images.
+        Filters whole 11k dataset with validation_pipeline (valid hand image) and the hand being dorsal.
+        Saves metadata in a csv and the images in a folder as a new filtered dataset.
+        image names are in the form of {UUID}.jpg
+    Args:
+        folder_path: Path to folder with images of initial unfiltered dataset
+        csv_path: Path to initial_metadata.csv e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
+        new_dataset_path: Path to folder for filtered Dataset
+        new_csv_path: path to Metadata_filtered.csv
+
+    """
     # load images from 11K Dataset
     dataset_11k = ImagePathWithCSVDataset(folder_path, csv_path=csv_path)
     csv_header = [

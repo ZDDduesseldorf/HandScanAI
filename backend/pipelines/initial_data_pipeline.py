@@ -1,30 +1,11 @@
 from .datasets import ImagePathDataset, DatasetRegionClusters
-from .initial_dataset_filter_pipeline import filter_11k_hands
 from embeddings.embeddings_utils import calculate_embeddings_from_path_dict
 import hand_normalization.src.main as normalization
 from .regions_utils import PipelineDictKeys as Keys
 
 
 ### This pipeline is for filtering 11K dataset
-def run_initial_data_pipeline(
-    base_dataset_path, region_dataset_path, filter_initial_dataset=False, save_results_in_temp_folders=True
-):
-    ######## STEP 1: Create Base Dataset #################################
-    # load images from 11K Dataset, validate and filter images
-    if filter_initial_dataset:
-        print("--------------- Validation: Load and filter initial dataset --------------------------------")
-        # TODO: extract paths for config-file instead of hard-coding them here
-        folder_path_initial_dataset = "path/to/image/folder"  # current dataset
-        initial_csv_path = "path/to/csv"  # e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
-        base_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
-        new_csv_path = "CSV_filtered.csv"
-        filter_11k_hands(
-            folder_path=folder_path_initial_dataset,
-            csv_path=initial_csv_path,
-            new_dataset_path=base_dataset_path,
-            new_csv_path=new_csv_path,
-        )
-
+def run_initial_data_pipeline(base_dataset_path, region_dataset_path, save_results_in_temp_folders=True):
     ######## STEP 2: Hand normalization #################################
     print("--------------- Hand-Normalization: Load dataset --------------------------------")
     # dataloader
