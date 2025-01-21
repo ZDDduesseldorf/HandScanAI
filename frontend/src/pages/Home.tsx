@@ -3,11 +3,6 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-// import GetModels from '@/components/TestGraphQL';
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { HandScanResultQuery } from '../GraphQL/Queries';
-import { HandData } from '../GraphQL/Queries';
 
 const Container = styled(Box)`
   display: flex;
@@ -66,40 +61,12 @@ const Home: React.FC = () => {
     navigate('/privacy-notice');
   };
 
-  const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
-    HandScanResultQuery,
-  );
-  // useEffect is just used to log the data to the console
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
   return (
     <Container>
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
       <StartButton onClick={handleStartClick}>Start</StartButton>
-      <Subtitle variant="h3">Backend Check</Subtitle>
-      {data && (
-        <Subtitle variant="h2">
-          ID: {data.getScanResult.id}, Gender:{' '}
-          {data.getScanResult.classifiedGender}
-          <br></br>
-          classifiedAge: {data.getScanResult.classifiedAge}
-          <br></br>
-          confidenceGender: {data.getScanResult.confidenceGender}
-          <br></br>
-          confidenceAge: {data.getScanResult.confidenceAge}
-        </Subtitle>
-      )}
-      {/* can also be written this way, 
-      it is just important to add a conditional check because data 
-      could still be undifined intially, before the data is loaded */}
-      {/* <Subtitle>ID:{data?.getScanResult.id}</Subtitle> */}
     </Container>
   );
 };

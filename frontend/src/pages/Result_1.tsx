@@ -2,9 +2,6 @@ import { Typography, Button, styled, Box } from '@mui/material';
 import Slider from '@mui/material/Slider';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { HandScanResultQuery } from '../GraphQL/Queries';
-import { HandData } from '../GraphQL/Queries';
 import { useDataContext } from '@/services/DataContext';
 
 const TertiaryHeading = styled(Typography)`
@@ -57,28 +54,18 @@ const Result_1: React.FC = () => {
   const navigate = useNavigate();
   const { handData } = useDataContext();
 
-  // const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
-  //   HandScanResultQuery,
-  // );
   if (!handData) {
-    return <p>No data available. Please query the data first.</p>;
+    return (
+      <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
+    );
   }
+
   const genderGuess = handData.classifiedAge;
   const ageGuess = handData.classifiedAge;
   const min_age = 20;
   const max_age = 26;
   const age_confidence = handData.confidenceAge;
   const gender_confidence = handData.confidenceGender;
-
-  // const genderGuess = data?.getScanResult.classifiedGender;
-  // const ageGuess = data?.getScanResult.classifiedAge;
-  // const min_age = 20;
-  // const max_age = 26;
-  // const age_confidence = data?.getScanResult.confidenceAge;
-  // const gender_confidence = data?.getScanResult.confidenceGender;
-
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p>Error: {error.message}</p>;
 
   return (
     <BodyLayout>

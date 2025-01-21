@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Typography, styled, Box } from '@mui/material';
+import { Typography, styled, Box, CircularProgress } from '@mui/material';
 import NavButton from '@/components/NavButton';
 import { useQuery } from '@apollo/client';
 import { HandScanResultQuery } from '../GraphQL/Queries';
@@ -27,8 +27,6 @@ const Processing: React.FC = () => {
   }, [data, setHandData]);
   if (error) return <p>Error: {error.message}</p>;
 
-  if (loading) return <p>Loading...</p>;
-
   return (
     <Box>
       <CenteredInformationText>
@@ -38,8 +36,9 @@ const Processing: React.FC = () => {
         festgelegt wird und teilweise genetisch beeinflusst
         <br /> ist.
       </CenteredInformationText>
-
-      <NavButton RouteTo="/result-1">Weiter</NavButton>
+      <br></br>
+      {/* {loading && <CircularProgress></CircularProgress>} */}
+      {!loading && <NavButton RouteTo="/result-1">Weiter</NavButton>}
     </Box>
   );
 };
