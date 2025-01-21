@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 // import GetModels from '@/components/TestGraphQL';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { TEST_QUERY } from '../GraphQL/Queries';
+import { HandScanResultQuery } from '../GraphQL/Queries';
 import { HandData } from '../GraphQL/Queries';
 
 const Container = styled(Box)`
@@ -66,19 +66,22 @@ const Home: React.FC = () => {
     navigate('/privacy-notice');
   };
 
-  // const { error, loading, data } = useQuery<HandData>(TEST_QUERY);
-  const { error, loading, data } = useQuery<{ getTestModels: HandData[] }>(
-    TEST_QUERY,
+  //  const { error, loading, data } = useQuery<HandData>(HandScanResultQuery);
+  // const { error, loading, data } = useQuery<{ getTestModels: HandData[] }>(
+  //   HandScanResultQuery,
+  // );
+  const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
+    HandScanResultQuery,
   );
 
-  const [models, setModels] = useState<HandData[]>([]);
+  // const [models, setModels] = useState<HandData[]>([]);
   useEffect(() => {
     console.log(data);
-    if (data) {
-      setModels(data.getTestModels);
-    }
+    // if (data) {
+    //   setModels(data.getTestModels);
+    // }
   }, [data]);
-  // Unsure wheter to remove since Loading is not visible
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -90,13 +93,13 @@ const Home: React.FC = () => {
       <StartButton onClick={handleStartClick}>Start</StartButton>
       <Subtitle variant="h3">Backend Check</Subtitle>
 
-      {data?.getTestModels.map((model) => (
+      {/* {data?.getTestModels.map((model) => (
         <Subtitle variant="h2" key={model.id}>
-          ID: {model.id}, Created At: {model.createdAt}
+          ID: {model.id}, Created At: {model.classifiedGender}
         </Subtitle>
-      ))}
-      {/* {<p key={data.id}>{data.createdAt}</p>} */}
-      {/* <h3>{data.id}</h3> */}
+      ))} */}
+      {/* {<p key={data.id}>{data.createdAt}</p>} }
+      { <h3>{data.id}</h3> */}
     </Container>
   );
 };
