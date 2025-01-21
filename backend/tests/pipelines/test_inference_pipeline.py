@@ -16,6 +16,6 @@ from pipelines.inference_pipeline import run_inference_pipeline
 
 def test_run_inference_pipeline():
     uuid = "514f53d0-6aab-4da1-b929-8f1dc0817289"
-    dict_embedding = run_inference_pipeline(uuid)
-    print(dict_embedding)
-    assert len(dict_embedding) == 7
+    classification_df = run_inference_pipeline(uuid, testing=True)
+    # column: index + 5 Parameter
+    assert classification_df.shape == (1, 6)

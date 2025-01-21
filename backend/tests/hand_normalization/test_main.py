@@ -8,7 +8,6 @@ from hand_normalization.src import main
 from pipelines.regions_utils import HandRegions
 
 # Run in Terminal with: pytest tests/hand_normalization
-
 # === Global Paths === #
 BASE_DIR = Path(__file__).resolve().parent.parent 
 TEST_IMAGE_DIR = BASE_DIR / "data" / "TestImages"
@@ -486,7 +485,9 @@ def test_resize_to_target_with(dummy_image, fill_color):
 
 # === TESTS FOR test_normalize_hand_image === #
 def test_normalize_hand_image_path(valid_image_path):
+    """Tests if the hand normalization has 7 entries."""
     regions_dict = main.normalize_hand_image(valid_image_path)
+    
     assert len(regions_dict) == 7
 
 

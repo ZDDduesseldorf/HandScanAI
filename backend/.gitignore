@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
+# Docker Volumes
+volumes/
+
 # Logs
 *.log
 
@@ -24,3 +27,6 @@ venv.bak/
 
 # Generated Media
 media/
+
+# Generated Logs
+logs/

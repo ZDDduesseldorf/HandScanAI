@@ -6,14 +6,15 @@ import {
 } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from '@/pages/Home';
-import About from '@/pages/About';
-import Information from '@/pages/Information';
-import Berechnung from '@/pages/Berechnung';
-import Bildaufnahme from '@/pages/Bildaufnahme';
+import PrivacyNotice from '@/pages/PrivacyNotice';
+import ImageCapture from '@/pages/ImageCapture';
+import Processing from '@/pages/Processing';
+import SubmissionComplete from '@/pages/SubmissionComplete';
 import Sandbox from '@/pages/Sandbox';
-import ErgebnisAge from '@/pages/ErgebnisAge';
-import ErgebnisGender from './pages/ErgebnisGender';
-import Danke from './pages/Danke';
+import BlackBox from '@/pages/BlackBox';
+import Layout from '@/components/Layout';
+import Result_1 from '@/pages/Result_1';
+import Result_2 from '@/pages/Result_2';
 
 import '@/assets/fonts.css';
 import '@/App.css';
@@ -21,30 +22,22 @@ import '@/App.css';
 const App: React.FC = () => {
   const location = useLocation();
 
-  // Define dynamic animation logic based on the current route
   const getPageVariants = (pathname: string) => {
     switch (pathname) {
       case '/':
-        // Home: Opacity in, Move-left out
         return {
           initial: { opacity: 0 },
-          animate: { opacity: 1, transition: { duration: 0.5 } },
-          exit: { opacity: 0, x: '-100%', transition: { duration: 0.3 } },
+          animate: { opacity: 1 },
+          exit: { opacity: 0, x: '-100%' },
         };
-      case '/information':
-        // Information: Move-left in, No animation out
+      case '/privacy-notice':
         return {
           initial: { opacity: 0, x: '100%' },
-          animate: { opacity: 1, x: 0, transition: { duration: 0.3 } },
-          exit: {}, // No animation on exit
-        };
-      default:
-        // All other pages: Instant transition (no animation)
-        return {
-          initial: {},
-          animate: {},
+          animate: { opacity: 1, x: 0 },
           exit: {},
         };
+      default:
+        return { initial: {}, animate: {}, exit: {} };
     }
   };
 
@@ -61,14 +54,19 @@ const App: React.FC = () => {
         >
           <Routes location={location}>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/information" element={<Information />} />
-            <Route path="/berechnung" element={<Berechnung />} />
-            <Route path="/bildaufnahme" element={<Bildaufnahme />} />
+            <Route element={<Layout />}>
+              <Route path="/privacy-notice" element={<PrivacyNotice />} />
+              <Route path="/image-capture" element={<ImageCapture />} />
+              <Route path="/processing" element={<Processing />} />
+              <Route path="/blackbox" element={<BlackBox />} />
+              <Route path="/result-1" element={<Result_1 />} />
+              <Route path="/result-2" element={<Result_2 />} />
+              <Route
+                path="/submission-complete"
+                element={<SubmissionComplete />}
+              />
+            </Route>
             <Route path="/sandbox" element={<Sandbox />} />
-            <Route path="ergebnisage" element={<ErgebnisAge />} />
-            <Route path="ergebnisgender" element={<ErgebnisGender />} />
-            <Route path="danke" element={<Danke />} />
           </Routes>
         </motion.div>
       </AnimatePresence>

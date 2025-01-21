@@ -133,7 +133,7 @@ class DatasetRegionClusters(Dataset):
         dict {
           'uuid': str,
           'image_paths': dict {
-            region_key (str): image_path (str)
+             region_key (str): image_path (str)
           }
         }
         ```

@@ -605,7 +605,6 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
             points_in_segment = points_in_mask(segments, region_reference_point)
             if points_in_segment:
                 region.update({"mask": segments})
-
     return regions
 
 
@@ -632,7 +631,6 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
         raise ValueError(f"No valid bounding box found for region: {region['name']}")
 
     cropped_image = crop_to_bounding_box(rotated_image, bounding_box)
-
     return cropped_image
 
 
@@ -861,3 +859,4 @@ def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.nda
         Dict[str, np.ndarray]: Dictionary of region names and corresponding images.
     """
     return {region["name"]: region["image"] for region in regions}
+
