@@ -6,8 +6,21 @@ import mediapipe as mp
 from typing import List, Dict, Tuple
 
 # TODO: Decide with frontend on final implementation and use of get_landmarks-function.
+# TODO: Find alternative for replace_color_in_range function to remove black rotation artifacts
 
 ################################## Debug & Test Utils ##################################
+
+def save_region_images(uuid: str, regions_dict: dict, output_directory):
+    """
+    Saves images as .bmp with name {uuid}_{region_key}.bmp.
+    Function expects image in RGB-color-format and changes it to BGR for imwrite.
+    """
+    if os.path.isdir(output_directory):
+        for region_key, image in regions_dict.items():
+            #image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            filename = os.path.join(output_directory, f"{uuid}_{region_key}.bmp")
+            cv2.imwrite(filename, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
+    return
 
 
 def draw_point(image: np.ndarray, point: Tuple[int, int]) -> None:
@@ -75,7 +88,7 @@ def draw_images_in_grid(
         grid = draw_images_in_grid(images, rows=2, cols=2)
         cv2.imshow("Image Grid", grid)
         cv2.waitKey(0)
-    """
+    """  # noqa: E501
     canvas_height = rows * (image_size[1] + padding) + padding
     canvas_width = cols * (image_size[0] + padding) + padding
 
@@ -694,7 +707,7 @@ def calculate_vector_angle(point1: Tuple[int, int], point2: Tuple[int, int]) -> 
     return vector_angle
 
 
-def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = []) -> np.ndarray:
+def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = []) -> np.ndarray:  # noqa: B006
     """
     Rotates an image around a specified center without cropping the edges.
 
@@ -784,7 +797,7 @@ def resize_images(
         List[Dict[str, np.ndarray]]: A list of dictionaries, where each dictionary contains:
             "name" (str): The name of the image or region.
             "image" (np.ndarray): The resized and padded image as a NumPy array.
-    """
+    """  # noqa: E501
     return [
         {"name": region["name"], "image": resize_to_target(region["image"], size, fill_color)}
         for region in images_with_names
@@ -803,7 +816,7 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
 
     Returns:
         np.ndarray: The resized image placed on a square canvas with the specified background color.
-    """
+    """  # noqa: E501
     original_height, original_width = input_image.shape[:2]
     if original_width > original_height:
         new_width = size
@@ -825,7 +838,12 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
     return new_image
 
 
-def replace_color_in_range(input_image: np.ndarray, lower_bound: Tuple[int, int, int], upper_bound: Tuple[int, int, int], replacement_color: Tuple[int, int, int]) -> np.ndarray:
+def replace_color_in_range(
+        input_image: np.ndarray, 
+        lower_bound: Tuple[int, int, int], 
+        upper_bound: Tuple[int, int, int], 
+        replacement_color: Tuple[int, int, int]
+) -> np.ndarray:
     """
     Replaces all pixels in the specified color range with a replacement color.
 
