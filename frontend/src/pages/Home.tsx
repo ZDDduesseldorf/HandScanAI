@@ -73,13 +73,9 @@ const Home: React.FC = () => {
   const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
     HandScanResultQuery,
   );
-
-  // const [models, setModels] = useState<HandData[]>([]);
+  // useEffect is just used to log the data to the console
   useEffect(() => {
     console.log(data);
-    // if (data) {
-    //   setModels(data.getTestModels);
-    // }
   }, [data]);
 
   if (loading) return <p>Loading...</p>;
@@ -92,7 +88,15 @@ const Home: React.FC = () => {
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
       <StartButton onClick={handleStartClick}>Start</StartButton>
       <Subtitle variant="h3">Backend Check</Subtitle>
-
+      {data && (
+        <Subtitle variant="h2">
+          ID: {data.getScanResult.id}, Gender:{' '}
+          {data.getScanResult.classifiedGender}
+          classifiedAge: {data.getScanResult.classifiedGender}
+          confidenceGender: {data.getScanResult.confidenceGender}
+          confidenceAge: {data.getScanResult.confidenceAge}
+        </Subtitle>
+      )}
       {/* {data?.getTestModels.map((model) => (
         <Subtitle variant="h2" key={model.id}>
           ID: {model.id}, Created At: {model.classifiedGender}
