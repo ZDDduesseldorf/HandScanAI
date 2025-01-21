@@ -3,9 +3,6 @@ __pycache__/
 *.pyc
 volumes/
 
-# Docker Volumes
-volumes/
-
 # Logs
 *.log
 
