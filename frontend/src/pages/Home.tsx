@@ -66,10 +66,6 @@ const Home: React.FC = () => {
     navigate('/privacy-notice');
   };
 
-  //  const { error, loading, data } = useQuery<HandData>(HandScanResultQuery);
-  // const { error, loading, data } = useQuery<{ getTestModels: HandData[] }>(
-  //   HandScanResultQuery,
-  // );
   const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
     HandScanResultQuery,
   );
@@ -100,13 +96,10 @@ const Home: React.FC = () => {
           confidenceAge: {data.getScanResult.confidenceAge}
         </Subtitle>
       )}
-      {/* {data?.getTestModels.map((model) => (
-        <Subtitle variant="h2" key={model.id}>
-          ID: {model.id}, Created At: {model.classifiedGender}
-        </Subtitle>
-      ))} */}
-      {/* {<p key={data.id}>{data.createdAt}</p>} }
-      { <h3>{data.id}</h3> */}
+      {/* can also be written this way, 
+      it is just important to add a conditional check because data 
+      could still be undifined intially, before the data is loaded */}
+      {/* <Subtitle>ID:{data?.getScanResult.id}</Subtitle> */}
     </Container>
   );
 };

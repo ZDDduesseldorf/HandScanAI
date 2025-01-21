@@ -6,14 +6,6 @@ export interface HandData {
   id: string;
 }
 import { gql } from '@apollo/client';
-// export const TEST_QUERY = gql`
-//   query MyQuery {
-//     getTestModels {
-//       id
-//       createdAt
-//     }
-//   }
-// `;
 
 export const HandScanResultQuery = gql`
   query MyQuery {
