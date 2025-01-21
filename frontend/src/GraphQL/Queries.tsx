@@ -1,4 +1,5 @@
 export interface HandData {
+  classifiedAge: number;
   classifiedGender: number;
   confidenceAge: number;
   confidenceGender: number;

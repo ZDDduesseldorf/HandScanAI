@@ -92,8 +92,11 @@ const Home: React.FC = () => {
         <Subtitle variant="h2">
           ID: {data.getScanResult.id}, Gender:{' '}
           {data.getScanResult.classifiedGender}
-          classifiedAge: {data.getScanResult.classifiedGender}
+          <br></br>
+          classifiedAge: {data.getScanResult.classifiedAge}
+          <br></br>
           confidenceGender: {data.getScanResult.confidenceGender}
+          <br></br>
           confidenceAge: {data.getScanResult.confidenceAge}
         </Subtitle>
       )}
