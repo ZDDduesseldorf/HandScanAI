@@ -1,26 +1,15 @@
 import os
-from pipelines.regions_utils import HandRegions, PipelineDictKeys
+# from pipelines.regions_utils import HandRegions, PipelineDictKeys
 import cv2
 import numpy as np
 import mediapipe as mp
 from typing import List, Dict, Tuple
+from enum import Enum
 
-# TODO: Decide with frontend on final implementation and use of get_landmarks-function.
-# TODO: Find alternative for replace_color_in_range function to remove black rotation artifacts
+# TODO: Decide with frontend on final implementation and use of get_landmarks-function
+# TODO: Remove enum and change to pipeline utitls from imports
 
 ################################## Debug & Test Utils ##################################
-
-def save_region_images(uuid: str, regions_dict: dict, output_directory):
-    """
-    Saves images as .bmp with name {uuid}_{region_key}.bmp.
-    Function expects image in RGB-color-format and changes it to BGR for imwrite.
-    """
-    if os.path.isdir(output_directory):
-        for region_key, image in regions_dict.items():
-            #image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            filename = os.path.join(output_directory, f"{uuid}_{region_key}.bmp")
-            cv2.imwrite(filename, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
-    return
 
 
 def draw_point(image: np.ndarray, point: Tuple[int, int]) -> None:
@@ -56,14 +45,8 @@ def show_images(images: List[np.ndarray]) -> None:
         cv2.destroyAllWindows()
 
 
-def draw_images_in_grid(
-    image_list: list,
-    rows: int,
-    cols: int,
-    image_size: Tuple[int, int] = (224, 224),
-    padding: int = 10,
-    bg_color: Tuple[int, int, int] = (13, 17, 23),
-) -> np.ndarray:
+def draw_images_in_grid(image_list: list, rows: int, cols: int, image_size: Tuple[int, int] = (224, 224), 
+                        padding: int = 10, bg_color: Tuple[int, int, int] = (13, 17, 23)) -> np.ndarray:
     """
     Arranges a list of images in a grid format on a single canvas.
 
@@ -88,7 +71,7 @@ def draw_images_in_grid(
         grid = draw_images_in_grid(images, rows=2, cols=2)
         cv2.imshow("Image Grid", grid)
         cv2.waitKey(0)
-    """  # noqa: E501
+    """
     canvas_height = rows * (image_size[1] + padding) + padding
     canvas_width = cols * (image_size[0] + padding) + padding
 
@@ -111,7 +94,20 @@ def draw_images_in_grid(
     return canvas
 
 
-################################## Image normalization functions ##################################
+class HandRegions(Enum):
+    """
+    Used as region keys to
+    - save and load data
+    - in dicts that pass data down the pipelines.
+    """
+
+    HAND_0 = "Hand"
+    HANDBODY_1 = "HandBody"
+    THUMB_2 = "Thumb"
+    INDEXFINGER_3 = "IndexFinger"
+    MIDDLEFINGER_4 = "MiddleFinger"
+    RINGFINGER_5 = "RingFinger"
+    LITTLEFINGER_6 = "LittleFinger"
 
 
 def normalize_hand_image(image_path: str) -> Dict[str, np.ndarray]:
@@ -197,9 +193,6 @@ def get_landmarks(image_path: str) -> List[Tuple[int, int]]:
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     landmarks.append((x, y))
 
-    if len(landmarks) != 21:
-        raise ValueError(f"Expected 21 landmarks, but detected {len(landmarks)}.")
-
     return landmarks
 
 
@@ -240,9 +233,7 @@ def detect_hand_contours(hand_mask: np.ndarray, image_shape: Tuple[int, int]) ->
     return blank, largest_contour
 
 
-def calculate_region_defining_points(
-    landmarks: List[Tuple[int, int]], contour_mask: np.ndarray, contour: np.ndarray
-) -> List[Tuple[int, int]]:
+def calculate_region_defining_points(landmarks: List[Tuple[int, int]], contour_mask: np.ndarray, contour: np.ndarray) -> List[Tuple[int, int]]:
     """
     Calculates region-defining points from landmarks.
 
@@ -286,9 +277,14 @@ def detect_largest_defects(largest_contour):
     if defects is None or len(defects) == 0:
         return []
 
-    defect_distances = [(defect[0][3], tuple(largest_contour[defect[0][2]][0])) for defect in defects]
+    defect_distances = [
+        (defect[0][3], tuple(largest_contour[defect[0][2]][0]))
+        for defect in defects
+    ]
 
-    four_largest_defects = [point for _, point in sorted(defect_distances, reverse=True)[:4]]
+    four_largest_defects = [
+        point for _, point in sorted(defect_distances, reverse=True)[:4]
+    ]
 
     return four_largest_defects
 
@@ -305,9 +301,7 @@ def contour_to_bitmask(contour, image_shape):
         numpy.ndarray: A binary mask with the contour filled.
     """
     mask = np.zeros(image_shape, dtype=np.uint8)
-
-    if contour is not None and len(contour) > 0:
-        cv2.fillPoly(mask, [contour], color=255)
+    cv2.fillPoly(mask, [contour], color=255) 
 
     return mask
 
@@ -323,15 +317,11 @@ def points_in_mask(mask: np.ndarray, points: List[Tuple[int, int]]) -> List[Tupl
     Returns:
         List[Tuple[int, int]]: List of points that are inside the mask.
     """
-    if not points:
-        return []
-
     if isinstance(points[0], int):
         points = [points]
 
     inside_points = [
-        point
-        for point in points
+        point for point in points
         if 0 <= point[0] < mask.shape[1] and 0 <= point[1] < mask.shape[0] and mask[point[1], point[0]] > 0
     ]
 
@@ -354,15 +344,18 @@ def calculate_additional_defects(region_defining_points, landmarks, contour_mask
     outer_thumb_defect = detect_missing_point(region_defining_points[0], landmarks[2], contour_mask, blank)
     index_defect = detect_missing_point(region_defining_points[2], region_defining_points[1], contour_mask, blank)
     pinkie_defect = detect_missing_point(region_defining_points[2], region_defining_points[3], contour_mask, blank)
-
+   
     return [outer_thumb_defect, index_defect, pinkie_defect]
 
 
 def detect_missing_point(
-    first_defect: Tuple[int, int], second_defect: Tuple[int, int], contour_mask: np.ndarray, blank_image: np.ndarray
+    first_defect: Tuple[int, int],
+    second_defect: Tuple[int, int],
+    contour_mask: np.ndarray,
+    blank_image: np.ndarray
 ) -> Tuple[int, int]:
     """
-    Detects a missing point between two defects using a direction vector
+    Detects a missing point between two defects using a direction vector 
     and finds the closest intersection point on the contour.
 
     Args:
@@ -407,9 +400,8 @@ def find_direction_vector(point1: Tuple[int, int], point2: Tuple[int, int]) -> T
     return (point2[0] - point1[0], point2[1] - point1[1])
 
 
-def get_sorted_points_by_distance(
-    array_of_points: List[Tuple[int, int]], given_point: Tuple[int, int], return_closest: bool = False
-) -> List[Tuple[int, int]]:
+
+def get_sorted_points_by_distance(array_of_points: List[Tuple[int, int]], given_point: Tuple[int, int], return_closest: bool = False) -> List[Tuple[int, int]]:
     """
     Sorts a list of 2D points by their distance to a given reference point.
     Optionally returns only the closest point.
@@ -440,11 +432,6 @@ def calculate_euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int
     Returns:
         float: The Euclidean distance between the two points.
     """
-    if not (isinstance(point1, (tuple, list)) and isinstance(point2, (tuple, list))):
-        raise TypeError("Both points must be tuples or lists of two numerical values.")
-    if not (len(point1) == 2 and len(point2) == 2):
-        raise ValueError("Both points must contain exactly two elements.")
-    
     return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
 
 
@@ -458,27 +445,10 @@ def integrate_defects(region_defining_points, defects):
 
     Returns:
         List[Tuple[int, int]]: Updated defining points list.
-
-    Raises:
-        ValueError: If defects list has fewer than 3 elements.
-        TypeError: If inputs are not lists of 2D points (tuples of two integers).
     """
-    print(region_defining_points)
-    if not isinstance(region_defining_points, list) or not isinstance(defects, list):
-        raise TypeError("Both inputs must be lists of (x, y) coordinate tuples.")
-
-    for point in region_defining_points + defects:
-        if not (isinstance(point, tuple) and len(point) == 2 and 
-                all(isinstance(coord, np.integer) for coord in point)):
-            raise TypeError("All points must be tuples of two integers (x, y).")
-
-    if len(defects) < 3:
-        raise ValueError("At least 3 defect points are required.")
-
-    region_defining_points.insert(0, defects[0])  
-    region_defining_points.insert(2, defects[1])   
-    region_defining_points.append(defects[2])      
-
+    region_defining_points.insert(0, defects[0])
+    region_defining_points.insert(2, defects[1])
+    region_defining_points.append(defects[2])
     return region_defining_points
 
 
@@ -543,7 +513,7 @@ def count_white_pixels(image: np.ndarray) -> int:
     Counts the number of white pixels (value 255) in a binary or grayscale image.
 
     Args:
-        image (np.ndarray): The input image as a NumPy array. Expected to be a binary
+        image (np.ndarray): The input image as a NumPy array. Expected to be a binary 
                             or grayscale image where white pixels have the value 255.
 
     Returns:
@@ -583,24 +553,7 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
 
     Returns:
         list: List of regions with assigned masks.
-
-    Raises:
-        ValueError: If sorted_segments has fewer than 7 masks.
-        ValueError: If landmarks has fewer than 20 points.
-        TypeError: If inputs are not lists or masks are not numpy arrays.
     """
-    if not isinstance(sorted_segments, list) or not all(isinstance(mask, np.ndarray) for mask in sorted_segments):
-        raise TypeError("sorted_segments must be a list of NumPy arrays.")
-    
-    if not isinstance(landmarks, list) or not all(isinstance(point, tuple) and len(point) == 2 for point in landmarks):
-        raise TypeError("landmarks must be a list of (x, y) coordinate tuples.")
-
-    if len(sorted_segments) < 7:
-        raise ValueError("sorted_segments must contain at least 7 masks.")
-
-    if len(landmarks) < 20:
-        raise ValueError("landmarks must contain at least 20 points.")
-    
     regions = [
         {"name": HandRegions.HAND_0.value, "reference_point": []},
         {"name": HandRegions.HANDBODY_1.value, "reference_point": landmarks[13]},
@@ -611,13 +564,16 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
         {"name": HandRegions.LITTLEFINGER_6.value, "reference_point": landmarks[19]},
     ]
 
-    regions[0].update({"mask": sorted_segments[0]})
+    regions[0].update(
+        {"mask": sorted_segments[0]}
+    )
     for region in regions[1:]:
         region_reference_point = region["reference_point"]
         for segments in sorted_segments[1:]:
             points_in_segment = points_in_mask(segments, region_reference_point)
             if points_in_segment:
                 region.update({"mask": segments})
+
     return regions
 
 
@@ -640,10 +596,8 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
     rotated_mask = rotate_image_no_crop(region["mask"], angle)
 
     bounding_box = get_bounding_box_with_margin(rotated_mask, 5)
-    if bounding_box is None:
-        raise ValueError(f"No valid bounding box found for region: {region['name']}")
-
     cropped_image = crop_to_bounding_box(rotated_image, bounding_box)
+
     return cropped_image
 
 
@@ -707,14 +661,14 @@ def calculate_vector_angle(point1: Tuple[int, int], point2: Tuple[int, int]) -> 
     return vector_angle
 
 
-def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = []) -> np.ndarray:  # noqa: B006
+def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = []) -> np.ndarray:
     """
     Rotates an image around a specified center without cropping the edges.
 
     Args:
         image (np.ndarray): The input image to be rotated.
         angle (float): The rotation angle in degrees (clockwise is positive).
-        center_of_rotation (list, optional): The center point for the rotation as [x, y].
+        center_of_rotation (list, optional): The center point for the rotation as [x, y]. 
                                              If not provided, the image center is used.
 
     Returns:
@@ -776,12 +730,15 @@ def crop_to_bounding_box(image, bounding_box):
     numpy.ndarray: The cropped image.
     """
     x, y, w, h = bounding_box
+    # Crop the image using array slicing
     cropped_image = image[y : y + h, x : x + w]
     return cropped_image
 
 
 def resize_images(
-    images_with_names: List[Dict[str, np.ndarray]], size: int = 224, fill_color: Tuple[int, int, int] = (255, 255, 255)
+    images_with_names: List[Dict[str, np.ndarray]], 
+    size: int = 224, 
+    fill_color: Tuple[int, int, int] = (255, 255, 255)
 ) -> List[Dict[str, np.ndarray]]:
     """
     Resizes a list of images to a square target size with optional padding.
@@ -797,11 +754,11 @@ def resize_images(
         List[Dict[str, np.ndarray]]: A list of dictionaries, where each dictionary contains:
             "name" (str): The name of the image or region.
             "image" (np.ndarray): The resized and padded image as a NumPy array.
-    """  # noqa: E501
-    return [
-        {"name": region["name"], "image": resize_to_target(region["image"], size, fill_color)}
-        for region in images_with_names
-    ]
+    """
+    return [{
+        "name": region["name"],
+        "image": resize_to_target(region["image"], size, fill_color)
+    } for region in images_with_names]
 
 
 def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, int, int]) -> np.ndarray:
@@ -816,7 +773,7 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
 
     Returns:
         np.ndarray: The resized image placed on a square canvas with the specified background color.
-    """  # noqa: E501
+    """
     original_height, original_width = input_image.shape[:2]
     if original_width > original_height:
         new_width = size
@@ -828,22 +785,17 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
     resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
     new_image = np.full((size, size, 3), fill_color, dtype=np.uint8)
 
-    top_left_x = (size - new_width) // 2
+    top_left_x = (size - new_width) // 2  
     top_left_y = size - new_height
-
+    
     new_image[top_left_y : top_left_y + new_height, top_left_x : top_left_x + new_width] = resized_image
-
+    
     new_image = replace_color_in_range(new_image, [0, 0, 0], [15, 15, 15], [255, 255, 255])
 
     return new_image
 
 
-def replace_color_in_range(
-        input_image: np.ndarray, 
-        lower_bound: Tuple[int, int, int], 
-        upper_bound: Tuple[int, int, int], 
-        replacement_color: Tuple[int, int, int]
-) -> np.ndarray:
+def replace_color_in_range(input_image: np.ndarray, lower_bound: Tuple[int, int, int], upper_bound: Tuple[int, int, int], replacement_color: Tuple[int, int, int]) -> np.ndarray:
     """
     Replaces all pixels in the specified color range with a replacement color.
 
@@ -878,3 +830,15 @@ def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.nda
     """
     return {region["name"]: region["image"] for region in regions}
 
+
+image_path = "C:\\Users\lukas\Documents\Hand_0000064.jpg"
+images = normalize_hand_image(image_path)
+image_list = []
+for _, image in images.items():
+    image_list.append(image)
+
+grid_image = draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
+
+cv2.imshow('Image Grid', grid_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

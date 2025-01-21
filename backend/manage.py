@@ -1,13 +1,11 @@
 from __future__ import annotations
-
 import subprocess
 import typer
 import uvicorn
-
 import pipelines.initial_data_pipeline as initial_pipeline
 from pipelines.initial_dataset_filter_pipeline import filter_11k_hands
-import knn.anntree as anntree
 from utils.logging_utils import setup_csv_logging
+
 
 cli = typer.Typer()
 
@@ -106,13 +104,6 @@ def filter_11k_dataset():
 def initial_setup_csv_logging():
     """Run the setup csv-logging funktion."""
     setup_csv_logging()
-
-
-@cli.command("anntree")
-def run_anntree():
-    """Run the ann tree."""
-    anntree.run_anntree()
-
 
 if __name__ == "__main__":
     cli()
