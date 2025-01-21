@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, styled, Box } from '@mui/material';
 import NavButton from '@/components/NavButton';
+import { useQuery } from '@apollo/client';
+import { HandScanResultQuery } from '../GraphQL/Queries';
+import { HandData } from '../GraphQL/Queries';
+import { useDataContext } from '@/services/DataContext';
 
 const CenteredInformationText = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
@@ -11,6 +15,20 @@ const CenteredInformationText = styled(Typography)`
 `;
 
 const Processing: React.FC = () => {
+  const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
+    HandScanResultQuery,
+  );
+  const { handData, setHandData } = useDataContext();
+
+  useEffect(() => {
+    if (data?.getScanResult) {
+      setHandData(data.getScanResult);
+    }
+  }, [data, setHandData]);
+  if (error) return <p>Error: {error.message}</p>;
+
+  if (loading) return <p>Loading...</p>;
+
   return (
     <Box>
       <CenteredInformationText>
