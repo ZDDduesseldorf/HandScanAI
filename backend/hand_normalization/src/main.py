@@ -677,7 +677,7 @@ def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: 
                a default angle of 90 degrees if the region name is not recognized.
     """
     if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
-        return 90 - calculate_vector_angle(landmarks[5], landmarks[13])
+        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) + (1-orientation_hand)*90
     elif region_name == HandRegions.THUMB_2.value:
         return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
