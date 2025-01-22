@@ -2,7 +2,7 @@ import { Typography, Button, styled, Box } from '@mui/material';
 import Slider from '@mui/material/Slider';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useDataContext } from '@/services/DataContext';
+import { useAppStore } from '@/store/appStore';
 
 const TertiaryHeading = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
@@ -52,7 +52,7 @@ const age_marks: { label: string; value: number }[] = [
 
 const Result_1: React.FC = () => {
   const navigate = useNavigate();
-  const { handData } = useDataContext();
+  const handData = useAppStore((state) => state.handData);
 
   if (!handData) {
     return (

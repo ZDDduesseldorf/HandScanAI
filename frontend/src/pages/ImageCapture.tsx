@@ -4,6 +4,7 @@ import StyledTitle from '@/styles/StyledTitle';
 import NavButton from '@/components/NavButton';
 import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { useNavigate } from 'react-router-dom';
 
 interface ServerMessage {
   flow?: string;
@@ -65,6 +66,7 @@ const StyledText = styled(Typography)`
 `;
 
 const ImageCapture = () => {
+  const navigate = useNavigate();
   const scanEntry = useAppStore((state) => state.scanEntry);
   const videoRef = useRef<HTMLVideoElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -80,6 +82,7 @@ const ImageCapture = () => {
     if (!scanEntry?.id) {
       console.error('Invalid scan entry ID.');
       alert('Scan entry ID is missing or invalid. Please restart the process.');
+      navigate('/');
       return;
     }
 

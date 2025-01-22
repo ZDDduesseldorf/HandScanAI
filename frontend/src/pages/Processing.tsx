@@ -4,7 +4,7 @@ import NavButton from '@/components/NavButton';
 import { useQuery } from '@apollo/client';
 import { HandScanResultQuery } from '@/services/queries';
 import { HandData } from '@/services/graphqlTypes';
-import { useDataContext } from '@/services/DataContext';
+import { useAppStore } from '@/store/appStore';
 
 const CenteredInformationText = styled(Typography)`
   font-family: 'Delius Unicase', cursive;
@@ -18,7 +18,7 @@ const Processing: React.FC = () => {
   const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
     HandScanResultQuery,
   );
-  const { handData, setHandData } = useDataContext();
+  const { setHandData } = useAppStore();
 
   useEffect(() => {
     if (data?.getScanResult) {

@@ -1,18 +1,25 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
-import { ScanEntry } from '@/services/graphqlTypes';
+import { HandData, ScanEntry } from '@/services/graphqlTypes';
 
 interface AppState {
-    scanEntry: ScanEntry | null;
-    setScanEntry: (entry: ScanEntry) => void;
+  scanEntry: ScanEntry | null;
+  handData: HandData | null;
+  setScanEntry: (entry: ScanEntry) => void;
+  setHandData: (data: HandData) => void;
 }
 
 const storeCreator: StateCreator<AppState> = (set) => ({
-    scanEntry: null,
-    setScanEntry: (entry) =>
-        set(() => ({
-            scanEntry: entry,
-        })),
+  scanEntry: null,
+  setScanEntry: (entry) =>
+    set(() => ({
+      scanEntry: entry,
+    })),
+  handData: null,
+  setHandData: (data) =>
+    set(() => ({
+      handData: data,
+    })),
 });
 
 export const useAppStore = create<AppState>(storeCreator);
