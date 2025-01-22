@@ -1,9 +1,15 @@
-export interface HandData {
+export interface ScanResult {
+  id: string;
+  minAge: number;
+  maxAge: number;
   classifiedAge: number;
   classifiedGender: number;
   confidenceAge: number;
   confidenceGender: number;
-  id: string;
+}
+
+export interface GetScanResultData {
+  getScanResult: ScanResult;
 }
 
 export interface ScanEntry {

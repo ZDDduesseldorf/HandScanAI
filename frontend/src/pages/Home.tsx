@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -7,6 +8,7 @@ import { useMutation } from '@apollo/client';
 import { CREATE_SCAN_ENTRY } from '@/services/mutations';
 import { CreateScanEntryModelData } from '@/services/graphqlTypes';
 import { useAppStore } from '@/store/appStore';
+import { Alert, Snackbar } from '@mui/material';
 
 const Container = styled(Box)`
   display: flex;
@@ -60,9 +62,10 @@ const StartButton = styled(Button)`
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [createScanEntry] =
-    useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
+  const [createScanEntry] = useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
   const setScanEntry = useAppStore((state) => state.setScanEntry);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleStartClick = async () => {
     try {
@@ -71,12 +74,16 @@ const Home: React.FC = () => {
       if (data?.createScanEntryModel) {
         setScanEntry(data.createScanEntryModel);
         console.log('Scan entry created:', data.createScanEntryModel);
+        navigate('/privacy-notice');
       }
-
-      navigate('/privacy-notice');
     } catch (error) {
       console.error('Error creating scan entry:', error);
+      setErrorMessage('Unable to open a session. The backend might be unavailable.');
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setErrorMessage(null);
   };
 
   return (
@@ -84,13 +91,20 @@ const Home: React.FC = () => {
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
-      <StartButton
-        onClick={() => {
-          void handleStartClick();
-        }}
-      >
+      <StartButton onClick={() => void handleStartClick()}>
         Start
       </StartButton>
+      {errorMessage && (
+        <Snackbar
+          open={!!errorMessage}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="error" onClose={handleCloseSnackbar}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </Container>
   );
 };

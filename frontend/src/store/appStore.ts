@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
-import { HandData, ScanEntry } from '@/services/graphqlTypes';
+import { ScanResult , ScanEntry } from '@/services/graphqlTypes';
 
 interface AppState {
   scanEntry: ScanEntry | null;
-  handData: HandData | null;
+  scanResult: ScanResult | null;
+  capturedImage: string | null;
   setScanEntry: (entry: ScanEntry) => void;
-  setHandData: (data: HandData) => void;
+  setScanResult: (data: ScanResult) => void;
+  setCapturedImage: (image: string) => void;
 }
 
 const storeCreator: StateCreator<AppState> = (set) => ({
@@ -15,10 +17,15 @@ const storeCreator: StateCreator<AppState> = (set) => ({
     set(() => ({
       scanEntry: entry,
     })),
-  handData: null,
-  setHandData: (data) =>
+  scanResult: null,
+  setScanResult: (data) =>
     set(() => ({
-      handData: data,
+      scanResult: data,
+    })),
+  capturedImage: null,
+  setCapturedImage: (image) =>
+    set(() => ({
+      capturedImage: image,
     })),
 });
 

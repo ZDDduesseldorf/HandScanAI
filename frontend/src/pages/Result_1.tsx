@@ -1,7 +1,6 @@
 import { Typography, Button, styled, Box } from '@mui/material';
 import Slider from '@mui/material/Slider';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 
 const TertiaryHeading = styled(Typography)`
@@ -52,20 +51,20 @@ const age_marks: { label: string; value: number }[] = [
 
 const Result_1: React.FC = () => {
   const navigate = useNavigate();
-  const handData = useAppStore((state) => state.handData);
+  const scanResult = useAppStore((state) => state.scanResult);
 
-  if (!handData) {
+  if (!scanResult) {
     return (
       <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
     );
   }
 
-  const genderGuess = handData.classifiedAge;
-  const ageGuess = handData.classifiedAge;
-  const min_age = 20;
-  const max_age = 26;
-  const age_confidence = handData.confidenceAge;
-  const gender_confidence = handData.confidenceGender;
+  const genderGuess = scanResult.classifiedAge;
+  const ageGuess = scanResult.classifiedAge;
+  const min_age = scanResult.minAge;
+  const max_age = scanResult.maxAge;
+  const age_confidence = scanResult.confidenceAge;
+  const gender_confidence = scanResult.confidenceGender;
 
   return (
     <BodyLayout>

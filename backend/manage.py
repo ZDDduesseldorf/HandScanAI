@@ -86,7 +86,12 @@ def run_tests():
 @cli.command("initial_data_pipeline")
 def run_initial_data_pipeline():
     """Run the initial data pipeline."""
-    initial_pipeline.run_initial_data_pipeline()
+    base_dataset_path = "app/media/BaseImages"
+    region_dataset_path = "app/media/RegionImages"
+    csv_folder_path = "app/media/csv"
+
+    # Call the pipeline with paths
+    initial_pipeline.run_initial_data_pipeline(base_dataset_path, region_dataset_path, csv_folder_path)
 
 
 @cli.command("initial_dataset_filter")

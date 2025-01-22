@@ -2,6 +2,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/store/appStore';
 
 const Container = styled(Box)`
   display: flex;
@@ -45,6 +46,7 @@ const StyledText = styled(Typography)`
 
 const ImagePostCapture = () => {
   const navigate = useNavigate();
+  const capturedImage = useAppStore((state) => state.capturedImage);
 
   return (
     <Container>
@@ -62,9 +64,15 @@ const ImagePostCapture = () => {
         Datensatz hilft, Vorurteile (Bias) zu reduzieren.
       </StyledText>
       <ImagePlaceholder>
-        <Typography variant="body1" color="textSecondary">
-          Bild Platzhalter
-        </Typography>
+        {capturedImage ? (
+          <img
+            src={capturedImage}
+            alt="Captured"
+            style={{ maxWidth: '100%' }}
+          />
+        ) : (
+          <Typography>Image placeholder</Typography>
+        )}
       </ImagePlaceholder>
       <StyledText>
         Klicke auf „Analyse starten“, um herauszufinden, was HandScanAI über

@@ -7,10 +7,13 @@ import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
 
 interface ServerMessage {
-  flow?: string;
+  flow: string;
+  message?: string;
   landmarks_detected?: boolean;
-  spread_check?: boolean;
-  [key: string]: unknown;
+  hand_is_spread?: boolean;
+  hand_is_visible?: boolean;
+  time?: number;
+  image?: string;
 }
 
 const Container = styled(Box)`
@@ -58,6 +61,11 @@ const InstructionBox = styled(Box)`
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 `;
 
 const StyledText = styled(Typography)`
@@ -68,8 +76,10 @@ const StyledText = styled(Typography)`
 const ImageCapture = () => {
   const navigate = useNavigate();
   const scanEntry = useAppStore((state) => state.scanEntry);
+  const updateCapturedImage = useAppStore((state) => state.setCapturedImage);
   const videoRef = useRef<HTMLVideoElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const [instruction, setInstruction] = useState('Preparing camera...');
   const [resolution, setResolution] = useState<{
     width: number;
     height: number;
@@ -137,18 +147,43 @@ const ImageCapture = () => {
           }
         })
         .catch((error) => {
+          setInstruction('Error accessing camera.');
           console.error('Error accessing camera:', error);
         });
     };
 
     ws.onmessage = (event) => {
       try {
-        const eventData = event.data as string;
-        const data = JSON.parse(eventData) as ServerMessage;
+        const data = JSON.parse(event.data as string) as ServerMessage;
         setServerMessage(data);
-        console.log(data); // TODO: Remove this
-      } catch (error) {
-        console.error('Error parsing JSON:', error);
+
+        switch (data.flow) {
+          case 'validation':
+            setInstruction(
+              data.landmarks_detected
+                ? 'Hand detected. Waiting for conditions...'
+                : 'Place your hand in the camera frame.',
+            );
+            break;
+          case 'timer':
+            setInstruction(`Taking picture in ${data.time} seconds...`);
+            break;
+          case 'taking_images':
+            setInstruction('Capturing image...');
+            break;
+          case 'success':
+            setInstruction('Image captured successfully!');
+            updateCapturedImage(data.image!);
+            setTimeout(() => navigate('/image-post-capture'), 1000);
+            break;
+          case 'error':
+            setInstruction(`Error: ${data.message}`);
+            break;
+          default:
+            setInstruction('Awaiting further instructions...');
+        }
+      } catch {
+        setInstruction('Error parsing server response.');
       }
     };
 
@@ -175,7 +210,7 @@ const ImageCapture = () => {
         wsRef.current.close();
       }
     };
-  }, [scanEntry?.id]);
+  }, [scanEntry?.id, navigate, updateCapturedImage]);
 
   return (
     <Container>
@@ -194,7 +229,9 @@ const ImageCapture = () => {
         <StyledText sx={{ mt: 1 }}>
           👉 Es ist egal, ob du die rechte oder linke Hand nimmst.
         </StyledText>
-        <InstructionBox />
+        <InstructionBox>
+          <Typography>{instruction}</Typography>
+        </InstructionBox>
         <NavButton RouteTo="/image-post-capture">Weiter</NavButton>
       </InfoSection>
     </Container>

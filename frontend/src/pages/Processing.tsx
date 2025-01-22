@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Typography, styled, Box } from '@mui/material';
 import NavButton from '@/components/NavButton';
 import { useQuery } from '@apollo/client';
-import { HandScanResultQuery } from '@/services/queries';
-import { HandData } from '@/services/graphqlTypes';
+import { GET_SCAN_RESULT } from '@/services/queries';
+import { GetScanResultData } from '@/services/graphqlTypes';
 import { useAppStore } from '@/store/appStore';
 
 const CenteredInformationText = styled(Typography)`
@@ -15,16 +15,19 @@ const CenteredInformationText = styled(Typography)`
 `;
 
 const Processing: React.FC = () => {
-  const { error, loading, data } = useQuery<{ getScanResult: HandData }>(
-    HandScanResultQuery,
-  );
-  const { setHandData } = useAppStore();
+  const scanEntry = useAppStore((state) => state.scanEntry);
+
+  const { data, loading, error } = useQuery<GetScanResultData>(GET_SCAN_RESULT, {
+    variables: { id: scanEntry?.id },
+    skip: !scanEntry?.id,
+  });
+  const { setScanResult } = useAppStore();
 
   useEffect(() => {
     if (data?.getScanResult) {
-      setHandData(data.getScanResult);
+      setScanResult (data.getScanResult);
     }
-  }, [data, setHandData]);
+  }, [data, setScanResult]);
   if (error) return <p>Error: {error.message}</p>;
 
   return (
