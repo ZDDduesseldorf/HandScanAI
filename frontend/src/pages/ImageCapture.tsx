@@ -2,6 +2,15 @@ import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
 import NavButton from '@/components/NavButton';
+import { useEffect, useRef, useState } from 'react';
+import { useAppStore } from '@/store/appStore';
+
+interface ServerMessage {
+  flow?: string;
+  landmarks_detected?: boolean;
+  spread_check?: boolean;
+  [key: string]: unknown;
+}
 
 const Container = styled(Box)`
   display: flex;
@@ -56,10 +65,119 @@ const StyledText = styled(Typography)`
 `;
 
 const ImageCapture = () => {
+  const scanEntry = useAppStore((state) => state.scanEntry);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const [resolution, setResolution] = useState<{
+    width: number;
+    height: number;
+  }>();
+  const [serverMessage, setServerMessage] = useState<
+    ServerMessage | undefined
+  >();
+
+  useEffect(() => {
+    if (!scanEntry?.id) {
+      console.error('Invalid scan entry ID.');
+      alert('Scan entry ID is missing or invalid. Please restart the process.');
+      return;
+    }
+
+    const currentVideoRef = videoRef.current;
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    const ws = new WebSocket(`ws://localhost:8000/ws/${scanEntry.id}`);
+    wsRef.current = ws;
+
+    let interval: ReturnType<typeof setInterval>;
+
+    ws.onopen = () => {
+      navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            width: { ideal: 4096 },
+            height: { ideal: 2160 },
+          },
+        })
+        .then((stream) => {
+          if (currentVideoRef) {
+            currentVideoRef.srcObject = stream;
+            currentVideoRef.play().catch((error) => {
+              console.error('Error playing video:', error);
+            });
+
+            currentVideoRef.onloadedmetadata = () => {
+              const videoWidth = currentVideoRef.videoWidth;
+              const videoHeight = currentVideoRef.videoHeight;
+              canvas.width = videoWidth;
+              canvas.height = videoHeight;
+              setResolution({ width: videoWidth, height: videoHeight });
+
+              interval = setInterval(() => {
+                if (context && currentVideoRef) {
+                  context.drawImage(
+                    currentVideoRef,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height,
+                  );
+                  canvas.toBlob((blob) => {
+                    if (blob && ws.readyState === WebSocket.OPEN) {
+                      ws.send(blob);
+                    }
+                  }, 'image/jpeg');
+                }
+              }, 100);
+            };
+          }
+        })
+        .catch((error) => {
+          console.error('Error accessing camera:', error);
+        });
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const eventData = event.data as string;
+        const data = JSON.parse(eventData) as ServerMessage;
+        setServerMessage(data);
+        console.log(data); // TODO: Remove this
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+      if (currentVideoRef?.srcObject) {
+        const tracks = (currentVideoRef.srcObject as MediaStream).getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+
+    return () => {
+      // Stop the interval
+      clearInterval(interval);
+
+      // Stop the video stream
+      if (currentVideoRef?.srcObject) {
+        const tracks = (currentVideoRef.srcObject as MediaStream).getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+
+      // Close the WebSocket connection
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, [scanEntry?.id]);
+
   return (
     <Container>
       <VideoWrapper>
-        <Video autoPlay playsInline />
+        <Video ref={videoRef} autoPlay playsInline />
       </VideoWrapper>
       <InfoSection>
         <StyledTitle>Bildaufnahme</StyledTitle>

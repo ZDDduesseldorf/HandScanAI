@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { HandData } from '../GraphQL/Queries';
+import { HandData } from '@/services/queries';
 
 // Define the structure of the context's value.
 // It includes:

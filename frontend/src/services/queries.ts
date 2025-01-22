@@ -1,12 +1,5 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 
-export interface HandData {
-  classifiedAge: number;
-  classifiedGender: number;
-  confidenceAge: number;
-  confidenceGender: number;
-  id: string;
-}
 
 export const HandScanResultQuery = gql`
   query MyQuery {

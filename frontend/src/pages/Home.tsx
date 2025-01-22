@@ -3,6 +3,10 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useMutation } from '@apollo/client';
+import { CREATE_SCAN_ENTRY } from '@/services/mutations';
+import { CreateScanEntryModelData } from '@/services/graphqlTypes';
+import { useAppStore } from '@/store/appStore';
 
 const Container = styled(Box)`
   display: flex;
@@ -56,9 +60,23 @@ const StartButton = styled(Button)`
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [createScanEntry] =
+    useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
+  const setScanEntry = useAppStore((state) => state.setScanEntry);
 
-  const handleStartClick = () => {
-    navigate('/privacy-notice');
+  const handleStartClick = async () => {
+    try {
+      const { data } = await createScanEntry();
+
+      if (data?.createScanEntryModel) {
+        setScanEntry(data.createScanEntryModel);
+        console.log('Scan entry created:', data.createScanEntryModel);
+      }
+
+      navigate('/privacy-notice');
+    } catch (error) {
+      console.error('Error creating scan entry:', error);
+    }
   };
 
   return (
@@ -66,7 +84,13 @@ const Home: React.FC = () => {
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
-      <StartButton onClick={handleStartClick}>Start</StartButton>
+      <StartButton
+        onClick={() => {
+          void handleStartClick();
+        }}
+      >
+        Start
+      </StartButton>
     </Container>
   );
 };

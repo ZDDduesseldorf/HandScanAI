@@ -1,5 +1,4 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
@@ -19,10 +18,6 @@ import Result_2 from '@/pages/Result_2';
 
 import '@/assets/fonts.css';
 import '@/App.css';
-import client from './GraphQL/Apollo-client';
-// import GetModels from './components/TestGraphQL';
-import { ApolloProvider } from '@apollo/client';
-import { DataProvider } from './services/DataContext';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -80,17 +75,4 @@ const App: React.FC = () => {
   );
 };
 
-// added Apollo Wrapper below
-const AppWrapper: React.FC = () => (
-  <ApolloProvider client={client}>
-    {''}
-
-    <Router>
-      <DataProvider>
-        <App />
-      </DataProvider>
-    </Router>
-  </ApolloProvider>
-);
-
-export default AppWrapper;
+export default App;

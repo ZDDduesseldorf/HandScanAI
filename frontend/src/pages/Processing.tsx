@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Typography, styled, Box, CircularProgress } from '@mui/material';
+import { Typography, styled, Box } from '@mui/material';
 import NavButton from '@/components/NavButton';
 import { useQuery } from '@apollo/client';
-import { HandScanResultQuery } from '../GraphQL/Queries';
-import { HandData } from '../GraphQL/Queries';
+import { HandScanResultQuery } from '@/services/queries';
+import { HandData } from '@/services/graphqlTypes';
 import { useDataContext } from '@/services/DataContext';
 
 const CenteredInformationText = styled(Typography)`

@@ -1,17 +1,18 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
+import { ScanEntry } from '@/services/graphqlTypes';
 
 interface AppState {
-  count: number; // Example state
-  increment: () => void; // Example action
+    scanEntry: ScanEntry | null;
+    setScanEntry: (entry: ScanEntry) => void;
 }
 
 const storeCreator: StateCreator<AppState> = (set) => ({
-  count: 0,
-  increment: () =>
-    set((state) => ({
-      count: state.count + 1,
-    })),
+    scanEntry: null,
+    setScanEntry: (entry) =>
+        set(() => ({
+            scanEntry: entry,
+        })),
 });
 
 export const useAppStore = create<AppState>(storeCreator);
