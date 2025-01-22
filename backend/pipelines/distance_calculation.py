@@ -42,7 +42,7 @@ def calculate_distance(dict_embedding: dict, k, embedding_csv_path):
         list_sorted_dist = list_sorted_dist[:k]
 
         distance_dict[regionkey][DictKeys.UUID.value] = np.array(list_uuid)
-        distance_dict[regionkey]["distance"] = np.array(list_dist)
-        distance_dict[regionkey]["distance_ids_sorted"] = np.array(list_sorted_dist)
+        distance_dict[regionkey][DictKeys.DISTANCE.value] = np.array(list_dist)
+        distance_dict[regionkey][DictKeys.DISTANCE_IDS_SORTED.value] = np.array(list_sorted_dist)
 
     return distance_dict

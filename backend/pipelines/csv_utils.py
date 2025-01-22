@@ -1,6 +1,8 @@
 import csv
 import os
 
+from .regions_utils import HandRegions
+
 
 def create_csv_with_header(file_path, header):
     """
@@ -93,3 +95,10 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
             success = False
 
     return success
+
+
+def create_region_csvs(csv_folder_path):
+    for region in HandRegions:
+        csv_name = region.value + "_Embeddings.csv"
+        csv_path = os.path.join(csv_folder_path, csv_name)
+        create_csv_with_header(csv_path, ["UUID", "Embedding"])

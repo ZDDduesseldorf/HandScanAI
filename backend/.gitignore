@@ -27,3 +27,6 @@ venv.bak/
 
 # Generated Media
 media/
+
+# Generated Logs
+logs/
