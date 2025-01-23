@@ -17,15 +17,18 @@ const CenteredInformationText = styled(Typography)`
 const Processing: React.FC = () => {
   const scanEntry = useAppStore((state) => state.scanEntry);
 
-  const { data, loading, error } = useQuery<GetScanResultData>(GET_SCAN_RESULT, {
-    variables: { id: scanEntry?.id },
-    skip: !scanEntry?.id,
-  });
+  const { data, loading, error } = useQuery<GetScanResultData>(
+    GET_SCAN_RESULT,
+    {
+      variables: { id: scanEntry?.id },
+      skip: !scanEntry?.id,
+    },
+  );
   const { setScanResult } = useAppStore();
 
   useEffect(() => {
     if (data?.getScanResult) {
-      setScanResult (data.getScanResult);
+      setScanResult(data.getScanResult);
     }
   }, [data, setScanResult]);
   if (error) return <p>Error: {error.message}</p>;

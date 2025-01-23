@@ -62,7 +62,8 @@ const StartButton = styled(Button)`
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [createScanEntry] = useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
+  const [createScanEntry] =
+    useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
   const setScanEntry = useAppStore((state) => state.setScanEntry);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -78,7 +79,9 @@ const Home: React.FC = () => {
       }
     } catch (error) {
       console.error('Error creating scan entry:', error);
-      setErrorMessage('Unable to open a session. The backend might be unavailable.');
+      setErrorMessage(
+        'Unable to open a session. The backend might be unavailable.',
+      );
     }
   };
 
@@ -91,9 +94,7 @@ const Home: React.FC = () => {
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
-      <StartButton onClick={() => void handleStartClick()}>
-        Start
-      </StartButton>
+      <StartButton onClick={() => void handleStartClick()}>Start</StartButton>
       {errorMessage && (
         <Snackbar
           open={!!errorMessage}

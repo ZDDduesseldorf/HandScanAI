@@ -80,13 +80,6 @@ const ImageCapture = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const [instruction, setInstruction] = useState('Preparing camera...');
-  const [resolution, setResolution] = useState<{
-    width: number;
-    height: number;
-  }>();
-  const [serverMessage, setServerMessage] = useState<
-    ServerMessage | undefined
-  >();
 
   useEffect(() => {
     if (!scanEntry?.id) {
@@ -125,7 +118,6 @@ const ImageCapture = () => {
               const videoHeight = currentVideoRef.videoHeight;
               canvas.width = videoWidth;
               canvas.height = videoHeight;
-              setResolution({ width: videoWidth, height: videoHeight });
 
               interval = setInterval(() => {
                 if (context && currentVideoRef) {
@@ -155,7 +147,6 @@ const ImageCapture = () => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data as string) as ServerMessage;
-        setServerMessage(data);
 
         switch (data.flow) {
           case 'validation':

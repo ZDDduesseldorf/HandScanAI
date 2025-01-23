@@ -1,8 +1,4 @@
-import {
-  Routes,
-  Route,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from '@/pages/Home';
 import PrivacyNotice from '@/pages/PrivacyNotice';
@@ -57,7 +53,10 @@ const App: React.FC = () => {
             <Route element={<Layout />}>
               <Route path="/privacy-notice" element={<PrivacyNotice />} />
               <Route path="/image-capture" element={<ImageCapture />} />
-              <Route path="/image-post-capture" element={<ImagePostCapture />} />
+              <Route
+                path="/image-post-capture"
+                element={<ImagePostCapture />}
+              />
               <Route path="/processing" element={<Processing />} />
               <Route path="/blackbox" element={<BlackBox />} />
               <Route path="/result-1" element={<Result_1 />} />

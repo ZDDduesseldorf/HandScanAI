@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
-import { ScanResult , ScanEntry } from '@/services/graphqlTypes';
+import { ScanResult, ScanEntry } from '@/services/graphqlTypes';
 
 interface AppState {
   scanEntry: ScanEntry | null;
