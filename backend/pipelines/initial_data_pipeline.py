@@ -11,7 +11,7 @@ def run_initial_data_pipeline(
     region_dataset_path,
     csv_folder_path,
     model=_default_cnn_model_,
-    normalize=False,
+    normalize=True,
     save_images=True,
     save_csvs=True,
 ):

@@ -61,12 +61,8 @@ def run_scenarios_embeddings(setup=False):
             setup_scenario_structure(model_csv_path, model)
         for uuid in uuid_list:
             run_distance_pipeline(uuid, model_name, model, k)
-    # for
-    # run_distance_pipeline()
-    # uuids der QueryBilder (bereits vorhanden, linke/rechte Hand in Datensatz vorhanden) 6-7 personen
-    # 3 verschiedene modelle
-    # k=10
 
+    # uuids der QueryBilder (bereits vorhanden, linke/rechte Hand in Datensatz vorhanden) 6-7 personen
     # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?
     # -> Was ist gutes Ergebnis? (ähnliche Bild einer Person sollte ähnliches Embedding liefern)
     # von machen Personen viele Bilder drin von anderen weniger
@@ -91,6 +87,7 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
     path_to_results_csv = scenario_path_manager()
 
     model_embedding_csv_path = path_to_results_csv / model_name
+
     ######## STEP 0: build path to image #################################
 
     image_path = get_image_path(folder_path_query, uuid)
@@ -114,4 +111,3 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
         nearest_neighbour_csv_path = model_embedding_csv_path / "nearest_neighbours.csv"
         check_or_create_nearest_neighbours_csv(nearest_neighbour_csv_path)
         save_nearest_neighbours_info(uuid, dict_all_info_knn, nearest_neighbour_csv_path)
-    # TODO: Abspeicherung des dicts + metadaten in cvs oder alternativen
