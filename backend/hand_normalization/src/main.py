@@ -655,12 +655,12 @@ def calculate_hand_orientation(landmarks: list) -> int:
         landmarks (list): List of hand landmarks, where each landmark is a tuple (x, y).
 
     Returns:
-        int: Orientation of the hand. Returns -1 if the ring finger base is to the right
-             of the index finger base (thumb on the left side), otherwise 1.
+        int: Orientation of the hand. Returns 1 if the ring finger base is to the right
+             of the index finger base (thumb on the left side), otherwise 0.
     """
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
-    return -1 if ring_finger_base[0] > index_finger_base[0] else 1
+    return 1 if ring_finger_base[0] > index_finger_base[0] else 0
 
 
 def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: int) -> float:
@@ -677,7 +677,7 @@ def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: 
                a default angle of 90 degrees if the region name is not recognized.
     """
     if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
-        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) + (1-orientation_hand)*90
+        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) - orientation_hand*180
     elif region_name == HandRegions.THUMB_2.value:
         return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
