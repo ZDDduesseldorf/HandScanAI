@@ -4,6 +4,21 @@ import os
 from .regions_utils import HandRegions
 
 
+def check_folder_exists(folder_path):
+    return os.path.isdir(folder_path)
+
+
+def check_or_create_folder(folder_path):
+    if check_folder_exists(folder_path):
+        return True
+    else:
+        os.makedirs(folder_path)
+
+
+def check_file_exists(file_path):
+    return os.path.isfile(file_path)
+
+
 def create_csv_with_header(file_path, header):
     """
     Creates a CSV file with the specified header row.

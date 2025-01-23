@@ -30,3 +30,4 @@ media/
 
 # Generated Logs
 logs/
+tests/scenario_embeddings/result_csvs
