@@ -14,6 +14,7 @@ from pipelines.regions_utils import PipelineDictKeys as Keys
 
 # TODO: zum Ausführen der distance_pipeline verwenden
 """def test_scenario_embeddings():
+    # TODO: Zu testende Modelle und uuids in run_scenarios_embeddings anpassen
     run_scenarios_embeddings(setup=True)"""
 
 
@@ -53,7 +54,7 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file):
         create_csv_with_header(path_to_csv_file, header_nearest_neigbour)
 
 
-# TODO: embeddings_csvs je Model erstellen
+# Erstellt Embeddings und Distanzberechnung pro Modell
 def run_scenarios_embeddings(setup=False):
     path_to_result_csv = scenario_path_manager()
     models_dict = {
