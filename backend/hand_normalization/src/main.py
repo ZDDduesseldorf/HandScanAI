@@ -1,5 +1,5 @@
 import os
-from pipelines.regions_utils import HandRegions, PipelineDictKeys
+from pipelines.regions_utils import HandRegions
 import cv2
 import numpy as np
 import mediapipe as mp
