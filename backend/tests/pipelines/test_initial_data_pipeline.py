@@ -8,6 +8,7 @@ def test_initial_data_pipeline(path_to_base_images, path_to_region_images):
         region_dataset_path=path_to_region_images,
         # nur für manuelle Tests dieser Pfad, danach Dateien löschen
         csv_folder_path=path_to_base_images,
-        save_results=False,
+        save_images=False,
+        save_csvs=False,
     )
     assert len(embeddings) == 4
