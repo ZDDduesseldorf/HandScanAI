@@ -14,7 +14,7 @@ from pipelines.regions_utils import PipelineDictKeys as Keys
 
 # TODO: zum Ausführen der distance_pipeline verwenden
 """def test_scenario_embeddings():
-    run_scenarios_embeddings(setup=False)"""
+    run_scenarios_embeddings(setup=True)"""
 
 
 def scenario_path_manager():
@@ -27,7 +27,15 @@ def scenario_path_manager():
 def setup_scenario_structure(path_to_model_folder, model):
     check_or_create_folder(path_to_model_folder)
     _, folder_path_region, _, _, folder_path_base = _path_manager(testing=False)
-    run_initial_data_pipeline(folder_path_base, folder_path_region, path_to_model_folder, model, save_images=False)
+    run_initial_data_pipeline(
+        folder_path_base,
+        folder_path_region,
+        path_to_model_folder,
+        model,
+        normalize=False,
+        save_images=False,
+        save_csvs=True,
+    )
 
 
 def check_or_create_nearest_neighbours_csv(path_to_csv_file):
