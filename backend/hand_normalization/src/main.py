@@ -1,5 +1,5 @@
 import os
-from pipelines.regions_utils import HandRegions, PipelineDictKeys
+from pipelines.regions_utils import HandRegions
 import cv2
 import numpy as np
 import mediapipe as mp
@@ -463,7 +463,6 @@ def integrate_defects(region_defining_points, defects):
         ValueError: If defects list has fewer than 3 elements.
         TypeError: If inputs are not lists of 2D points (tuples of two integers).
     """
-    print(region_defining_points)
     if not isinstance(region_defining_points, list) or not isinstance(defects, list):
         raise TypeError("Both inputs must be lists of (x, y) coordinate tuples.")
 
@@ -618,6 +617,9 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
             points_in_segment = points_in_mask(segments, region_reference_point)
             if points_in_segment:
                 region.update({"mask": segments})
+    
+    regions[1].update({"mask": remove_forearm_from_handbody_mask(regions[1]["mask"], landmarks)})
+
     return regions
 
 
@@ -636,8 +638,13 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
     orientation_hand = calculate_hand_orientation(landmarks)
     angle = calculate_region_angle(region["name"], landmarks, orientation_hand)
 
+    blank = np.zeros_like(image) + 255
+    rotate_blank = rotate_image_no_crop(blank, angle)
+    rotation_border_mask = 255 - rotate_blank
+
     rotated_image = rotate_image_no_crop(image, angle)
     rotated_mask = rotate_image_no_crop(region["mask"], angle)
+    rotated_image = rotation_border_mask + rotated_image
 
     bounding_box = get_bounding_box_with_margin(rotated_mask, 5)
     if bounding_box is None:
@@ -655,12 +662,12 @@ def calculate_hand_orientation(landmarks: list) -> int:
         landmarks (list): List of hand landmarks, where each landmark is a tuple (x, y).
 
     Returns:
-        int: Orientation of the hand. Returns -1 if the ring finger base is to the right
-             of the index finger base (thumb on the left side), otherwise 1.
+        int: Orientation of the hand. Returns 1 if the ring finger base is to the right
+             of the index finger base (thumb on the left side), otherwise 0.
     """
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
-    return -1 if ring_finger_base[0] > index_finger_base[0] else 1
+    return 1 if ring_finger_base[0] > index_finger_base[0] else 0
 
 
 def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: int) -> float:
@@ -677,7 +684,7 @@ def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: 
                a default angle of 90 degrees if the region name is not recognized.
     """
     if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
-        return 90 - calculate_vector_angle(landmarks[5], landmarks[13])
+        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) - orientation_hand*180
     elif region_name == HandRegions.THUMB_2.value:
         return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
@@ -707,7 +714,7 @@ def calculate_vector_angle(point1: Tuple[int, int], point2: Tuple[int, int]) -> 
     return vector_angle
 
 
-def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = []) -> np.ndarray:  # noqa: B006
+def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = [], is_mask: bool = False) -> np.ndarray:  # noqa: B006
     """
     Rotates an image around a specified center without cropping the edges.
 
@@ -833,8 +840,6 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
 
     new_image[top_left_y : top_left_y + new_height, top_left_x : top_left_x + new_width] = resized_image
 
-    new_image = replace_color_in_range(new_image, [0, 0, 0], [15, 15, 15], [255, 255, 255])
-
     return new_image
 
 
@@ -878,3 +883,53 @@ def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.nda
     """
     return {region["name"]: region["image"] for region in regions}
 
+def remove_forearm_from_handbody_mask(mask: np.ndarray, landmarks: list) -> np.ndarray:
+    """
+    Removes the forearm section in the handbody mask.
+
+    Parameters:
+    mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    landmarks (list): List of hand landmarks, where each landmark is a tuple (x, y).
+
+    Returns:
+    mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    """
+    orientation_hand = calculate_hand_orientation(landmarks)
+    landmarks = np.array(landmarks)
+    forearm_mask = np.zeros_like(mask)
+    support_vector = (landmarks[0] - landmarks[13]) + landmarks[13]
+    direction_vector = (landmarks[5] - landmarks[13])
+
+    if orientation_hand:
+        forearm_mask = split_mask_with_line(forearm_mask, support_vector, direction_vector)
+    else:
+        forearm_mask = split_mask_with_line(forearm_mask, support_vector, direction_vector,invert=True)
+
+    mask = mask * (forearm_mask/255)
+    
+    return mask
+
+def split_mask_with_line(mask: np.ndarray, support_vector: np.ndarray, direction_vector: np.ndarray, invert : bool = False) -> np.ndarray:
+    """
+    Splits a mask alonge a line defined by a support_vector and the direction_vector. One side is set to 255 the other to 0.
+
+    Parameters:
+    mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    support_vector (numpy.ndarray): array with a set of x and y coordinates
+    direction_vector (numpy.ndarray): array with a set of x and y coordinates
+
+    Returns:
+    mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
+    """
+    height, width = mask.shape
+
+    x, y = np.meshgrid(np.arange(width), np.arange(height))
+
+    rel_position = (x - support_vector[0]) * direction_vector[1] - (y - support_vector[1]) * direction_vector[0]
+    if invert: 
+        rel_position *= -1
+
+    mask[rel_position > 0] = 255  
+    mask[rel_position <= 0] = 0  
+    
+    return mask
