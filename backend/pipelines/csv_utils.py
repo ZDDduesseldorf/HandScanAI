@@ -5,10 +5,36 @@ from .regions_utils import HandRegions
 
 
 def check_folder_exists(folder_path):
+    """
+    Checks if a folder already exists
+
+    Args:
+        folder_path(Path): path of the folder
+
+    Returns:
+        true/false
+
+    Example:
+        check_file_exists("C:\\HandScanAI\\backend\\app\\media\\csv")
+
+    """
     return os.path.isdir(folder_path)
 
 
 def check_or_create_folder(folder_path):
+    """
+    creates folder when it doesn`t exists
+
+    Args:
+        folder_path(Path): path of the folder
+
+    Returns:
+        true when folder alredy exists
+
+    Example:
+        check_file_exists("C:\\HandScanAI\\backend\\app\\media\\csv")
+
+    """
     if check_folder_exists(folder_path):
         return True
     else:
@@ -16,6 +42,19 @@ def check_or_create_folder(folder_path):
 
 
 def check_file_exists(file_path):
+    """
+    Checks if a file already exists
+
+    Args:
+        file_path(Path): path of the file
+
+    Returns:
+        true/false
+
+    Example:
+        check_file_exists("C:\\HandScanAI\\backend\\app\\media\\csv\\Exmaple.csv")
+
+    """
     return os.path.isfile(file_path)
 
 
@@ -47,6 +86,9 @@ def add_entry_to_csv(file_path, entry):
     Parameters:
     - file_path (str): Path to the CSV file.
     - entry (dict): Dictionary containing the data for the new row.
+
+    Returns:
+        boolean if saving new entry was successfull
 
     Example:
     add_entry_to_csv('output.csv', {'Name': 'Alice', 'Age': 25, 'City': 'New York'})
@@ -91,6 +133,8 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
                 region (str): embedding (torch.Tensor)
             }
 
+    Returns:
+        boolean if saving was successfull
     """
 
     for region in embeddings_dict.keys():
@@ -113,6 +157,17 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
 
 
 def create_region_csvs(csv_folder_path):
+    """
+    creates for each region an empty csv with this header: UUID, Embedding
+    like Hand_Embeddings.csv
+
+    Args:
+        csv_folder_path(Path): path to folder where the csvs should be created
+
+    Example:
+        create_region_csvs("C:\\HandScanAI\\backend\\app\\media\\csv")
+
+    """
     for region in HandRegions:
         csv_name = region.value + "_Embeddings.csv"
         csv_path = os.path.join(csv_folder_path, csv_name)

@@ -15,6 +15,7 @@ def run_initial_data_pipeline(
     save_images=True,
     save_csvs=True,
 ):
+    # TODO: docstring
     ######## STEP 1: Hand normalization #################################
     if normalize:
         print("--------------- Hand-Normalization: Load dataset --------------------------------")

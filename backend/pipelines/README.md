@@ -22,7 +22,7 @@ Then, the pipeline can be run from the `/backend`-folder via console:
 
 ## Inference Pipeline
 
-This pipeline (inference_pipeline.py) is used to predict the age and gender of an image.
+This pipeline (inference_pipeline.py) is used to predict the age and gender of an image. It normalises the image, calculates the embedding, performs a knn-search and determines the age and size of the nearest neighbours via metadata classification
 
 The following diagram shows the flow of the pipeline:
 
@@ -36,13 +36,15 @@ TODO: Add knn-search and classification to diagram
 
 ### Use the inference pipeline
 
-Make sure in the method get_image_path() is the correct path to the image_folder
+make sure that the folders are created as described here ["Setup"](../README.md#setup)
 
+with connection backend and frontend:  
+the pipeline is called up by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
+graphql function get_scan_result()
+
+For Testing:  
 The pipeline can be executed via the test_inference_pipeline.py from the `/backend` folder via the console:
 pytest -s tests/pipelines/test_inference_pipeline.py
-
-later:
-Pipeline is triggered by the frontend after the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
 
 ## Add new Embeddings Pipeline
 
@@ -68,3 +70,17 @@ pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py
 
 later:
 After a check of the metadata (manually by a person or with a check-script), it is triggert by the fronted and the uuid is transferred.
+
+## Inital Dataset Filter Pipeline
+
+## Utils for Pipelines
+
+### csv_utils
+
+### data_utils
+
+### region_utils
+
+### datasets
+
+## Distance Caculation

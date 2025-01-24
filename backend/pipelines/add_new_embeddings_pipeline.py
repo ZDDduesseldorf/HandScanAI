@@ -11,6 +11,7 @@ from utils.logging_utils import logging_input_data
 
 
 def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False):
+    # TODO: docstring anpassen
     """
     pipeline to add classified and checked image to vektortree
     checking if the age and gender details are logical

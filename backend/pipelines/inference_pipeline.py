@@ -12,6 +12,7 @@ from utils.logging_utils import logging_nearest_neighbours, logging_classificati
 # is triggered by the ‘Analyse Starten’ button in the frontend. Transfer of the uuid of the current image
 # TODO: Wo werden Bilder aus Frontend gespeichert? -> QueryImages
 def _path_manager(testing):
+    # TODO: docstring
     temp_base_dir = Path(__file__).resolve().parent.parent
     if testing:
         folder_path_query = temp_base_dir / "tests" / "data" / "TestBaseDataset"
