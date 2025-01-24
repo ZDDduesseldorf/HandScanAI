@@ -1,11 +1,12 @@
 # Pipelines
 
 TODO: Add information on pipelines.
+Info: Pipelines will get updated once the vector database gets introduced. Until then, see Miro Board for current information.
 
-## Inhaltsverzeichnis
+## Table of contents
 
 - [Pipelines](#pipelines)
-  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [Table of contents](#table-of-contents)
   - [Initial Dataset Filter Pipeline](#initial-dataset-filter-pipeline)
     - [Use the initial dataset filter pipeline](#use-the-initial-dataset-filter-pipeline)
   - [Initial Data Pipeline](#initial-data-pipeline)
