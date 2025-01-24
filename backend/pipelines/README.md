@@ -4,7 +4,22 @@ TODO: Add information on pipelines.
 
 ## Inhaltsverzeichnis
 
-- [HandScanAI Backend](#handscanai-backend)
+- [Pipelines](#pipelines)
+  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [Initial Dataset Filter Pipeline](#initial-dataset-filter-pipeline)
+    - [Use the initial dataset filter pipeline](#use-the-initial-dataset-filter-pipeline)
+  - [Initial Data Pipeline](#initial-data-pipeline)
+    - [Use the initial data pipeline](#use-the-initial-data-pipeline)
+  - [Inference Pipeline](#inference-pipeline)
+    - [Use the inference pipeline](#use-the-inference-pipeline)
+  - [Add new Embeddings Pipeline](#add-new-embeddings-pipeline)
+    - [Use the add new Embeddings pipeline](#use-the-add-new-embeddings-pipeline)
+  - [Utils for Pipelines](#utils-for-pipelines)
+    - [csv\_utils](#csv_utils)
+    - [data\_utils](#data_utils)
+    - [region\_utils](#region_utils)
+    - [datasets](#datasets)
+  - [Distance Caculation](#distance-caculation)
 
 ## Initial Dataset Filter Pipeline
 
@@ -67,11 +82,11 @@ TODO: Add knn-search and classification to diagram
 
 make sure that the folders are created as described here ["Setup"](../README.md#setup)
 
-with connection backend and frontend:  
+with connection backend and frontend:
 the pipeline is called up by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
 graphql function get_scan_result()
 
-For Testing:  
+For Testing:
 The pipeline can be executed via the test_inference_pipeline.py from the `/backend` folder via the console:
 pytest -s tests/pipelines/test_inference_pipeline.py
 
@@ -90,7 +105,7 @@ The following diagram shows the inputs and outputs of the individual steps:
 
 TODO: Add integration of embeddings to vektortree
 
-### Use the inference pipeline
+### Use the add new Embeddings pipeline
 
 Make sure in the method get_image_path() is the correct path to the image_folder and the 'output_folder_path_base' is correct.
 
