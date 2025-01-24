@@ -2,6 +2,35 @@
 
 TODO: Add information on pipelines.
 
+## Inhaltsverzeichnis
+
+- [HandScanAI Backend](#handscanai-backend)
+
+## Initial Dataset Filter Pipeline
+
+TODO: Add information on which metadata gets saved in the new csv.
+
+![A diagram showing the high level step of filtering an external dataset (11k in this case) and the resulting data (An image folder and a csv with the corresponding metadata.)](readme_data/initial_dataset_filter_pipeline_concept.png)
+
+This pipeline-step is optional and can be used to
+
+- filter pre-existing datasets via the project's validation criteria
+- generate uuids for the validated images and save them with the dataname-schema {UUID}.jpg
+- save the corresponding metadata into a csv (takes metadata as csv, will need adjustments for data other than 11k and its formats).
+
+### Use the initial dataset filter pipeline
+
+Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data in the manage.py are updated/ correct:
+
+- `folder_path_initial_dataset`: path to the dataset folder that should be filtered (e.g. 11k)
+- `initial_csv_path` = full path to original metadata csv-file, e.g. "C:\Documents\HandScanAI\HandInfo.csv"
+- `filtered_dataset_path` = path to folder where the filtered images should be saved, e.g. "NewDataset" or "BaseDataset"
+- `new_csv_path` = full path to csv-file where metadata for filtered images should be saved
+
+Then, the pipeline can be run from the `/backend`-folder via console:
+`python manage.py initial_dataset_filter`
+(Works for Windows. For other ways to use `manage.py` by running python from the console, see `README` under `/backend` and adjust command as necessary).
+
 ## Initial Data Pipeline
 
 This pipeline (`initial_data_pipeline.py`) is used to provide the initial chunk of data for the databases when they are built from the ground up OR is used when a whole new dataset is added to existing databases. Initially, it is used to filter and process relevant images from the 11k dataset.
@@ -70,8 +99,6 @@ pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py
 
 later:
 After a check of the metadata (manually by a person or with a check-script), it is triggert by the fronted and the uuid is transferred.
-
-## Inital Dataset Filter Pipeline
 
 ## Utils for Pipelines
 
