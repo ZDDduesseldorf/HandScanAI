@@ -24,19 +24,20 @@ Info: Pipelines will get updated once the vector database gets introduced. Until
 
 ## Initial Dataset Filter Pipeline
 
-TODO: Add information on which metadata gets saved in the new csv.
-
 ![A diagram showing the high level step of filtering an external dataset (11k in this case) and the resulting data (An image folder and a csv with the corresponding metadata.)](readme_data/initial_dataset_filter_pipeline_concept.png)
 
 This pipeline-step is optional and can be used to
 
 - filter pre-existing datasets via the project's validation criteria
 - generate uuids for the validated images and save them with the dataname-schema {UUID}.jpg
-- save the corresponding metadata into a csv (takes metadata as csv, will need adjustments for data other than 11k and its formats).
+- save the corresponding metadata into a csv
+  - takes metadata in csv-format (implemented for filtering 11k-dataset, will need adjustments for other datasets or formats)
+  - csv-header of result-csv:
+  `["uuid", "old_id", "age", "gender", "skinColor", "accessories", "aspectOfHand", "imageName", "irregularities"]`
 
 ### Use the initial dataset filter pipeline
 
-Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data in the manage.py are updated/ correct:
+Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data in `backend/manage.py` are updated/ correct:
 
 - `folder_path_initial_dataset`: path to the dataset folder that should be filtered (e.g. 11k)
 - `initial_csv_path` = full path to original metadata csv-file, e.g. "C:\Documents\HandScanAI\HandInfo.csv"
