@@ -1,4 +1,5 @@
 from pathlib import Path
+import time
 
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
@@ -14,7 +15,6 @@ from pipelines.regions_utils import PipelineDictKeys as Keys
 
 # TODO: zum Ausführen der distance_pipeline verwenden
 """def test_scenario_embeddings():
-    # TODO: Zu testende Modelle und uuids in run_scenarios_embeddings anpassen
     run_scenarios_embeddings(setup=True)"""
 
 
@@ -28,6 +28,7 @@ def scenario_path_manager():
 def setup_scenario_structure(path_to_model_folder, model):
     check_or_create_folder(path_to_model_folder)
     _, folder_path_region, _, _, folder_path_base = _path_manager(testing=False)
+    start = time.time()
     run_initial_data_pipeline(
         folder_path_base,
         folder_path_region,
@@ -35,8 +36,11 @@ def setup_scenario_structure(path_to_model_folder, model):
         model,
         normalize=False,
         save_images=False,
-        save_csvs=True,
+        save_csvs=False,
     )
+    end = time.time()
+
+    print("Dauer Initial:" + str((end - start) * 10**3) + "model: " + str(path_to_model_folder))
 
 
 def check_or_create_nearest_neighbours_csv(path_to_csv_file):
@@ -72,6 +76,10 @@ def run_scenarios_embeddings(setup=False):
             run_distance_pipeline(uuid, model_name, model, k)
 
     # uuids der QueryBilder (bereits vorhanden, linke/rechte Hand in Datensatz vorhanden) 6-7 personen
+    # TODO: uuids der anderen mit notieren
+    # 1 links, rechts -> versuch gleichverteilt
+    # 3m,3f
+    # TODO: mind. 1xw, 1xm; links und rechts, nicht mehr wie 8 Bilder einer Person
     # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?
     # -> Was ist gutes Ergebnis? (ähnliche Bild einer Person sollte ähnliches Embedding liefern)
     # von machen Personen viele Bilder drin von anderen weniger
