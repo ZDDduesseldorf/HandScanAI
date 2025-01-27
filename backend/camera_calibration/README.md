@@ -17,9 +17,11 @@ calculates extenisive of rectangle to check correct size
 
 ### Entry point
 
-to create calibration file use create_calibration_file(image_path, file_name) from kalibrierung.py
+to create calibration file use create_calibration_file(image_path, file_name, detected_rectangle) from kalibrierung.py
 
-to check calibration of actual image use check_kalibration(image_path, file_name) from kalibrierung.py
+to check calibration of actual image use check_kalibration(image_path, file_name, detected_rectangle) from kalibrierung.py
+
+detected_rectangle use True, when you want to detect a rectangle for calibration
 
 ### Functionality
 
