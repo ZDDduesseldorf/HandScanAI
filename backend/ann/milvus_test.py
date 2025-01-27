@@ -8,7 +8,7 @@ dimension = data.shape[1]
 
 # Connect to Milvus
 # Adjust "host" and "port" if your Milvus configuration is different.
-connections.connect("default", host="localhost", port="19530")
+connections.connect("default", host="milvus-standalone", port="19530")
 
 # Collection name
 collection_name = "example_balltree_equivalent"
