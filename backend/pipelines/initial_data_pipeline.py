@@ -33,7 +33,6 @@ def run_initial_data_pipeline(
         save_images (bool): choose whether or not to save the normalized images (hand-regions). Defaults to True. False skips saving step (e.g. for tests)
         save_csvs (bool): choose whether or not to save the embeddings in csv-files. Defaults to True. False skips the setup of the csvs and the saving of the embeddings in the csv-files.
     """
-    # TODO: docstring
     ######## STEP 1: Hand normalization #################################
     if normalize:
         print("--------------- Hand-Normalization: Load dataset --------------------------------")
