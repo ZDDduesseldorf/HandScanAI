@@ -24,13 +24,13 @@ class HandRegions(Enum):
 uuid = "uuid1"
 
 embeddings_dict = {
-    HandRegions.HAND_0.value: {"Embedding": [0.1]},
-    HandRegions.HANDBODY_1.value: {"Embedding": [0.2]},
-    HandRegions.THUMB_2.value: {"Embedding": [0.6]},
-    HandRegions.INDEXFINGER_3.value: {"Embedding": [0.3]},
-    HandRegions.MIDDLEFINGER_4.value: {"Embedding": [0.4]},
-    HandRegions.RINGFINGER_5.value: {"Embedding": [0.5]},
-    HandRegions.LITTLEFINGER_6.value: {"Embedding": [0.6]},
+    HandRegions.HAND_0.value: {"Embedding": [0.1] * 1024},
+    HandRegions.HANDBODY_1.value: {"Embedding": [0.2] * 1024},
+    HandRegions.THUMB_2.value: {"Embedding": [0.6] * 1024},
+    HandRegions.INDEXFINGER_3.value: {"Embedding": [0.3] * 1024},
+    HandRegions.MIDDLEFINGER_4.value: {"Embedding": [0.4] * 1024},
+    HandRegions.RINGFINGER_5.value: {"Embedding": [0.5] * 1024},
+    HandRegions.LITTLEFINGER_6.value: {"Embedding": [0.6] * 1024},
 }
 
 collection_name = "hand_regions"
@@ -116,7 +116,7 @@ def connect_to_host() -> None:
     """
     if not connections.has_connection("default"):
         try:
-            connections.connect(alias="default", host="localhost", port="19530")
+            connections.connect(alias="default", host="milvus-standalone", port="19530")
         except Exception as e:
             print(f"Failed to connect to Host: {str(e)}")
             return
@@ -229,3 +229,8 @@ def query_embeddings_dict(
     print(f"Collection '{collection_name}' released from memory.")
 
     return results_by_region
+
+
+# add_embeddings_to_vectordb(uuid, embeddings_dict, collection_name)
+
+print(query_embeddings_dict(embeddings_dict, collection_name, search_params, 1))
