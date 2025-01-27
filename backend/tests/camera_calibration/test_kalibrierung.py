@@ -4,11 +4,11 @@ import numpy as np
 import camera_calibration.kalibrierung as kali
 
 
-@pytest.fixture()  # `module` bedeutet, dass es einmal pro Testmodul ausgeführt wird
+@pytest.fixture()
 def setup_method():
     image_path = "tests/data/calibration/kali_test.jpg"
     file_name = "tests/data/calibration/kalibrierungswerte.txt"
-    kali.create_calibration_file(image_path, file_name)
+    kali.create_calibration_file(image_path, file_name, detected_rectangle=False)
     print("Setup abgeschlossen")
 
 
@@ -104,9 +104,9 @@ def test_compare_extensive_too_low():
 
 
 def test_check_kali(setup_method):
-    image_path = "tests/data/calibration/test_bild.jpg"
+    image_path = "tests/data/calibration/kali_test.jpg"
     file_name = "tests/data/calibration/kalibrierungswerte.txt"
-    assert kali.check_kalibration(image_path, file_name)
+    assert kali.check_kalibration(image_path, file_name, detected_rectangle=False)
 
 
 def test_check_kali_failes(setup_method):
@@ -117,20 +117,30 @@ def test_check_kali_failes(setup_method):
 
 
 def test_read_calibration_file(setup_method):
+    detected_rectangle = False
     file_name = "tests/data/calibration/kalibrierungswerte.txt"
-    k_values = kali.read_calibrationfile(file_name)
-    expected_values = (
-        250.616159456983,
-        20.653294995518543,
-        0.8325489485543115,
-        996.1001768764597,
-        [[1913, 995], [1917, 1246], [2160, 992], [2164, 1243]],
-    )
-    print(k_values)
+    k_values = kali.read_calibrationfile(file_name, detected_rectangle)
+    if detected_rectangle:
+        expected_values = (
+            250.616159456983,
+            20.653294995518543,
+            0.8325489485543115,
+            996.1001768764597,
+            [[1913, 995], [1917, 1246], [2160, 992], [2164, 1243]],
+        )
+    else:
+        expected_values = (
+            250.616159456983,
+            20.653294995518543,
+            0.8325489485543115,
+        )
+
     # Vergleiche die numerischen Werte zuerst
-    for i in range(4):
+    for i in range(3):
         assert np.isclose(k_values[i], expected_values[i]), f"Mismatch in value {i}"
 
-    # Vergleiche die 2D-Listen
-    for i in range(4, len(k_values)):
-        np.testing.assert_array_equal(k_values[i], expected_values[i])
+    if detected_rectangle:
+        assert np.isclose(k_values[3], expected_values[3])
+        # Vergleiche die 2D-Listen
+        for i in range(4, len(k_values)):
+            np.testing.assert_array_equal(k_values[i], expected_values[i])

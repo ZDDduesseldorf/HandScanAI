@@ -2,6 +2,14 @@ import cv2
 import numpy as np
 
 
+def rectangle_operations_calibration_file(image_path):
+    rectangle = find_rectangle(image_path)
+    sorted_rectangle = sort_points(rectangle)
+    extensive = calculate_extensive(rectangle)
+
+    return extensive, sorted_rectangle
+
+
 def find_rectangle(image_path):
     """
     detects a rectangle in the image with Canny Edge-detection and contourfinder

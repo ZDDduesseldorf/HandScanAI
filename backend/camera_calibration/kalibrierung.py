@@ -2,7 +2,7 @@ from camera_calibration import rectangle_operations
 from camera_calibration import image_operations
 
 
-def create_calibration_file(image_path, file_name):
+def create_calibration_file(image_path, file_name, detected_rectangle=False):
     """
     creates a file that includes all calibrationvalues: mean, standard_deviation, variance_of_laplacian,
     extensive, Point1-4 (x y)
@@ -16,21 +16,19 @@ def create_calibration_file(image_path, file_name):
 
     f1.write(str(metrics[0]) + "\n" + str(metrics[1]) + "\n" + (str(metrics[2]) + "\n"))
 
-    rectangle = rectangle_operations.find_rectangle(image_path)
-    print(f"{rectangle}")
-    sorted_rectangle = rectangle_operations.sort_points(rectangle)
-    extensive = rectangle_operations.calculate_extensive(rectangle)
+    # only when there is a rectangle to detect
+    if detected_rectangle:
+        extensive, sorted_rectangle = rectangle_operations.rectangle_operations_calibration_file(image_path)
+        f1.write(str(extensive) + "\n")
 
-    f1.write(str(extensive) + "\n")
-
-    for point in sorted_rectangle:
-        f1.write(f"{point[0]} {point[1]}\n")
+        for point in sorted_rectangle:
+            f1.write(f"{point[0]} {point[1]}\n")
 
     f1.close()
 
 
 # when all are true calibration succseeded
-def check_kalibration(image_path, file_name):
+def check_kalibration(image_path, file_name, detected_rectangle=False):
     """
     checks the calibration by comparing the values of the current image with those in the calibration file
 
@@ -40,30 +38,37 @@ def check_kalibration(image_path, file_name):
     return True: when calibration is successful
     raise ValueError: when calibration failed
     """
-    k_values = read_calibrationfile(file_name)
+    k_values = read_calibrationfile(file_name, detected_rectangle)
     metrics = image_operations.calculate_image_metrics(image_path)
 
     # detect rectangle
-    rectangle = rectangle_operations.find_rectangle(image_path)
-
-    if (
-        compare_mean(metrics, k_values)
-        and compare_std(metrics, k_values)
-        and compare_sharpness(metrics, k_values)
-        and compare_extensive(rectangle, k_values)
-        and compare_rectangle(rectangle, k_values)
-    ):
-        print("Kalibrierung erfolgreich")
-        return True
+    rectangle = None
+    if detected_rectangle:
+        rectangle = rectangle_operations.find_rectangle(image_path)
+        if (
+            compare_mean(metrics, k_values)
+            and compare_std(metrics, k_values)
+            and compare_sharpness(metrics, k_values)
+            and compare_extensive(rectangle, k_values)
+            and compare_rectangle(rectangle, k_values)
+        ):
+            print("Kalibrierung erfolgreich")
+            return True
+        else:
+            return False
     else:
-        return False
+        if compare_mean(metrics, k_values) and compare_std(metrics, k_values) and compare_sharpness(metrics, k_values):
+            print(metrics, k_values)
+            return True
+        else:
+            return False
 
 
 ###############################################
 # helper functions
 
 
-def read_calibrationfile(file_name):
+def read_calibrationfile(file_name, detected_rectangle=False):
     """
     reads the calbrationfile and save values as variables
     :param file_name: name of the calibrationfile
@@ -76,23 +81,25 @@ def read_calibrationfile(file_name):
     with open(file_name) as file:
         rows = file.readlines()
 
-    if len(rows) >= 8:
+    if len(rows) <= 8:
         k_mean = rows[0].strip()
         k_mean = float(k_mean)
         k_standard_deviation = rows[1].strip()
         k_standard_deviation = float(k_standard_deviation)
         k_variance_of_laplacian = rows[2].strip()
         k_variance_of_laplacian = float(k_variance_of_laplacian)
+
+    if detected_rectangle:
         k_extensive = rows[3].strip()
         k_extensive = float(k_extensive)
+        for line in rows[4:]:
+            point_x, point_y = line.strip().split(" ")
+            point_x = int(point_x)
+            point_y = int(point_y)
+            k_rectangle.append([point_x, point_y])
+        return [k_mean, k_standard_deviation, k_variance_of_laplacian, k_extensive, k_rectangle]
 
-    for line in rows[4:]:
-        point_x, point_y = line.strip().split(" ")
-        point_x = int(point_x)
-        point_y = int(point_y)
-        k_rectangle.append([point_x, point_y])
-
-    return [k_mean, k_standard_deviation, k_variance_of_laplacian, k_extensive, k_rectangle]
+    return [k_mean, k_standard_deviation, k_variance_of_laplacian]
 
 
 def compare_mean(metrics, k_values):
