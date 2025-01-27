@@ -28,6 +28,8 @@ def create_calibration_file(image_path, file_name, detected_rectangle=False):
 
 
 # when all are true calibration succseeded
+
+
 def check_kalibration(image_path, file_name, detected_rectangle=False):
     """
     checks the calibration by comparing the values of the current image with those in the calibration file
@@ -38,6 +40,7 @@ def check_kalibration(image_path, file_name, detected_rectangle=False):
     return True: when calibration is successful
     raise ValueError: when calibration failed
     """
+
     k_values = read_calibrationfile(file_name, detected_rectangle)
     metrics = image_operations.calculate_image_metrics(image_path)
 
