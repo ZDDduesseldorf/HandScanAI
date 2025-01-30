@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from pipelines.datasets import DatasetRegionClusters, ImagePathDataset
-from pipelines.regions_utils import PipelineDictKeys, HandRegions
+from utils.regions_utils import PipelineDictKeys, HandRegions
 
 from embeddings import embeddings_utils
 

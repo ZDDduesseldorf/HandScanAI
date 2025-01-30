@@ -1,7 +1,7 @@
 import pandas as pd
 
-from .regions_utils import PipelineDictKeys as DictKeys
-from .regions_utils import HandRegions as RegionKeys
+from utils.regions_utils import PipelineDictKeys as DictKeys
+from utils.regions_utils import HandRegions as RegionKeys
 
 
 def region_embeddings_from_csv(regionkey, embedding_csv_path):

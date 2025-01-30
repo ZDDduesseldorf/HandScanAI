@@ -4,7 +4,7 @@ from pathlib import Path
 
 from embeddings import embeddings_utils
 from embeddings import models_utils
-from pipelines.regions_utils import HandRegions
+from utils.regions_utils import HandRegions
 from utils import image_utils
 from hand_normalization.src.main import normalize_hand_image
 
