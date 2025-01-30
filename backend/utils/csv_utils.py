@@ -3,6 +3,9 @@ import os
 
 from .key_enums import HandRegions
 
+####################################################
+######### Existence checks for folders and files
+
 
 def check_folder_exists(folder_path):
     return os.path.isdir(folder_path)
@@ -17,6 +20,10 @@ def check_or_create_folder(folder_path):
 
 def check_file_exists(file_path):
     return os.path.isfile(file_path)
+
+
+####################################################
+######### Functions to save information in csv-files
 
 
 def create_csv_with_header(file_path, header):

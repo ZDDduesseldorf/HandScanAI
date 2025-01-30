@@ -1,6 +1,22 @@
 from enum import Enum
 
 
+class HandRegions(Enum):
+    """
+    Used as region keys to
+    - save and load data
+    - in dicts that pass data down the pipelines.
+    """
+
+    HAND_0 = "Hand"
+    HANDBODY_1 = "HandBody"
+    THUMB_2 = "Thumb"
+    INDEXFINGER_3 = "IndexFinger"
+    MIDDLEFINGER_4 = "MiddleFinger"
+    RINGFINGER_5 = "RingFinger"
+    LITTLEFINGER_6 = "LittleFinger"
+
+
 class PipelineAPIKeys(Enum):
     """
     Used as keys for dataframe, which is output to frontend.
@@ -37,19 +53,3 @@ class PipelineDictKeys(Enum):
     GENDER = "gender"
     REGION = "region"
     NEIGHBOUR_UUID = "neighbour_uuid"
-
-
-class HandRegions(Enum):
-    """
-    Used as region keys to
-    - save and load data
-    - in dicts that pass data down the pipelines.
-    """
-
-    HAND_0 = "Hand"
-    HANDBODY_1 = "HandBody"
-    THUMB_2 = "Thumb"
-    INDEXFINGER_3 = "IndexFinger"
-    MIDDLEFINGER_4 = "MiddleFinger"
-    RINGFINGER_5 = "RingFinger"
-    LITTLEFINGER_6 = "LittleFinger"
