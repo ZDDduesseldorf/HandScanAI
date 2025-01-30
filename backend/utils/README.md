@@ -40,4 +40,4 @@ The logging-utils module contains functions to log information for later evaluat
 
 ## uuid-utils
 
-The image-utils module contains the function to generate the uuid for the image-names.
+The uuid-utils module contains the function to generate a uuid (used for image-names and subsequently used as key/ID).
