@@ -1,5 +1,12 @@
 # Utils
 
+- [Utils](#utils)
+  - [csv-utils](#csv-utils)
+  - [image-utils](#image-utils)
+  - [key-enums](#key-enums)
+  - [logging-utils](#logging-utils)
+  - [uuid-utils](#uuid-utils)
+
 ## csv-utils
 
 The csv-utils module contains
@@ -21,7 +28,7 @@ The key-enums module contains the following Enums:
 
 - **HandRegions**: Enum that is used as keys to standardize region-dictionaries across different modules of the backend (e.g. hand-normalization, pipelines)
 - **PipelineAPIKeys**: Enum that is used as keys for dictionaries and dataframes directly related to the API
-- **PipelineDictKeys**: Enum that is used as keys for dictionaries and dataframes used in different steps in the backend-pipelines (see pipelines-module) 
+- **PipelineDictKeys**: Enum that is used as keys for dictionaries and dataframes used in different steps in the backend-pipelines (see pipelines-module)
 
 ## logging-utils
 
@@ -31,6 +38,6 @@ The logging-utils module contains functions to log information for later evaluat
 - **classification**: saves information about the current query-image, it's classification results, ranges and confidence of the model
 - **input_data**: saves information about the actual metadata of the current query-image after the user input
 
-## uuid
+## uuid-utils
 
 The image-utils module contains the function to generate the uuid for the image-names.

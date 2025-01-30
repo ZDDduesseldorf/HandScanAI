@@ -6,7 +6,7 @@ from typing import Optional
 from app.core.config import settings
 from utils.key_enums import PipelineAPIKeys
 from pipelines.add_new_embeddings_pipeline import run_add_new_embeddings_pipeline
-from utils.uuid import generate_uuid
+from utils.uuid_utils import generate_uuid
 
 
 class ScanEntry(Document):

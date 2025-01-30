@@ -1,7 +1,7 @@
 import cv2
 import os
 
-from utils.uuid import generate_uuid
+from utils.uuid_utils import generate_uuid
 from utils.csv_utils import create_csv_with_header, add_entry_to_csv
 from pipelines.datasets import ImagePathWithCSVDataset
 from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
