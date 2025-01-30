@@ -5,7 +5,7 @@ import hand_normalization.src.main as normalization
 from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
 from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
-
+from utils.logging_utils import logging_nearest_neighbours, logging_classification
 # this file is used to generate the prediction of an image
 
 
@@ -18,14 +18,16 @@ def _path_manager(testing):
         folder_path_region = temp_base_dir / "tests" / "data" / "TestRegionDataset"
         embedding_csv_path = temp_base_dir / "tests" / "data" / "csv"
         metadata_csv_path = temp_base_dir / "tests" / "data" / "csv" / "Test_Hands_filtered_metadata.csv"
+        folder_path_base = temp_base_dir / "tests" / "data" / "TestBaseDataset"
 
     else:
         folder_path_query = temp_base_dir / "app" / "media" / "QueryImages"
         folder_path_region = temp_base_dir / "app" / "media" / "RegionImages"
         embedding_csv_path = temp_base_dir / "app" / "media" / "csv"
         metadata_csv_path = temp_base_dir / "app" / "media" / "csv" / "Metadata.csv"
+        folder_path_base = temp_base_dir / "app" / "media" / "BaseImages"
 
-    return folder_path_query, folder_path_region, embedding_csv_path, metadata_csv_path
+    return folder_path_query, folder_path_region, embedding_csv_path, metadata_csv_path, folder_path_base
 
 
 # TODO pydoc
@@ -41,7 +43,7 @@ def run_inference_pipeline(uuid, testing=False):
         classified_gender(0,1), confidence_gender(float))
         0:female, 1:male
     """
-    folder_path_query, _, embedding_csv_path, metadata_csv_path = _path_manager(testing)
+    folder_path_query, _, embedding_csv_path, metadata_csv_path, _ = _path_manager(testing)
 
     ######## STEP 0: build path to image #################################
 
@@ -67,6 +69,11 @@ def run_inference_pipeline(uuid, testing=False):
     age_dict = classify_age(dict_all_info_knn)
     gender_dict = classify_gender(dict_all_info_knn)
     ensemble_df = ensemble_classifier(age_dict, gender_dict)
+
+    #### Logging ####
+    if not testing:
+        logging_nearest_neighbours(uuid, dict_all_info_knn)
+        logging_classification(uuid, age_dict, gender_dict, ensemble_df)
     return ensemble_df
 
 

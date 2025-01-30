@@ -2,7 +2,8 @@ import numpy as np
 import statistics
 import pandas as pd
 
-from pipelines.regions_utils import PipelineDataframeKeys as DfKeys
+from pipelines.regions_utils import PipelineDictKeys as Keys
+from pipelines.regions_utils import PipelineAPIKeys as APIKeys
 
 
 def classify_age(dict_all_info_knn):
@@ -18,13 +19,13 @@ def classify_age(dict_all_info_knn):
     dict_age = {}
     # TODO: PipelineDictKeys verwenden
     for regionkey, region_df in dict_all_info_knn.items():
-        region_mean_df = pd.DataFrame(columns=["mean_distance", "mean_age"])
-        age_list = region_df["age"].to_list()
+        region_mean_df = pd.DataFrame(columns=[APIKeys.CONFIDENCE_AGE.value, APIKeys.CLASSIFIED_AGE.value])
+        age_list = region_df[Keys.AGE.value].to_list()
         age_mean = np.mean(age_list)
 
-        distance_list = region_df["distance"].to_list()
+        distance_list = region_df[Keys.DISTANCE.value].to_list()
         distance_mean = np.mean(distance_list)
-        new_row = {"mean_distance": distance_mean, "mean_age": age_mean}
+        new_row = {APIKeys.CONFIDENCE_AGE.value: distance_mean, APIKeys.CLASSIFIED_AGE.value: age_mean}
         region_mean_df = pd.concat([region_mean_df, pd.DataFrame([new_row])])
         dict_age[regionkey] = region_mean_df
 
@@ -44,12 +45,12 @@ def classify_gender(dict_all_info_knn):
     dict_gender = {}
     # TODO: PipelineDictKeys verwenden
     for regionkey, region_df in dict_all_info_knn.items():
-        region_mean_df = pd.DataFrame(columns=["mean_distance", "mode_gender"])
-        gender_list = region_df["gender"].to_list()
+        region_mean_df = pd.DataFrame(columns=[APIKeys.CONFIDENCE_GENDER.value, APIKeys.CLASSIFIED_GENDER.value])
+        gender_list = region_df[Keys.GENDER.value].to_list()
         gender_mode = statistics.mode(gender_list)
-        distance_list = region_df["distance"].to_list()
+        distance_list = region_df[Keys.DISTANCE.value].to_list()
         distance_mean = np.mean(distance_list)
-        new_row = {"mean_distance": distance_mean, "mode_gender": gender_mode}
+        new_row = {APIKeys.CONFIDENCE_GENDER.value: distance_mean, APIKeys.CLASSIFIED_GENDER.value: gender_mode}
         region_mean_df = pd.concat([region_mean_df, pd.DataFrame([new_row])])
         dict_gender[regionkey] = region_mean_df
 
@@ -57,21 +58,21 @@ def classify_gender(dict_all_info_knn):
 
 
 def ensemble_age(age_dict):
-    age_list = [df["mean_age"].iloc[0] for df in age_dict.values()]
+    age_list = [df[APIKeys.CLASSIFIED_AGE.value].iloc[0] for df in age_dict.values()]
     mean_age = np.mean(age_list)
     min_age = np.min(age_list)
     max_age = np.max(age_list)
 
-    distance_list = [df["mean_distance"].iloc[0] for df in age_dict.values()]
+    distance_list = [df[APIKeys.CONFIDENCE_AGE.value].iloc[0] for df in age_dict.values()]
     mean_distance = np.mean(distance_list)
     return mean_age, min_age, max_age, mean_distance
 
 
 def ensemble_gender(gender_dict):
-    gender_list = [df["mode_gender"].iloc[0] for df in gender_dict.values()]
+    gender_list = [df[APIKeys.CLASSIFIED_GENDER.value].iloc[0] for df in gender_dict.values()]
     mode_gender = statistics.mode(gender_list)
 
-    distance_list = [df["mean_distance"].iloc[0] for df in gender_dict.values()]
+    distance_list = [df[APIKeys.CONFIDENCE_GENDER.value].iloc[0] for df in gender_dict.values()]
     mean_distance = np.mean(distance_list)
     return mode_gender, mean_distance
 
@@ -96,12 +97,12 @@ def ensemble_classifier(dict_age, dict_gender):
     ensemble_df = pd.DataFrame(
         [
             {
-                DfKeys.CLASSIFIED_AGE.value: mean_age,
-                DfKeys.MIN_AGE.value: min_age,
-                DfKeys.MAX_AGE.value: max_age,
-                DfKeys.CONFIDENCE_AGE.value: mean_distance_age,
-                DfKeys.CLASSIFIED_GENDER.value: mode_gender,
-                DfKeys.CONFIDENCE_GENDER.value: mean_distance_gender,
+                APIKeys.CLASSIFIED_AGE.value: mean_age,
+                APIKeys.MIN_AGE.value: min_age,
+                APIKeys.MAX_AGE.value: max_age,
+                APIKeys.CONFIDENCE_AGE.value: mean_distance_age,
+                APIKeys.CLASSIFIED_GENDER.value: mode_gender,
+                APIKeys.CONFIDENCE_GENDER.value: mean_distance_gender,
             }
         ]
     )

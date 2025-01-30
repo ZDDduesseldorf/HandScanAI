@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Button, styled, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, styled, Typography } from '@mui/material';
 import StyledTitle from '@/styles/StyledTitle';
 import NavButton from '@/components/NavButton';
 import GeneralButton from '@/components/GeneralButton';
@@ -20,14 +19,6 @@ const SecondaryHeading = styled(Typography)`
   text-align: left;
   font-size: clamp(1rem, 2vw, 1.5rem);
   color: #000000;
-`;
-const HandGalleryLayout = styled(Typography)`
-  display: flex;
-  flex-direction: row;
-`;
-const HandImgLayout = styled(Typography)`
-  display: flex;
-  flex-direction: column;
 `;
 const HorizImageBox = styled(Box)`
   display: flex;
@@ -118,10 +109,10 @@ const Explanation: React.FC = () => {
         <VerticalElements>
           <SecondaryHeading>Distanzberechnung </SecondaryHeading>
           <BoxText>
-            Um herauszufinden, welche Bilder am ähnlichsten sind, wird
-            die Distanz zwischen den Merkmalen des Bildes und den anderen
-            Bildern berechnet. Dies geschieht mit mathematischen Methoden, wie
-            der euklidischen Distanz, die misst, wie „weit“ ein Bild von einem
+            Um herauszufinden, welche Bilder am ähnlichsten sind, wird die
+            Distanz zwischen den Merkmalen des Bildes und den anderen Bildern
+            berechnet. Dies geschieht mit mathematischen Methoden, wie der
+            euklidischen Distanz, die misst, wie „weit“ ein Bild von einem
             anderen entfernt ist. Je kleiner die Distanz, desto ähnlicher sind
             sich die Bilder.
           </BoxText>

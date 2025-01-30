@@ -1,6 +1,23 @@
 import csv
 import os
 
+from .regions_utils import HandRegions
+
+
+def check_folder_exists(folder_path):
+    return os.path.isdir(folder_path)
+
+
+def check_or_create_folder(folder_path):
+    if check_folder_exists(folder_path):
+        return True
+    else:
+        os.makedirs(folder_path)
+
+
+def check_file_exists(file_path):
+    return os.path.isfile(file_path)
+
 
 def create_csv_with_header(file_path, header):
     """
@@ -93,3 +110,10 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
             success = False
 
     return success
+
+
+def create_region_csvs(csv_folder_path):
+    for region in HandRegions:
+        csv_name = region.value + "_Embeddings.csv"
+        csv_path = os.path.join(csv_folder_path, csv_name)
+        create_csv_with_header(csv_path, ["UUID", "Embedding"])

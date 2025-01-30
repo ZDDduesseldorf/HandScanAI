@@ -9,13 +9,13 @@ import Home from '@/pages/Home';
 import PrivacyNotice from '@/pages/PrivacyNotice';
 import ImageCapture from '@/pages/ImageCapture';
 import Processing from '@/pages/Processing';
-import ResultsAge from '@/pages/ResultsAge';
-import ResultsGender from '@/pages/ResultsGender';
 import SubmissionComplete from '@/pages/SubmissionComplete';
 import Explanation from './pages/Explanation';
 import Sandbox from '@/pages/Sandbox';
 import BlackBox from '@/pages/BlackBox';
 import Layout from '@/components/Layout';
+import Result_1 from '@/pages/Result_1';
+import Result_2 from '@/pages/Result_2';
 
 import '@/assets/fonts.css';
 import '@/App.css';
@@ -59,11 +59,10 @@ const App: React.FC = () => {
               <Route path="/privacy-notice" element={<PrivacyNotice />} />
               <Route path="/image-capture" element={<ImageCapture />} />
               <Route path="/processing" element={<Processing />} />
-              <Route path="/results-age" element={<ResultsAge />} />
-              <Route path="/results-gender" element={<ResultsGender />} />
               <Route path="/blackbox" element={<BlackBox />} />
               <Route path="/explanation" element={<Explanation />} />
-
+              <Route path="/result-1" element={<Result_1 />} />
+              <Route path="/result-2" element={<Result_2 />} />
               <Route
                 path="/submission-complete"
                 element={<SubmissionComplete />}

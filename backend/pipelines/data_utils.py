@@ -36,6 +36,11 @@ def map_gender_string_to_int(df):
     return df
 
 
+def map_gender_int_to_string(int_gender):
+    map_gender = {"0": "female", "1": "male"}
+    return map_gender[str(int_gender)]
+
+
 def build_info_knn(metadata_csv_path, dict_all_dist: dict):
     """
     Query of gender and age for knn of the image from csv.
@@ -64,15 +69,22 @@ def build_info_knn(metadata_csv_path, dict_all_dist: dict):
     metadata_df = map_gender_string_to_int(metadata_df)
 
     for regionkey, dist_dict in dict_all_dist.items():
-        region_df = pd.DataFrame(columns=[DictKeys.UUID.value, "distance", "age", "gender"])
-        for index in dist_dict["distance_ids_sorted"]:
+        region_df = pd.DataFrame(
+            columns=[DictKeys.UUID.value, DictKeys.DISTANCE.value, DictKeys.AGE.value, DictKeys.GENDER.value]
+        )
+        for index in dist_dict[DictKeys.DISTANCE_IDS_SORTED.value]:
             uuid = dist_dict[DictKeys.UUID.value][index]
-            dist = dist_dict["distance"][index]
-            row = metadata_df.loc[metadata_df["uuid"] == uuid]
+            dist = dist_dict[DictKeys.DISTANCE.value][index]
+            row = metadata_df.loc[metadata_df[DictKeys.UUID.value] == uuid]
             # .iloc[0] notwendig sonst wird eindimensionale column gespeichert, nur Wert aus Zelle wird benötigt
-            age = row["age"].iloc[0]
-            gender = row["gender"].iloc[0]
-            new_row = {DictKeys.UUID.value: uuid, "distance": dist, "age": age, "gender": gender}
+            age = row[DictKeys.AGE.value].iloc[0]
+            gender = row[DictKeys.GENDER.value].iloc[0]
+            new_row = {
+                DictKeys.UUID.value: uuid,
+                DictKeys.DISTANCE.value: dist,
+                DictKeys.AGE.value: age,
+                DictKeys.GENDER.value: gender,
+            }
             region_df = pd.concat([region_df, pd.DataFrame([new_row])])
 
         dict_all_info_knn[regionkey] = region_df

@@ -1,11 +1,13 @@
 from __future__ import annotations
-
 import subprocess
 import typer
 import uvicorn
-
 import pipelines.initial_data_pipeline as initial_pipeline
-import knn.anntree as anntree
+from pipelines.initial_dataset_filter_pipeline import filter_11k_hands
+from utils.logging_utils import setup_csv_logging
+from hand_normalization.src import main as normalize
+import cv2
+
 
 cli = typer.Typer()
 
@@ -33,10 +35,18 @@ def format_code():
     try:
         subprocess.run(
             [
-                "ruff", "format", "app", "embeddings", "hand_normalization", 
-                "knn", "lib", "pipelines", "tests", "validation"
-            ], 
-            check=True
+                "ruff",
+                "format",
+                "app",
+                "embeddings",
+                "hand_normalization",
+                "knn",
+                "lib",
+                "pipelines",
+                "tests",
+                "validation",
+            ],
+            check=True,
         )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
@@ -50,10 +60,18 @@ def check_code():
     try:
         subprocess.run(
             [
-                "ruff", "check", "app", "embeddings", "hand_normalization", 
-                "knn", "lib", "pipelines", "tests", "validation"
-            ], 
-            check=True
+                "ruff",
+                "check",
+                "app",
+                "embeddings",
+                "hand_normalization",
+                "knn",
+                "lib",
+                "pipelines",
+                "tests",
+                "validation",
+            ],
+            check=True,
         )
     except subprocess.CalledProcessError:
         typer.echo("Please fix the errors before committing.")
@@ -72,11 +90,34 @@ def run_initial_data_pipeline():
     """Run the initial data pipeline."""
     initial_pipeline.run_initial_data_pipeline()
 
-@cli.command("anntree")
-def run_anntree():
-    """Run the ann tree."""
-    anntree.run_anntree()
 
+@cli.command("initial_dataset_filter")
+def filter_11k_dataset():
+    """Run filter_11k function."""
+    # TODO: Pfade müssen vor Verwendung angepasst werden
+    folder_path_initial_dataset = "path/to/image/folder"  # current dataset
+    initial_csv_path = "path/to/csv"  # e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
+    filtered_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
+    new_csv_path = "CSV_filtered.csv"
+    filter_11k_hands(folder_path_initial_dataset, initial_csv_path, filtered_dataset_path, new_csv_path)
+
+
+@cli.command("setup_csv_logging")
+def initial_setup_csv_logging():
+    """Run the setup csv-logging funktion."""
+    setup_csv_logging()
+
+@cli.command("normalisation_visual_test")
+def normalisation_visual_test():
+    """Run the a visual test of the normalize_hand_image() function"""
+    image_path = r"hand_normalization\TestImages\Hand_0000658.jpg"
+    region_dict = normalize.normalize_hand_image(image_path)
+    image_list = list(region_dict.values())
+    grid_image = normalize.draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
+
+    cv2.imshow('Region Image Grid', grid_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     cli()

@@ -21,7 +21,7 @@ const Processing: React.FC = () => {
         <br /> ist.
       </CenteredInformationText>
 
-      <NavButton RouteTo="/results-age">Weiter</NavButton>
+      <NavButton RouteTo="/result-1">Weiter</NavButton>
     </Box>
   );
 };

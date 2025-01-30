@@ -16,7 +16,7 @@ async def index():
 async def media_image(image_id: uuid.UUID):
     if not image_id:
         raise HTTPException(status_code=400, detail="Invalid image ID")
-    image_path = os.path.join(settings.PATHS.MEDIA_DIR, "images", f"{image_id}.jpg")
+    image_path = os.path.join(settings.PATHS.MEDIA_DIR, "QueryImages", f"{image_id}.jpg")
     if os.path.exists(image_path):
         return FileResponse(image_path)
     else:
