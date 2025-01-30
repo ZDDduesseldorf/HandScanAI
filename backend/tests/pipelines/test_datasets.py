@@ -9,13 +9,15 @@ from embeddings import embeddings_utils
 ######### TESTS FOR DATASET IMAGE_PATH
 
 
-# def test_if_loads_image_paths_correctly(path_to_base_images):
-#     uuid = "514f53d0-6aab-4da1-b929-8f1dc0817289"
-#     dataset = ImagePathDataset(path_to_base_images)
-#     # expect to load 1 image
-#     assert len(dataset) == 4
-#     # expect it to be a dict and to have the correct uuid
-#     assert dataset[0][PipelineDictKeys.UUID.value] == uuid
+def test_correct_image_path_dict_structure(path_to_base_images):
+    dataset = ImagePathDataset(path_to_base_images)
+    # expect to load 4 images from folder TestBaseDataset
+    assert len(dataset) == 4
+    # expect it to be a dict
+    assert type(dataset[0]) is dict
+    # expect dict to have a uuid and an image_path both of type string
+    assert type(dataset[0][PipelineDictKeys.UUID.value]) is str
+    assert type(dataset[0][PipelineDictKeys.IMAGE_PATH.value]) is str
 
 
 ###########################################################
