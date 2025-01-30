@@ -5,7 +5,7 @@ import pandas as pd
 
 from collections import defaultdict
 
-from utils.regions_utils import PipelineDictKeys
+from utils.key_enums import PipelineDictKeys
 
 
 class ImagePathDataset(Dataset):

@@ -1,5 +1,5 @@
 import os
-from utils.regions_utils import HandRegions
+from utils.key_enums import HandRegions
 import cv2
 import numpy as np
 import mediapipe as mp

@@ -1,7 +1,7 @@
 from .datasets import ImagePathDataset, DatasetRegionClusters
 from embeddings.embeddings_utils import calculate_embeddings_from_path_dict, _default_cnn_model_
 import hand_normalization.src.main as normalization
-from utils.regions_utils import PipelineDictKeys as Keys
+from utils.key_enums import PipelineDictKeys as Keys
 from utils.csv_utils import create_region_csvs, add_embedding_dict_to_csv
 
 

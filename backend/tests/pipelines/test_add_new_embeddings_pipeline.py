@@ -1,5 +1,5 @@
 from pipelines.add_new_embeddings_pipeline import run_add_new_embeddings_pipeline
-from utils.regions_utils import PipelineAPIKeys
+from utils.key_enums import PipelineAPIKeys
 
 
 def test_add_new_embeddings_pipeline():

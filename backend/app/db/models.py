@@ -4,7 +4,7 @@ from pydantic import Field, field_validator
 from datetime import datetime, timezone
 from typing import Optional
 from app.core.config import settings
-from utils.regions_utils import PipelineAPIKeys
+from utils.key_enums import PipelineAPIKeys
 from pipelines.add_new_embeddings_pipeline import run_add_new_embeddings_pipeline
 from utils.uuid import generate_uuid
 

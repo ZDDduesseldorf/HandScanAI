@@ -1,7 +1,7 @@
 import csv
 import os
 
-from .regions_utils import HandRegions
+from .key_enums import HandRegions
 
 
 def check_folder_exists(folder_path):
