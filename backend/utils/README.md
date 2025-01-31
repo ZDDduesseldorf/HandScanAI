@@ -18,7 +18,7 @@ The csv-utils module contains
 
 The image-utils module contains
 
-- function to construct an image path
+- functions to construct an image path
 - function to copy images from one folder to another
 - functions to load an image via opencv
 

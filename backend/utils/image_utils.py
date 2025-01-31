@@ -1,9 +1,20 @@
 import os
 import cv2
 import shutil
+from pathlib import Path
 
 
-def copy_image_to_folder(uuid, original_folder_path, target_folder_path):
+def copy_image_to_folder(uuid, original_folder_path: (str | Path), target_folder_path: (str | Path)):
+    """_summary_
+
+    Args:
+        uuid (str): uuid of the image to be copied
+        original_folder_path (str | Path): full path to the folder where the image lies
+        target_folder_path (str | Path): full path to the folder where the image should be copied to
+
+    Returns:
+        _type_: _description_
+    """
     image_name = uuid + ".jpg"
     original = construct_image_path(image_name, original_folder_path)
     target = construct_image_path(image_name, target_folder_path)
