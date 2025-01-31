@@ -4,7 +4,8 @@ from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from pipelines.data_utils import build_info_knn
 from pipelines.distance_calculation import calculate_distance
-from pipelines.inference_pipeline import _path_manager, get_image_path
+from pipelines.inference_pipeline import _path_manager
+from utils.image_utils import get_image_path
 from utils.logging_utils import save_nearest_neighbours_info
 from utils.csv_utils import check_or_create_folder, check_file_exists, create_csv_with_header
 from embeddings.models_utils import CNNModel, load_model

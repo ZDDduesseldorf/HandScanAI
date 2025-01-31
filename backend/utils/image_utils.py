@@ -71,3 +71,23 @@ def construct_image_path(image_name, path_to_images):
     # Construct the full path to the image file
     img_path = os.path.join(path_to_images, image_name)
     return img_path
+
+
+def get_image_path(folder_path_query, uuid):
+    """
+    Finds and returns the file path to an image based on its UUID and supported extensions.
+
+    Args:
+        temp_base_dir (Path): The base directory. Typically derived from the current file's location.
+        uuid (str): Unique identifier for the image
+
+    Returns:
+        Path: The absolute path to the image file if found.
+        None: If no file with the given UUID and extensions exists in the specified folder.
+    """
+    extensions = [".png", ".jpg", ".jpeg", ".bmp"]
+    for ext in extensions:
+        image_path = folder_path_query / f"{uuid}{ext}"
+        if image_path.exists():
+            return image_path.resolve()
+    return None
