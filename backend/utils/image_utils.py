@@ -5,7 +5,8 @@ from pathlib import Path
 
 
 def copy_image_to_folder(uuid, original_folder_path: (str | Path), target_folder_path: (str | Path)):
-    """_summary_
+    """
+    Copies an image from one folder to another.
 
     Args:
         uuid (str): uuid of the image to be copied
@@ -13,7 +14,7 @@ def copy_image_to_folder(uuid, original_folder_path: (str | Path), target_folder
         target_folder_path (str | Path): full path to the folder where the image should be copied to
 
     Returns:
-        _type_: _description_
+        bool: Returns true if copying the file was successfull
     """
     image_name = uuid + ".jpg"
     original = construct_image_path(image_name, original_folder_path)
