@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.spatial import distance
 
-from .regions_utils import PipelineDictKeys as DictKeys
-from .regions_utils import HandRegions as RegionKeys
+from utils.key_enums import PipelineDictKeys as DictKeys
+from utils.key_enums import HandRegions as RegionKeys
 from .data_utils import region_embeddings_from_csv
 
 
