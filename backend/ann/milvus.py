@@ -4,6 +4,8 @@ from typing import Dict, List, Any
 # from pipelines.regions_utils import HandRegions
 from enum import Enum
 
+# TODO: Define global variables for collection_name, top_k search_params
+
 
 class HandRegions(Enum):
     """
@@ -45,7 +47,7 @@ search_params = {
 ###########################################################################
 
 
-def add_embeddings_to_vectordb(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]], collection_name: str) -> None:
+def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]], collection_name: str) -> None:
     """
     Adds embeddings to the Milvus vector database.
 
@@ -57,14 +59,20 @@ def add_embeddings_to_vectordb(uuid: str, embeddings_dict: Dict[str, Dict[str, A
     Returns:
         None
     """
-    connect_to_milvus(collection_name)
+    try:
+        connect_to_host()
+        create_miluvs_collection(collection_name)
+        milvus_data = prepare_data_for_milvus(uuid, embeddings_dict)
+        insert_embeddings(milvus_data, collection_name)
+        print("Successfully added embeddings.")
+        return True
 
-    milvus_data = prepare_data_for_milvus(uuid, embeddings_dict)
+    except Exception as e:
+        print(f"Adding embeddings has failed. An error has occured: {e}")
+        return False
 
-    add_embeddings(milvus_data, collection_name)
 
-
-def connect_to_milvus(collection_name: str) -> None:
+def create_miluvs_collection(collection_name: str) -> None:
     """
     Connects to Milvus and initializes the collection if it does not exist.
 
@@ -74,8 +82,6 @@ def connect_to_milvus(collection_name: str) -> None:
     Returns:
         None
     """
-    connect_to_host()
-
     fields = [
         FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
         FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
@@ -145,7 +151,7 @@ def prepare_data_for_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]
     return {"UUIDS": uuids, "Regions": regions, "Embeddings": embeddings}
 
 
-def add_embeddings(milvus_data: Dict[str, List[Any]], collection_name: str) -> None:
+def insert_embeddings(milvus_data: Dict[str, List[Any]], collection_name: str) -> None:
     """
     Adds prepared embeddings to the specified Milvus collection.
 
@@ -172,11 +178,11 @@ def add_embeddings(milvus_data: Dict[str, List[Any]], collection_name: str) -> N
     print("Successfully added entries to Milvus.")
 
 
-def query_embeddings_dict(
+def search_embeddings_dict(
     embeddings_dict: Dict[str, Dict[str, Any]], collection_name: str, search_params: Dict[str, Any], top_k: int
 ) -> Dict[str, List[Dict[str, Any]]]:
     """
-    Queries embeddings in the Milvus vector database.
+    Search approximate nearest neighbor embeddings in the Milvus vector database.
 
     Args:
         embeddings_dict (Dict[str, Dict[str, Any]]): Dictionary containing regions and their embeddings.
@@ -231,6 +237,76 @@ def query_embeddings_dict(
     return results_by_region
 
 
-# add_embeddings_to_vectordb(uuid, embeddings_dict, collection_name)
+def delete_embeddings(uuid_to_delete: str, collection_name: str) -> None:
+    """
+    Deletes all embeddings associated with a given UUID from the specified Milvus collection.
 
-print(query_embeddings_dict(embeddings_dict, collection_name, search_params, 1))
+    Args:
+        uuid_to_delete (str): The UUID of the embeddings to be deleted.
+        collection_name (str): The name of the Milvus collection.
+
+    Returns:
+        None
+    """
+    connect_to_host()
+
+    if not utility.has_collection(collection_name):
+        print(f"Collection with name '{collection_name}' not found.")
+        return
+
+    collection = Collection(name=collection_name)
+    collection.delete(f"uuid == '{uuid_to_delete}'")
+    print(f"Entries with UUID '{uuid_to_delete}' deleted successfully.")
+
+
+def query_embeddings(uuid_to_query: str, collection_name: str) -> List[Dict[str, Any]]:
+    """
+    Queries all embeddings associated with a given UUID from the specified Milvus collection.
+
+    Args:
+        uuid_to_query (str): The UUID of the embeddings to be retrieved.
+        collection_name (str): The name of the Milvus collection.
+
+    Returns:
+        List[Dict[str, Any]]: A list of matching records, where each record is a dictionary containing
+        fields such as 'uuid', 'region', and 'vector'. Returns an empty list if no matches are found.
+    """
+    connect_to_host()
+
+    if not utility.has_collection(collection_name):
+        print(f"Collection with name '{collection_name}' not found.")
+        return []
+
+    collection = Collection(name=collection_name)
+    collection.load()
+
+    try:
+        results = collection.query(expr=f"uuid == '{uuid_to_query}'", output_fields=["uuid", "region"])
+    except Exception as e:
+        print(f"Error during query execution: {e}")
+        return []
+
+    if not results:  # Bessere Überprüfung für leere Listen
+        print(f"No matching entries found for UUID: {uuid_to_query}")
+        return []
+
+    return results
+
+
+def drop_collection(collection_name: str) -> None:
+    """
+    Drops (deletes) a Milvus collection if it exists.
+
+    Args:
+        collection_name (str): The name of the Milvus collection to be deleted.
+
+    Returns:
+        None
+    """
+    connect_to_host()  # Ensure connection to Milvus before attempting deletion
+
+    if utility.has_collection(collection_name):
+        utility.drop_collection(collection_name)
+        print(f"Collection '{collection_name}' deleted successfully!")
+    else:
+        print(f"Collection '{collection_name}' does not exist.")

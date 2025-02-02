@@ -6,6 +6,7 @@ from .regions_utils import PipelineAPIKeys, PipelineDictKeys
 from utils.image_utils import copy_image_to_folder
 from .data_utils import map_gender_int_to_string
 from utils.logging_utils import logging_input_data
+from ann.milvus import add_embeddings_to_milvus
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
@@ -42,7 +43,7 @@ def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False
     # calculate embeddings for each image from dict_regions
     dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization)
 
-    ######## STEP 3: Update datenbank ################################
+    ######## STEP 3: Update database ################################
 
     # TODO: normal return can be used for local testing, test and saving-methods need to be adjusted for
     # pipeline testing in a later issue to not actually save in the csv-files or set the saving back
@@ -61,7 +62,8 @@ def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False
                 ),
             },
         )
-        added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
+        # added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
+        added_embeddings = add_embeddings_to_milvus(uuid, dict_embedding)
 
         ### Logging ####
         logging_input_data(uuid, ground_truth_data)

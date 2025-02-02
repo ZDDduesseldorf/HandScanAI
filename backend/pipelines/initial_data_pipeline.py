@@ -3,6 +3,7 @@ from embeddings.embeddings_utils import calculate_embeddings_from_path_dict
 import hand_normalization.src.main as normalization
 from .regions_utils import PipelineDictKeys as Keys
 from .csv_utils import create_region_csvs, add_embedding_dict_to_csv
+from ann.milvus import add_embeddings_to_milvus
 
 
 ### This pipeline is for filtering 11K dataset
@@ -25,9 +26,9 @@ def run_initial_data_pipeline(base_dataset_path, region_dataset_path, csv_folder
             normalization.save_region_images(uuid, regions_dict, region_dataset_path)
 
     ######## STEP 2: Embeddings #################################
-    # TODO: löschen nach Implementierung Vektordatenbank
-    if save_results:
-        create_region_csvs(csv_folder_path)
+    # # TODO: löschen nach Implementierung Vektordatenbank
+    # if save_results:
+    #     create_region_csvs(csv_folder_path)
 
     print("--------------- Embeddings: Load dataset --------------------------------")
     dataset = DatasetRegionClusters(region_dataset_path)
@@ -44,8 +45,8 @@ def run_initial_data_pipeline(base_dataset_path, region_dataset_path, csv_folder
         )
         added_embedding = False
         if save_results:
-            # TODO: ersetzen durch Vektordatenbank
-            added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
+            # added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
+            added_embedding = add_embeddings_to_milvus(uuid, embeddings_regions_dict)
 
         # ab hier für Unit-Tests
         embeddings_dict = {
