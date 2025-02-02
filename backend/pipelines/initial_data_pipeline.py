@@ -1,8 +1,12 @@
 from .datasets import ImagePathDataset, DatasetRegionClusters
-from embeddings.embeddings_utils import calculate_embeddings_from_path_dict, _default_cnn_model_
+from embeddings.embeddings_utils import (
+    calculate_embeddings_from_path_dict,
+    _default_cnn_model_,
+)
 import hand_normalization.src.main as normalization
-from utils.key_enums import PipelineDictKeys as Keys
-from utils.csv_utils import create_region_csvs, add_embedding_dict_to_csv
+from .regions_utils import PipelineDictKeys as Keys
+from .csv_utils import create_region_csvs, add_embedding_dict_to_csv
+from ann.milvus import add_embeddings_to_milvus
 
 
 def run_initial_data_pipeline(
@@ -35,12 +39,16 @@ def run_initial_data_pipeline(
     """
     ######## STEP 1: Hand normalization #################################
     if normalize:
-        print("--------------- Hand-Normalization: Load dataset --------------------------------")
+        print(
+            "--------------- Hand-Normalization: Load dataset --------------------------------"
+        )
         # dataloader
 
         dataset_base = ImagePathDataset(base_dataset_path)
 
-        print("--------------- Hand-Normalization: Normalize Images --------------------------------")
+        print(
+            "--------------- Hand-Normalization: Normalize Images --------------------------------"
+        )
         # normalize images
 
         for path_dict in dataset_base:
@@ -51,7 +59,9 @@ def run_initial_data_pipeline(
             # save normalized images (path: UUID_HandRegion)
             # for tests and debugs possible to comment this out
             if save_images:
-                normalization.save_region_images(uuid, regions_dict, region_dataset_path)
+                normalization.save_region_images(
+                    uuid, regions_dict, region_dataset_path
+                )
 
     ######## STEP 2: Embeddings #################################
     # relevant für Test-Szenarien
@@ -62,7 +72,9 @@ def run_initial_data_pipeline(
     dataset = DatasetRegionClusters(region_dataset_path)
     # dataset is a list
 
-    print("--------------- Embeddings: Calculate embeddings --------------------------------")
+    print(
+        "--------------- Embeddings: Calculate embeddings --------------------------------"
+    )
     # für Unit_test
     embeddings_all_test = []
 
@@ -73,9 +85,11 @@ def run_initial_data_pipeline(
         )
         added_embedding = False
         uuid = image_path_regions_cluster[Keys.UUID.value]
+
         if save_csvs:
             # relevant für Test-Szenarien
-            added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
+            # added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
+            added_embedding = add_embeddings_to_milvus(uuid, embeddings_regions_dict)
 
         # ab hier für Unit-Tests
         embeddings_dict = {
