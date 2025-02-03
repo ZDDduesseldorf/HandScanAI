@@ -267,6 +267,8 @@ def calculate_region_defining_points(
     for area in lookup_areas:
         mask = contour_to_bitmask(np.array(area), contour_mask.shape)
         points = points_in_mask(mask, largest_defects)
+        if points == []:
+            raise ValueError(f"Error: could not find region defining point for lookup area:{area}(Mediapipepoints)")
         defining_points.append(points[0])
     return defining_points
 
