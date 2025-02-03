@@ -387,6 +387,8 @@ def detect_missing_point(
 
     intersection_mask = cv2.bitwise_and(contour_mask, line_mask)
     intersection_coords = np.column_stack(np.where(intersection_mask == 255))
+    if intersection_coords == []:
+        raise ValueError(f"Error: could not find any intersections between the cast line and the contour mask for the points {first_defect} and {second_defect}")
 
     intersection_points: List[Tuple[int, int]] = [(x, y) for y, x in intersection_coords]
     detected_point = get_sorted_points_by_distance(intersection_points, moved_point, return_closest=True)
@@ -453,7 +455,7 @@ def calculate_euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int
 
 def integrate_defects(region_defining_points, defects):
     """
-    Integrates additional defect points into defining points list.
+    Integrates additional defect points into the region defining points list.
 
     Args:
         region_defining_points (List[Tuple[int, int]]): Current defining points.
