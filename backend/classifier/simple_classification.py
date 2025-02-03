@@ -2,6 +2,7 @@ import numpy as np
 import statistics
 import pandas as pd
 
+
 from pipelines.regions_utils import PipelineDictKeys as Keys
 from pipelines.regions_utils import PipelineAPIKeys as APIKeys
 
@@ -57,6 +58,18 @@ def classify_gender(dict_all_info_knn):
     return dict_gender
 
 
+def confidence_gender(dict_all_info_knn, predicted_gender):
+    list_gender = []
+    for regionkey, region_df in dict_all_info_knn.items():
+        region_gender_list = region_df[Keys.GENDER.value].to_list()
+        list_gender.extend(region_gender_list)
+
+    number_correct_knn = list_gender.count(predicted_gender)
+    number_knn = len(list_gender)
+    confidence_gender = number_correct_knn / number_knn
+    return confidence_gender
+
+
 def ensemble_age(age_dict):
     age_list = [df[APIKeys.CLASSIFIED_AGE.value].iloc[0] for df in age_dict.values()]
     mean_age = np.mean(age_list)
@@ -72,12 +85,10 @@ def ensemble_gender(gender_dict):
     gender_list = [df[APIKeys.CLASSIFIED_GENDER.value].iloc[0] for df in gender_dict.values()]
     mode_gender = statistics.mode(gender_list)
 
-    distance_list = [df[APIKeys.CONFIDENCE_GENDER.value].iloc[0] for df in gender_dict.values()]
-    mean_distance = np.mean(distance_list)
-    return mode_gender, mean_distance
+    return mode_gender
 
 
-def ensemble_classifier(dict_age, dict_gender):
+def ensemble_classifier(dict_age, dict_gender, dict_all_info_knn):
     """
     ensemble classifier of the prediction of age and gender from the individual hand regions forms.
     Returns dataframe for frontend
@@ -92,7 +103,8 @@ def ensemble_classifier(dict_age, dict_gender):
         0:female, 1:male
     """
     mean_age, min_age, max_age, mean_distance_age = ensemble_age(dict_age)
-    mode_gender, mean_distance_gender = ensemble_gender(dict_gender)
+    mode_gender = ensemble_gender(dict_gender)
+    gender_confidence = confidence_gender(dict_all_info_knn, mode_gender)
 
     ensemble_df = pd.DataFrame(
         [
@@ -102,7 +114,7 @@ def ensemble_classifier(dict_age, dict_gender):
                 APIKeys.MAX_AGE.value: max_age,
                 APIKeys.CONFIDENCE_AGE.value: mean_distance_age,
                 APIKeys.CLASSIFIED_GENDER.value: mode_gender,
-                APIKeys.CONFIDENCE_GENDER.value: mean_distance_gender,
+                APIKeys.CONFIDENCE_GENDER.value: gender_confidence,
             }
         ]
     )
