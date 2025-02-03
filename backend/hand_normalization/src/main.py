@@ -387,7 +387,7 @@ def detect_missing_point(
 
     intersection_mask = cv2.bitwise_and(contour_mask, line_mask)
     intersection_coords = np.column_stack(np.where(intersection_mask == 255))
-    if intersection_coords == []:
+    if np.sum(intersection_coords) == 0:
         raise ValueError(f"Error: could not find any intersections between the cast line and the contour mask for the points {first_defect} and {second_defect}")
 
     intersection_points: List[Tuple[int, int]] = [(x, y) for y, x in intersection_coords]
