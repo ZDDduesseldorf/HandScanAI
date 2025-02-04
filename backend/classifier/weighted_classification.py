@@ -6,6 +6,9 @@ from pipelines.regions_utils import PipelineDictKeys as Keys
 from classifier.simple_classification import ensemble_age, ensemble_gender, confidence_gender
 
 
+# TODO: was ist gutes gewicht?
+
+
 def weighted_classify_age(dict_all_info_knn):
     dict_age = {}
     for regionkey, region_df in dict_all_info_knn.items():
@@ -24,7 +27,7 @@ def weighted_classify_age(dict_all_info_knn):
 
 def weighted_mean(dataframe, value, weight):
     values = dataframe[value]
-    dataframe["calculated_weight"] = 1 / dataframe[weight]  # TODO: oder 1-?
+    dataframe["calculated_weight"] = 1 - dataframe[weight]  # TODO: oder 1/?
     weighted_mean_age = np.average(values, weights=dataframe["calculated_weight"])
 
     return weighted_mean_age
@@ -49,7 +52,7 @@ def weighted_classify_gender(dict_all_info_knn):
 
 
 def weighted_mode(dataframe, value, weight):
-    dataframe["calculated_weight"] = 1 / dataframe[weight]  # TODO: oder 1-?
+    dataframe["calculated_weight"] = 1 - dataframe[weight]  # TODO: oder 1/?
     weighted_sum = dataframe.groupby(value)["calculated_weight"].sum()
 
     predicted_value = weighted_sum.idxmax()
@@ -74,15 +77,13 @@ def weighted_confidence_gender(dict_all_info_knn, predicted_gender):
     weights_correct_knn = 0
     sum_weights = 0
     for regionkey, region_df in dict_all_info_knn.items():
-        region_df["calculated_weight"] = 1 / region_df[Keys.DISTANCE.value]  # TODO: oder 1-?
+        region_df["calculated_weight"] = 1 - region_df[Keys.DISTANCE.value]  # TODO: oder 1/?
         weighted_sum = region_df.groupby(Keys.GENDER.value)["calculated_weight"].sum()
         weight_predicted_gender = weighted_sum.loc[predicted_gender]
         weights_correct_knn += weight_predicted_gender
-
         sum_weights_region = region_df["calculated_weight"].sum()
         sum_weights += sum_weights_region
 
-    print(sum_weights)
     confidence_gender = weights_correct_knn / sum_weights
 
     return confidence_gender
