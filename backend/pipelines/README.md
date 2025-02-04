@@ -16,9 +16,7 @@ Info: Pipelines will get updated once the vector database gets introduced. Until
   - [Add new Embeddings Pipeline](#add-new-embeddings-pipeline)
     - [Use the add new Embeddings pipeline](#use-the-add-new-embeddings-pipeline)
   - [Utils for Pipelines](#utils-for-pipelines)
-    - [csv\_utils](#csv_utils)
     - [data\_utils](#data_utils)
-    - [region\_utils](#region_utils)
     - [datasets](#datasets)
   - [Distance Caculation](#distance-caculation)
 
@@ -119,11 +117,7 @@ After a check of the metadata (manually by a person or with a check-script), it 
 
 ## Utils for Pipelines
 
-### csv_utils
-
 ### data_utils
-
-### region_utils
 
 ### datasets
 
