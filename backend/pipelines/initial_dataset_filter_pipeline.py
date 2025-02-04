@@ -5,6 +5,7 @@ from utils.uuid_utils import generate_uuid
 from utils.csv_utils import create_csv_with_header, add_entry_to_csv
 from pipelines.datasets import ImagePathWithCSVDataset
 from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
+import hand_normalization.src.main as normalization
 
 
 def filter_11k_hands(folder_path, csv_path, new_dataset_path, new_csv_path):
@@ -38,15 +39,20 @@ def filter_11k_hands(folder_path, csv_path, new_dataset_path, new_csv_path):
     os.makedirs(new_dataset_path, exist_ok=True)
     create_csv_with_header(new_csv_path, csv_header)
 
-    for image_paths, csv_data in dataset_11k:
-        image = cv2.imread(image_paths)
+    for image_path, csv_data in dataset_11k:
+        image = cv2.imread(image_path)
         is_valid = is_validation_pipeline_valid(validation_pipeline(image))
+        normalization_succeeded = True
+        try:
+            normalization.normalize_hand_image(image_path)
+        except (KeyError, ValueError, IndexError, TypeError):
+            normalization_succeeded = False
 
         # Check if its the dorsal side
         aspect_of_hand = csv_data["aspectOfHand"]
         is_dorsal = aspect_of_hand.split(" ", 1)[0] == "dorsal"
 
-        if is_valid and is_dorsal:
+        if is_valid and is_dorsal and normalization_succeeded:
             uuid = generate_uuid()
             ## save image at new_folder/UID.jpg
             image_path = os.path.join(new_dataset_path, uuid + ".jpg")

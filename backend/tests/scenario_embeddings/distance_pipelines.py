@@ -68,19 +68,28 @@ def run_scenarios_embeddings(setup=False):
         "RESNET_50": load_model(CNNModel.RESNET_50),
     }
     k = 10
-    uuid_list = ["514f53d0-6aab-4da1-b929-8f1dc0817289", "3ffd5331-da5d-4818-8af7-44869413714c"]
+    uuid_list = [
+        "4179975e-fca3-4beb-a2c9-10cc700ed5f4",
+        "946e0eb9-5b0a-4e56-b99a-e665ac40de89",
+        "218ce52f-4a15-42d9-8e1e-2d40492fc1ce",
+        "23698a1f-d9ce-4df1-bd3a-e1de61a8f727",
+        "516d1d19-61c4-42e9-b2dc-2697e0ecb743",
+        "6976a5cd-276a-46d9-9e36-346c9bc0782a",
+        "0dc125e4-a90e-45d6-8f7b-81538b1c96c5",
+        "7116a897-a1a4-451e-a8fd-2e14cfeffb00",
+        "12ebe903-747d-4294-b953-a1104f4f7042",
+        "730cedf8-b717-403d-a464-148e45c00c3f",
+        "6b7fe815-8a38-4fe8-a196-13b0c4a3d1a3",
+        "25a13337-bb1d-4484-8135-066a6ac6876b",
+    ]
     for model_name, model in models_dict.items():
         if setup:
             model_csv_path = path_to_result_csv / model_name
             setup_scenario_structure(model_csv_path, model)
         for uuid in uuid_list:
+            print(model_name, uuid)
             run_distance_pipeline(uuid, model_name, model, k)
 
-    # uuids der QueryBilder (bereits vorhanden, linke/rechte Hand in Datensatz vorhanden) 6-7 personen
-    # TODO: uuids der anderen mit notieren
-    # 1 links, rechts -> versuch gleichverteilt
-    # 3m,3f
-    # TODO: mind. 1xw, 1xm; links und rechts, nicht mehr wie 8 Bilder einer Person
     # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?
     # -> Was ist gutes Ergebnis? (ähnliche Bild einer Person sollte ähnliches Embedding liefern)
     # von machen Personen viele Bilder drin von anderen weniger
@@ -101,14 +110,14 @@ def run_scenarios_embeddings(setup=False):
 
 def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
     # produktiv Daten aus Media Ordner
-    folder_path_query, _, _, metadata_csv_path, _ = _path_manager(testing=False)
+    folder_path_query, _, _, metadata_csv_path, folder_path_base = _path_manager(testing=False)
     path_to_results_csv = scenario_path_manager()
 
     model_embedding_csv_path = path_to_results_csv / model_name
 
     ######## STEP 0: build path to image #################################
 
-    image_path = get_image_path(folder_path_query, uuid)
+    image_path = get_image_path(folder_path_base, uuid)
 
     ######## STEP 1: image normalization #################################
 
