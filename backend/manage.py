@@ -110,7 +110,8 @@ def initial_setup_csv_logging():
 @cli.command("normalisation_visual_test")
 def normalisation_visual_test():
     """Run the a visual test of the normalize_hand_image() function"""
-    image_path = r"hand_normalization\TestImages\Hand_0000658.jpg"
+    # TODO: Pfade müssen vor Verwendung angepasst werden
+    image_path = r"path/to/image/folder"
     region_dict = normalize.normalize_hand_image(image_path)
     image_list = list(region_dict.values())
     grid_image = normalize.draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
