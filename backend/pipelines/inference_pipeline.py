@@ -2,6 +2,7 @@ from pathlib import Path
 
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
+from utils.image_utils import get_image_path
 from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
 from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
@@ -76,25 +77,3 @@ def run_inference_pipeline(uuid, testing=False):
         logging_nearest_neighbours(uuid, dict_all_info_knn)
         logging_classification(uuid, age_dict, gender_dict, ensemble_df)
     return ensemble_df
-
-
-# TODO: Verschieben in image_utils Datei
-def get_image_path(folder_path_query, uuid):
-    # TODO: correct path to image_folder
-    """
-    Finds and returns the file path to an image based on its UUID and supported extensions.
-
-    Args:
-        temp_base_dir (Path): The base directory. Typically derived from the current file's location.
-        uuid (str): Unique identifier for the image
-
-    Returns:
-        Path: The absolute path to the image file if found.
-        None: If no file with the given UUID and extensions exists in the specified folder.
-    """
-    extensions = [".png", ".jpg", ".jpeg", ".bmp"]
-    for ext in extensions:
-        image_path = folder_path_query / f"{uuid}{ext}"
-        if image_path.exists():
-            return image_path.resolve()
-    return None

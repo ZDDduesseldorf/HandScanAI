@@ -10,6 +10,7 @@ import PrivacyNotice from '@/pages/PrivacyNotice';
 import ImageCapture from '@/pages/ImageCapture';
 import Processing from '@/pages/Processing';
 import SubmissionComplete from '@/pages/SubmissionComplete';
+import Explanation from './pages/Explanation';
 import Sandbox from '@/pages/Sandbox';
 import BlackBox from '@/pages/BlackBox';
 import Layout from '@/components/Layout';
@@ -59,6 +60,7 @@ const App: React.FC = () => {
               <Route path="/image-capture" element={<ImageCapture />} />
               <Route path="/processing" element={<Processing />} />
               <Route path="/blackbox" element={<BlackBox />} />
+              <Route path="/explanation" element={<Explanation />} />
               <Route path="/result-1" element={<Result_1 />} />
               <Route path="/result-2" element={<Result_2 />} />
               <Route

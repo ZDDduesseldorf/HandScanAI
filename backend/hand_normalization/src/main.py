@@ -1,5 +1,5 @@
 import os
-from pipelines.regions_utils import HandRegions
+from utils.key_enums import HandRegions
 import cv2
 import numpy as np
 import mediapipe as mp
@@ -10,6 +10,7 @@ from typing import List, Dict, Tuple
 
 ################################## Debug & Test Utils ##################################
 
+
 def save_region_images(uuid: str, regions_dict: dict, output_directory):
     """
     Saves images as .bmp with name {uuid}_{region_key}.bmp.
@@ -17,7 +18,7 @@ def save_region_images(uuid: str, regions_dict: dict, output_directory):
     """
     if os.path.isdir(output_directory):
         for region_key, image in regions_dict.items():
-            #image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             filename = os.path.join(output_directory, f"{uuid}_{region_key}.bmp")
             cv2.imwrite(filename, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
     return
@@ -444,7 +445,7 @@ def calculate_euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int
         raise TypeError("Both points must be tuples or lists of two numerical values.")
     if not (len(point1) == 2 and len(point2) == 2):
         raise ValueError("Both points must contain exactly two elements.")
-    
+
     return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
 
 
@@ -467,16 +468,15 @@ def integrate_defects(region_defining_points, defects):
         raise TypeError("Both inputs must be lists of (x, y) coordinate tuples.")
 
     for point in region_defining_points + defects:
-        if not (isinstance(point, tuple) and len(point) == 2 and 
-                all(isinstance(coord, np.integer) for coord in point)):
+        if not (isinstance(point, tuple) and len(point) == 2 and all(isinstance(coord, np.integer) for coord in point)):
             raise TypeError("All points must be tuples of two integers (x, y).")
 
     if len(defects) < 3:
         raise ValueError("At least 3 defect points are required.")
 
-    region_defining_points.insert(0, defects[0])  
-    region_defining_points.insert(2, defects[1])   
-    region_defining_points.append(defects[2])      
+    region_defining_points.insert(0, defects[0])
+    region_defining_points.insert(2, defects[1])
+    region_defining_points.append(defects[2])
 
     return region_defining_points
 
@@ -590,7 +590,7 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
     """
     if not isinstance(sorted_segments, list) or not all(isinstance(mask, np.ndarray) for mask in sorted_segments):
         raise TypeError("sorted_segments must be a list of NumPy arrays.")
-    
+
     if not isinstance(landmarks, list) or not all(isinstance(point, tuple) and len(point) == 2 for point in landmarks):
         raise TypeError("landmarks must be a list of (x, y) coordinate tuples.")
 
@@ -599,7 +599,7 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
 
     if len(landmarks) < 20:
         raise ValueError("landmarks must contain at least 20 points.")
-    
+
     regions = [
         {"name": HandRegions.HAND_0.value, "reference_point": []},
         {"name": HandRegions.HANDBODY_1.value, "reference_point": landmarks[13]},
@@ -617,7 +617,7 @@ def assign_masks_to_regions(sorted_segments, landmarks) -> list:
             points_in_segment = points_in_mask(segments, region_reference_point)
             if points_in_segment:
                 region.update({"mask": segments})
-    
+
     regions[1].update({"mask": remove_forearm_from_handbody_mask(regions[1]["mask"], landmarks)})
 
     return regions
@@ -684,7 +684,7 @@ def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: 
                a default angle of 90 degrees if the region name is not recognized.
     """
     if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
-        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) - orientation_hand*180
+        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) - orientation_hand * 180
     elif region_name == HandRegions.THUMB_2.value:
         return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
@@ -714,7 +714,9 @@ def calculate_vector_angle(point1: Tuple[int, int], point2: Tuple[int, int]) -> 
     return vector_angle
 
 
-def rotate_image_no_crop(image: np.ndarray, angle: float, center_of_rotation: list = [], is_mask: bool = False) -> np.ndarray:  # noqa: B006
+def rotate_image_no_crop(
+    image: np.ndarray, angle: float, center_of_rotation: list = [], is_mask: bool = False
+) -> np.ndarray:  # noqa: B006
     """
     Rotates an image around a specified center without cropping the edges.
 
@@ -844,10 +846,10 @@ def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, 
 
 
 def replace_color_in_range(
-        input_image: np.ndarray, 
-        lower_bound: Tuple[int, int, int], 
-        upper_bound: Tuple[int, int, int], 
-        replacement_color: Tuple[int, int, int]
+    input_image: np.ndarray,
+    lower_bound: Tuple[int, int, int],
+    upper_bound: Tuple[int, int, int],
+    replacement_color: Tuple[int, int, int],
 ) -> np.ndarray:
     """
     Replaces all pixels in the specified color range with a replacement color.
@@ -883,6 +885,7 @@ def build_regions_dict(regions: List[Dict[str, np.ndarray]]) -> Dict[str, np.nda
     """
     return {region["name"]: region["image"] for region in regions}
 
+
 def remove_forearm_from_handbody_mask(mask: np.ndarray, landmarks: list) -> np.ndarray:
     """
     Removes the forearm section in the handbody mask.
@@ -898,18 +901,21 @@ def remove_forearm_from_handbody_mask(mask: np.ndarray, landmarks: list) -> np.n
     landmarks = np.array(landmarks)
     forearm_mask = np.zeros_like(mask)
     support_vector = (landmarks[0] - landmarks[13]) + landmarks[13]
-    direction_vector = (landmarks[5] - landmarks[13])
+    direction_vector = landmarks[5] - landmarks[13]
 
     if orientation_hand:
         forearm_mask = split_mask_with_line(forearm_mask, support_vector, direction_vector)
     else:
-        forearm_mask = split_mask_with_line(forearm_mask, support_vector, direction_vector,invert=True)
+        forearm_mask = split_mask_with_line(forearm_mask, support_vector, direction_vector, invert=True)
 
-    mask = mask * (forearm_mask/255)
-    
+    mask = mask * (forearm_mask / 255)
+
     return mask
 
-def split_mask_with_line(mask: np.ndarray, support_vector: np.ndarray, direction_vector: np.ndarray, invert : bool = False) -> np.ndarray:
+
+def split_mask_with_line(
+    mask: np.ndarray, support_vector: np.ndarray, direction_vector: np.ndarray, invert: bool = False
+) -> np.ndarray:
     """
     Splits a mask alonge a line defined by a support_vector and the direction_vector. One side is set to 255 the other to 0.
 
@@ -926,10 +932,10 @@ def split_mask_with_line(mask: np.ndarray, support_vector: np.ndarray, direction
     x, y = np.meshgrid(np.arange(width), np.arange(height))
 
     rel_position = (x - support_vector[0]) * direction_vector[1] - (y - support_vector[1]) * direction_vector[0]
-    if invert: 
+    if invert:
         rel_position *= -1
 
-    mask[rel_position > 0] = 255  
-    mask[rel_position <= 0] = 0  
-    
+    mask[rel_position > 0] = 255
+    mask[rel_position <= 0] = 0
+
     return mask
