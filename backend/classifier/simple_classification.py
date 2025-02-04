@@ -2,8 +2,8 @@ import numpy as np
 import statistics
 import pandas as pd
 
-from pipelines.regions_utils import PipelineDictKeys as Keys
-from pipelines.regions_utils import PipelineAPIKeys as APIKeys
+from utils.key_enums import PipelineDictKeys as Keys
+from utils.key_enums import PipelineAPIKeys as APIKeys
 
 
 def classify_age(dict_all_info_knn):

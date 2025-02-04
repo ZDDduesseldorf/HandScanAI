@@ -5,12 +5,13 @@ from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from pipelines.data_utils import build_info_knn
 from pipelines.distance_calculation import calculate_distance
-from pipelines.inference_pipeline import _path_manager, get_image_path
+from pipelines.inference_pipeline import _path_manager
+from utils.image_utils import get_image_path
 from utils.logging_utils import save_nearest_neighbours_info
-from pipelines.csv_utils import check_or_create_folder, check_file_exists, create_csv_with_header
+from utils.csv_utils import check_or_create_folder, check_file_exists, create_csv_with_header
 from embeddings.models_utils import CNNModel, load_model
 from pipelines.initial_data_pipeline import run_initial_data_pipeline
-from pipelines.regions_utils import PipelineDictKeys as Keys
+from utils.key_enums import PipelineDictKeys as Keys
 
 
 # TODO: zum Ausführen der distance_pipeline verwenden

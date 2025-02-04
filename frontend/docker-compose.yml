@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5173:5173"
+      - '5173:5173'
     volumes:
       - .:/frontend
-      - "/frontend/node_modules"
+      - '/frontend/node_modules'
