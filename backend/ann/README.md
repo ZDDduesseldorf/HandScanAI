@@ -1,6 +1,6 @@
 # Milvus Script
 
-A concise script that provides various operations related to embeddings in the [Milvus](https://milvus.io/) vector database. It creates and manages collections, inserts/searches embeddings, and deletes/query records by UUID.
+A script that provides various operations related to embeddings in the [Milvus](https://milvus.io/) vector database. It creates and manages collections, inserts/searches embeddings, and deletes/query records by UUID.
 
 ## Table of Contents
 
