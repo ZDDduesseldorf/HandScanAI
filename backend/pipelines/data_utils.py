@@ -41,7 +41,55 @@ def map_gender_int_to_string(int_gender):
     return map_gender[str(int_gender)]
 
 
-def build_info_knn(metadata_csv_path, dict_all_dist: dict):
+def build_info_knn(metadata_csv_path, knn_results: dict):
+    """
+    Augment k-nearest neighbor search results with additional metadata (age and gender) from a CSV file.
+    Each region is mapped to a DataFrame containing the combined information.
+
+    Args:
+        metadata_csv_path (str): Path to the CSV file containing metadata. Must include 'uuid', 'age', and 'gender'.
+        knn_results (Dict[str, List[Dict[str, Any]]]): Dictionary of k-NN results grouped by region.
+
+    Returns:
+        Dict[str, pd.DataFrame]: A dictionary mapping each region to a DataFrame with 'uuid', 'distance', 'age', 'gender'.
+    """
+    dict_all_info_knn = {}
+
+    # TODO: Abfrage aus MongoDB?
+    metadata_df = pd.read_csv(metadata_csv_path, sep=",")
+    metadata_df = map_gender_string_to_int(metadata_df)
+
+    for region, knn_list in knn_results.items():
+        region_df = pd.DataFrame(
+            columns=[DictKeys.UUID.value, DictKeys.DISTANCE.value, DictKeys.AGE.value, DictKeys.GENDER.value]
+        )
+        for hit in knn_list:
+            uuid = hit.get("uuid")
+            distance = hit.get("distance")
+
+            row = metadata_df.loc[metadata_df[DictKeys.UUID.value] == uuid]
+            if not row.empty:
+                age = row[DictKeys.AGE.value].iloc[0]
+                gender = row[DictKeys.GENDER.value].iloc[0]
+            else:
+                age = None
+                gender = None
+
+            new_row = {
+                DictKeys.UUID.value: uuid,
+                DictKeys.DISTANCE.value: distance,
+                DictKeys.AGE.value: age,
+                DictKeys.GENDER.value: gender,
+            }
+            region_df = pd.concat([region_df, pd.DataFrame([new_row])], ignore_index=True)
+
+        dict_all_info_knn[region] = region_df
+
+    return dict_all_info_knn
+
+
+# TODO: Depreceated function, only for testing purposes
+def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
     """
     Query of gender and age for knn of the image from csv.
     Dictation of a dict that contains the k nearest neighbours with uuid, dist, age and gender
