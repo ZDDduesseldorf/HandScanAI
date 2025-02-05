@@ -7,8 +7,6 @@ A script that provides various operations related to embeddings in the [Milvus](
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Usage](#usage)
-- [Script Functions](#script-functions)
-- [Contact](#contact)
 
 ---
 
