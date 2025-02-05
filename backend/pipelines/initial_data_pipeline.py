@@ -45,6 +45,7 @@ def run_initial_data_pipeline(base_dataset_path, region_dataset_path, csv_folder
         )
         added_embedding = False
         if save_results:
+            # TODO: Auskommentiert, da Milvus genutzt wird
             # added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
             added_embedding = add_embeddings_to_milvus(uuid, embeddings_regions_dict)
 
