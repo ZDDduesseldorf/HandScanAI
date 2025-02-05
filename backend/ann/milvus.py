@@ -3,6 +3,7 @@ from typing import Dict, List, Any
 
 # from pipelines.regions_utils import HandRegions
 from enum import Enum
+import torch
 
 # TODO: Define global variables for collection_name, top_k search_params
 
@@ -23,16 +24,16 @@ class HandRegions(Enum):
     LITTLEFINGER_6 = "LittleFinger"
 
 
-uuid = "uuid1"
+uuid = "614f53d0-6aab-4da1-b929-8f1dc0817289"
 
 embeddings_dict = {
-    HandRegions.HAND_0.value: {"Embedding": [0.1] * 1024},
-    HandRegions.HANDBODY_1.value: {"Embedding": [0.2] * 1024},
-    HandRegions.THUMB_2.value: {"Embedding": [0.6] * 1024},
-    HandRegions.INDEXFINGER_3.value: {"Embedding": [0.3] * 1024},
-    HandRegions.MIDDLEFINGER_4.value: {"Embedding": [0.4] * 1024},
-    HandRegions.RINGFINGER_5.value: {"Embedding": [0.5] * 1024},
-    HandRegions.LITTLEFINGER_6.value: {"Embedding": [0.6] * 1024},
+    HandRegions.HAND_0.value: torch.tensor([0.1] * 1024),
+    HandRegions.HANDBODY_1.value: torch.tensor([0.2] * 1024),
+    HandRegions.THUMB_2.value: torch.tensor([0.6] * 1024),
+    HandRegions.INDEXFINGER_3.value: torch.tensor([0.3] * 1024),
+    HandRegions.MIDDLEFINGER_4.value: torch.tensor([0.4] * 1024),
+    HandRegions.RINGFINGER_5.value: torch.tensor([0.5] * 1024),
+    HandRegions.LITTLEFINGER_6.value: torch.tensor([0.6] * 1024),
 }
 
 collection_name = "hand_regions"
@@ -47,7 +48,7 @@ search_params = {
 ###########################################################################
 
 
-def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]], collection_name: str) -> None:
+def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str) -> bool:
     """
     Adds embeddings to the Milvus vector database.
 
@@ -146,7 +147,7 @@ def prepare_data_for_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]
     for region, values in embeddings_dict.items():
         uuids.append(uuid)
         regions.append(region)
-        embeddings.append(values["Embedding"])
+        embeddings.append(values.tolist())
 
     return {"UUIDS": uuids, "Regions": regions, "Embeddings": embeddings}
 
@@ -205,7 +206,7 @@ def search_embeddings_dict(
     results_by_region = {}
 
     for region, values in embeddings_dict.items():
-        query_vector = [values["Embedding"]]
+        query_vector = values.tolist()
 
         try:
             results = collection.search(
@@ -259,7 +260,7 @@ def delete_embeddings(uuid_to_delete: str, collection_name: str) -> None:
     print(f"Entries with UUID '{uuid_to_delete}' deleted successfully.")
 
 
-def query_embeddings(uuid_to_query: str, collection_name: str) -> List[Dict[str, Any]]:
+def query_uuid(uuid_to_query: str, collection_name: str) -> List[Dict[str, Any]]:
     """
     Queries all embeddings associated with a given UUID from the specified Milvus collection.
 
@@ -310,3 +311,9 @@ def drop_collection(collection_name: str) -> None:
         print(f"Collection '{collection_name}' deleted successfully!")
     else:
         print(f"Collection '{collection_name}' does not exist.")
+
+
+# drop_collection(collection_name)
+# add_embeddings_to_milvus(uuid, embeddings_dict, collection_name)
+
+print(search_embeddings_dict(embeddings_dict, collection_name, search_params, top_k))
