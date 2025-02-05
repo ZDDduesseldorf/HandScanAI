@@ -60,9 +60,9 @@ def run_inference_pipeline(uuid, testing=False):
     dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization)
 
     ######## STEP 3: search nearest neighbours ###########################
-    # TODO: Remove csv calculation
-    k = 5  # anzahl nächster Nachbarn
-    dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
+    # # TODO: Remove csv calculation
+    # k = 5  # anzahl nächster Nachbarn
+    # dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
     # TODO: Define global variables for collection_name, top_k, search_params
     collection_name = "hand_regions"
@@ -71,10 +71,11 @@ def run_inference_pipeline(uuid, testing=False):
         "metric_type": "L2",  # Gleiche Metrik wie beim Index
         "params": {"nprobe": 10},  # Anzahl der durchsuchten Cluster (abhängig von nlist)
     }
-    dict_all_dist = search_embeddings_dict(dict_embedding, collection_name, top_k, search_params)
+    dict_all_dist = search_embeddings_dict(dict_embedding, collection_name, search_params, top_k)
 
     dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
     ######## STEP 4: make a decision for prediction ######################
+    print(dict_all_info_knn)
 
     age_dict = classify_age(dict_all_info_knn)
     gender_dict = classify_gender(dict_all_info_knn)
