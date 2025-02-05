@@ -30,8 +30,8 @@ In the broader pipeline:
 
 ## Requirements
 
-- **Python**: Version 3.8+
-- **Milvus**: e.g., version 2.x
+- **Python**: Version 3.10
+- **Milvus**: e.g., version 2.5
 - **Dependencies**:
   - `pymilvus` (Milvus Python client)
   - `torch` (used for handling embeddings)
