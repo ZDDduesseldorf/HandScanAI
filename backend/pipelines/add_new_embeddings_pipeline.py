@@ -63,6 +63,7 @@ def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False
                 ),
             },
         )
+        # TODO: Auskommentiert, da Milvus genutzt wird
         # added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
         added_embeddings = add_embeddings_to_milvus(uuid, dict_embedding)
 
