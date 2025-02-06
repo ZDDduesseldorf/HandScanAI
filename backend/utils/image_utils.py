@@ -1,14 +1,41 @@
 import os
 import cv2
 import shutil
+from pathlib import Path
 
 
-def copy_image_to_folder(uuid, original_folder_path, target_folder_path):
+def copy_image_to_folder(uuid, original_folder_path: (str | Path), target_folder_path: (str | Path)):
+    # TODO: docstring updaten
+    """
+    Copies an image from one folder to another.
+
+    Args:
+        uuid (str): uuid of the image to be copied
+        original_folder_path (str | Path): full path to the folder where the image lies
+        target_folder_path (str | Path): full path to the folder where the image should be copied to
+
+    Returns:
+        bool: Returns true if copying the file was successfull
+    """
     image_name = uuid + ".jpg"
     original = construct_image_path(image_name, original_folder_path)
     target = construct_image_path(image_name, target_folder_path)
+    return save_image_under_new_path(original, target)
+
+
+def save_image_under_new_path(original_image_path, target_image_path):
+    """
+    Copies an image from one path to another path.
+
+    Args:
+        original_image_path (str | Path): full path to the imagefile
+        target_image_path (str | Path): full path to the new imagefile
+
+    Returns:
+        bool: Returns true if copying the file was successfull
+    """
     try:
-        shutil.copy(original, target)
+        shutil.copy(original_image_path, target_image_path)
         print("File copied successfully.")
         return True
         # If source and destination are same
@@ -71,3 +98,23 @@ def construct_image_path(image_name, path_to_images):
     # Construct the full path to the image file
     img_path = os.path.join(path_to_images, image_name)
     return img_path
+
+
+def get_image_path(folder_path_query, uuid):
+    """
+    Finds and returns the file path to an image based on its UUID and supported extensions.
+
+    Args:
+        temp_base_dir (Path): The base directory. Typically derived from the current file's location.
+        uuid (str): Unique identifier for the image
+
+    Returns:
+        Path: The absolute path to the image file if found.
+        None: If no file with the given UUID and extensions exists in the specified folder.
+    """
+    extensions = [".png", ".jpg", ".jpeg", ".bmp"]
+    for ext in extensions:
+        image_path = folder_path_query / f"{uuid}{ext}"
+        if image_path.exists():
+            return image_path.resolve()
+    return None

@@ -1,9 +1,9 @@
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from .inference_pipeline import get_image_path, _path_manager
-from .csv_utils import add_embedding_dict_to_csv, add_entry_to_csv
-from .regions_utils import PipelineAPIKeys, PipelineDictKeys
-from utils.image_utils import copy_image_to_folder
+from .inference_pipeline import _path_manager
+from utils.csv_utils import add_embedding_dict_to_csv, add_entry_to_csv
+from utils.key_enums import PipelineAPIKeys, PipelineDictKeys
+from utils.image_utils import copy_image_to_folder, get_image_path
 from .data_utils import map_gender_int_to_string
 from utils.logging_utils import logging_input_data
 
@@ -11,6 +11,7 @@ from utils.logging_utils import logging_input_data
 
 
 def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False):
+    # TODO: docstring anpassen
     """
     pipeline to add classified and checked image to vektortree
     checking if the age and gender details are logical
