@@ -1,6 +1,6 @@
 from pymilvus import connections, utility, FieldSchema, CollectionSchema, DataType, Collection
 from typing import Dict, List, Any
-from pipelines.regions_utils import HandRegions
+from utils.key_enums import HandRegions
 
 import torch
 
