@@ -12,11 +12,17 @@ from utils.csv_utils import check_or_create_folder, check_file_exists, create_cs
 from embeddings.models_utils import CNNModel, load_model
 from pipelines.initial_data_pipeline import run_initial_data_pipeline
 from utils.key_enums import PipelineDictKeys as Keys
+from classifier.classifier_utils import scenario_classifier
+
+# TODO: zum Ausführen der classifier_scenario verwenden
+"""def test_scenario_classifier():
+    path_to_result_csv = scenario_path_manager()
+    scenario_classifier(path_to_result_csv, testing=True)"""
 
 
 # TODO: zum Ausführen der distance_pipeline verwenden
-def test_scenario_embeddings():
-    run_scenarios_embeddings(setup=False)
+"""def test_scenario_embeddings():
+    run_scenarios_embeddings(setup=False)"""
 
 
 def scenario_path_manager():
@@ -35,9 +41,9 @@ def setup_scenario_structure(path_to_model_folder, model):
         folder_path_region,
         path_to_model_folder,
         model,
-        normalize=True,
+        normalize=False,
         save_images=False,
-        save_csvs=True,
+        save_csvs=False,
     )
     end = time.time()
 
@@ -113,8 +119,7 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
 
     # calculate embeddings for each image from dict_normalization
     dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization, model)
-    # add_embedding_dict_to_csv(model_embedding_csv_path, uuid, dict_embedding)
-    print(dict_embedding)
+
     ######## STEP 3: search nearest neighbours ###########################
 
     dict_all_dist = calculate_distance(dict_embedding, k, model_embedding_csv_path)
