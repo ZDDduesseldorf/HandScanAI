@@ -8,17 +8,17 @@ from validation.validation_pipeline import validation_pipeline, is_validation_pi
 import hand_normalization.src.main as normalization
 
 
-def filter_11k_hands(folder_path, csv_path, new_dataset_path, new_csv_path):
+def filter_11k_hands(folder_path: str, csv_path: str, new_dataset_path: str, new_csv_path: str):
     """
         This Funktion is for filtering 11K dataset into a first filtered dataset of hand images.
         Filters whole 11k dataset with validation_pipeline (valid hand image) and the hand being dorsal.
         Saves metadata in a csv and the images in a folder as a new filtered dataset.
         image names are in the form of {UUID}.jpg
     Args:
-        folder_path: Path to folder with images of initial unfiltered dataset
-        csv_path: Path to initial_metadata.csv e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
-        new_dataset_path: Path to folder for filtered Dataset
-        new_csv_path: path to Metadata_filtered.csv
+        folder_path (str): Path to folder with images of initial unfiltered dataset
+        csv_path (str): Path to initial_metadata.csv e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
+        new_dataset_path (str): Path to folder for filtered Dataset
+        new_csv_path (str): path to Metadata_filtered.csv
 
     """
     # load images from 11K Dataset

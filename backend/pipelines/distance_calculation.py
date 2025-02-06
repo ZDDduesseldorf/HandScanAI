@@ -14,7 +14,8 @@ def calculate_distance(dict_embedding: dict, k, embedding_csv_path):
 
     Args:
         dict_embedding: dict {regionkey(str) : embedding}
-        dict_all_embeddings: dict{regionkey(str): {uuid:embedding}}
+        k = number of nearest neighbours
+        embedding_csv_path (Path): embedding_csv_path (Path): path to the regionkey_Embeddings.csv
 
     Returns:
         dict_dist: dict = {'Hand' : {'uuid': [56465, 1454514], 'distance': [0.1, 0.2], 'distance_ids_sorted' : [0,5]}}

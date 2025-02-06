@@ -267,6 +267,8 @@ def calculate_region_defining_points(
     for area in lookup_areas:
         mask = contour_to_bitmask(np.array(area), contour_mask.shape)
         points = points_in_mask(mask, largest_defects)
+        if points == []:
+            raise ValueError(f"Error: could not find region defining point for lookup area:{area}(Mediapipepoints)")
         defining_points.append(points[0])
     return defining_points
 
@@ -282,6 +284,7 @@ def detect_largest_defects(largest_contour):
         List[Tuple[int, int]]: Coordinates of the four largest defect points.
     """
     hull = cv2.convexHull(largest_contour, returnPoints=False)
+    hull[::-1].sort(axis=0)
     defects = cv2.convexityDefects(largest_contour, hull)
 
     if defects is None or len(defects) == 0:
@@ -385,6 +388,8 @@ def detect_missing_point(
 
     intersection_mask = cv2.bitwise_and(contour_mask, line_mask)
     intersection_coords = np.column_stack(np.where(intersection_mask == 255))
+    if np.sum(intersection_coords) == 0:
+        raise ValueError(f"Error: could not find any intersections between the cast line and the contour mask for the points {first_defect} and {second_defect}")
 
     intersection_points: List[Tuple[int, int]] = [(x, y) for y, x in intersection_coords]
     detected_point = get_sorted_points_by_distance(intersection_points, moved_point, return_closest=True)
@@ -451,7 +456,7 @@ def calculate_euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int
 
 def integrate_defects(region_defining_points, defects):
     """
-    Integrates additional defect points into defining points list.
+    Integrates additional defect points into the region defining points list.
 
     Args:
         region_defining_points (List[Tuple[int, int]]): Current defining points.
@@ -663,11 +668,14 @@ def calculate_hand_orientation(landmarks: list) -> int:
 
     Returns:
         int: Orientation of the hand. Returns 1 if the ring finger base is to the right
-             of the index finger base (thumb on the left side), otherwise 0.
+             of the index finger base (thumb on the left side), otherwise 0.             
     """
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
-    return 1 if ring_finger_base[0] > index_finger_base[0] else 0
+    if abs(ring_finger_base[0] - index_finger_base[0]) > abs(ring_finger_base[1] - index_finger_base[1]):
+        return 1 if ring_finger_base[0] > index_finger_base[0] else 0
+    else:
+        return 1 if ring_finger_base[1] > index_finger_base[1] else 0
 
 
 def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: int) -> float:
@@ -902,7 +910,6 @@ def remove_forearm_from_handbody_mask(mask: np.ndarray, landmarks: list) -> np.n
     forearm_mask = np.zeros_like(mask)
     support_vector = (landmarks[0] - landmarks[13]) + landmarks[13]
     direction_vector = landmarks[5] - landmarks[13]
-
     if orientation_hand:
         forearm_mask = split_mask_with_line(forearm_mask, support_vector, direction_vector)
     else:
