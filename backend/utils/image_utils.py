@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 def copy_image_to_folder(uuid, original_folder_path: (str | Path), target_folder_path: (str | Path)):
+    # TODO: docstring updaten
     """
     Copies an image from one folder to another.
 
@@ -19,8 +20,22 @@ def copy_image_to_folder(uuid, original_folder_path: (str | Path), target_folder
     image_name = uuid + ".jpg"
     original = construct_image_path(image_name, original_folder_path)
     target = construct_image_path(image_name, target_folder_path)
+    return save_image_under_new_path(original, target)
+
+
+def save_image_under_new_path(original_image_path, target_image_path):
+    """
+    Copies an image from one path to another path.
+
+    Args:
+        original_image_path (str | Path): full path to the imagefile
+        target_image_path (str | Path): full path to the new imagefile
+
+    Returns:
+        bool: Returns true if copying the file was successfull
+    """
     try:
-        shutil.copy(original, target)
+        shutil.copy(original_image_path, target_image_path)
         print("File copied successfully.")
         return True
         # If source and destination are same

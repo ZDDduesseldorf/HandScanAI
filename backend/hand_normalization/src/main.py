@@ -18,7 +18,7 @@ def save_region_images(uuid: str, regions_dict: dict, output_directory):
     """
     if os.path.isdir(output_directory):
         for region_key, image in regions_dict.items():
-            # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             filename = os.path.join(output_directory, f"{uuid}_{region_key}.bmp")
             cv2.imwrite(filename, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
     return
@@ -389,7 +389,9 @@ def detect_missing_point(
     intersection_mask = cv2.bitwise_and(contour_mask, line_mask)
     intersection_coords = np.column_stack(np.where(intersection_mask == 255))
     if np.sum(intersection_coords) == 0:
-        raise ValueError(f"Error: could not find any intersections between the cast line and the contour mask for the points {first_defect} and {second_defect}")
+        raise ValueError(
+            f"Error: could not find any intersections between the cast line and the contour mask for the points {first_defect} and {second_defect}"
+        )
 
     intersection_points: List[Tuple[int, int]] = [(x, y) for y, x in intersection_coords]
     detected_point = get_sorted_points_by_distance(intersection_points, moved_point, return_closest=True)
@@ -668,7 +670,7 @@ def calculate_hand_orientation(landmarks: list) -> int:
 
     Returns:
         int: Orientation of the hand. Returns 1 if the ring finger base is to the right
-             of the index finger base (thumb on the left side), otherwise 0.             
+             of the index finger base (thumb on the left side), otherwise 0.
     """
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
@@ -801,7 +803,7 @@ def resize_images(
     images_with_names: List[Dict[str, np.ndarray]], size: int = 224, fill_color: Tuple[int, int, int] = (255, 255, 255)
 ) -> List[Dict[str, np.ndarray]]:
     """
-    Resizes a list of images to a square target size with optional padding.
+    Resizes a list of images to a square target size with optional padding. Image is converted to RGB
 
     Args:
         images_with_names (List[Dict[str, np.ndarray]]): A list of dictionaries, where each dictionary contains:
@@ -813,12 +815,16 @@ def resize_images(
     Returns:
         List[Dict[str, np.ndarray]]: A list of dictionaries, where each dictionary contains:
             "name" (str): The name of the image or region.
-            "image" (np.ndarray): The resized and padded image as a NumPy array.
+            "image" (np.ndarray): The resized and padded image as an RGB NumPy array.
     """  # noqa: E501
-    return [
-        {"name": region["name"], "image": resize_to_target(region["image"], size, fill_color)}
-        for region in images_with_names
-    ]
+
+    result_list = []
+    for region in images_with_names:
+        resized_image = resize_to_target(region["image"], size, fill_color)
+        # BGR to RGB
+        rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
+        result_list.append({"name": region["name"], "image": rgb_image})
+    return result_list
 
 
 def resize_to_target(input_image: np.ndarray, size: int, fill_color: Tuple[int, int, int]) -> np.ndarray:
