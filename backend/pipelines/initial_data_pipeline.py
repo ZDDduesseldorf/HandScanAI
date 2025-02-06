@@ -45,6 +45,7 @@ def run_initial_data_pipeline(
 
         for path_dict in dataset_base:
             uuid = path_dict[Keys.UUID.value]
+            print(uuid)
             path = path_dict[Keys.IMAGE_PATH.value]
             regions_dict = normalization.normalize_hand_image(path)
 
