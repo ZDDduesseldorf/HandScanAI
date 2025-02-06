@@ -1,28 +1,10 @@
 from pymilvus import connections, utility, FieldSchema, CollectionSchema, DataType, Collection
 from typing import Dict, List, Any
+from pipelines.regions_utils import HandRegions
 
-# from pipelines.regions_utils import HandRegions
-from enum import Enum
 import torch
 
 # TODO: Define global variables for collection_name, top_k search_params
-
-
-class HandRegions(Enum):
-    """
-    Used as region keys to
-    - save and load data
-    - in dicts that pass data down the pipelines.
-    """
-
-    HAND_0 = "Hand"
-    HANDBODY_1 = "HandBody"
-    THUMB_2 = "Thumb"
-    INDEXFINGER_3 = "IndexFinger"
-    MIDDLEFINGER_4 = "MiddleFinger"
-    RINGFINGER_5 = "RingFinger"
-    LITTLEFINGER_6 = "LittleFinger"
-
 
 uuid = "614f53d0-6aab-4da1-b929-8f1dc0817289"
 
@@ -311,9 +293,3 @@ def drop_collection(collection_name: str) -> None:
         print(f"Collection '{collection_name}' deleted successfully!")
     else:
         print(f"Collection '{collection_name}' does not exist.")
-
-
-# drop_collection(collection_name)
-# add_embeddings_to_milvus(uuid, embeddings_dict, collection_name)
-
-print(search_embeddings_dict(embeddings_dict, collection_name, search_params, top_k))
