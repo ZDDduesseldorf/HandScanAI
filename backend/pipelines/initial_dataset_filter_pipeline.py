@@ -3,6 +3,7 @@ import os
 
 from utils.uuid_utils import generate_uuid
 from utils.csv_utils import create_csv_with_header, add_entry_to_csv
+from utils.image_utils import save_image_under_new_path
 from pipelines.datasets import ImagePathWithCSVDataset
 from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
 import hand_normalization.src.main as normalization
@@ -55,8 +56,8 @@ def filter_11k_hands(folder_path: str, csv_path: str, new_dataset_path: str, new
         if is_valid and is_dorsal and normalization_succeeded:
             uuid = generate_uuid()
             ## save image at new_folder/UID.jpg
-            image_path = os.path.join(new_dataset_path, uuid + ".jpg")
-            cv2.imwrite(image_path, image)
+            new_image_path = os.path.join(new_dataset_path, uuid + ".jpg")
+            save_image_under_new_path(image_path, new_image_path)
             ## save metadata in new_csv
             csv_data["uuid"] = uuid
             csv_data["old_id"] = csv_data.pop("id")
