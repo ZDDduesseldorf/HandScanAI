@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-from pipelines.regions_utils import PipelineAPIKeys as APIKeys
-from pipelines.regions_utils import PipelineDictKeys as Keys
+from utils.key_enums import PipelineAPIKeys as APIKeys
+from utils.key_enums import PipelineDictKeys as Keys
 from classifier.simple_classification import ensemble_age, ensemble_gender, confidence_gender
 
 
