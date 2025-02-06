@@ -89,6 +89,9 @@ def add_entry_to_csv(file_path, entry):
     Returns:
         bool: returns true if entry was successfully added
 
+    Returns:
+        boolean if saving new entry was successfull
+
     Example:
         add_entry_to_csv('output.csv', {'Name': 'Alice', 'Age': 25, 'City': 'New York'})
     """
@@ -160,6 +163,7 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
 def create_region_csvs(csv_folder_path):
     """
     Creates a csv-file for every hand_region to save the embeddings-values in.
+    Uses header: UUID, Embedding  Hand_Embeddings.csv
 
     Args:
         csv_folder_path (str | Path): path to folder where the csvs should be created
