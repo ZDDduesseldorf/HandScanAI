@@ -1,14 +1,12 @@
 # Milvus Script
 
-A concise script that provides various operations related to embeddings in the [Milvus](https://milvus.io/) vector database. It creates and manages collections, inserts/searches embeddings, and deletes/query records by UUID.
+A script that provides various operations related to embeddings in the [Milvus](https://milvus.io/) vector database. It creates and manages collections, inserts/searches embeddings, and deletes/query records by UUID.
 
 ## Table of Contents
 
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Usage](#usage)
-- [Script Functions](#script-functions)
-- [Contact](#contact)
 
 ---
 
@@ -30,8 +28,8 @@ In the broader pipeline:
 
 ## Requirements
 
-- **Python**: Version 3.8+
-- **Milvus**: e.g., version 2.x
+- **Python**: Version 3.10
+- **Milvus**: e.g., version 2.5
 - **Dependencies**:
   - `pymilvus` (Milvus Python client)
   - `torch` (used for handling embeddings)
@@ -40,15 +38,7 @@ In the broader pipeline:
 ---
 
 ## Usage
-**1. Start Milvus**
-- Make sure that Milvus is running (e.g., via Docker or a local setup).
 
-**2. Run the Script**
-`python milvus.py`
-- In the script, you can uncomment or modify test calls like:
+- Make sure that Milvus Standalone is running (e.g., via Docker or a local setup).
 
-- `# add_embeddings_to_milvus(uuid, embeddings_dict, collection_name)`
-- `# print(search_embeddings_dict(embeddings_dict, collection_name, search_params, top_k))`
-    - Adjust values (uuid, collection_name, embeddings_dict, search_params, etc.) as needed.
 
-You can also import specific functions (e.g., add_embeddings_to_milvus, search_embeddings_dict) into your main project/script and call them as needed.

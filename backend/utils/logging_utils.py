@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from pipelines.regions_utils import PipelineDictKeys as Keys
-from pipelines.regions_utils import PipelineAPIKeys as APIKeys
-from pipelines.csv_utils import create_csv_with_header, add_entry_to_csv
+from utils.key_enums import PipelineDictKeys as Keys
+from utils.key_enums import PipelineAPIKeys as APIKeys
+from utils.csv_utils import create_csv_with_header, add_entry_to_csv
 # logger für uuid, datum, uhrzeit
 # rest csvs
 
@@ -50,6 +50,10 @@ def setup_csv_logging():
 
 def logging_nearest_neighbours(uuid, dict_all_info_knn: dict):
     path_to_nearest_neighbours, _, _ = logging_manager()
+    save_nearest_neighbours_info(uuid, dict_all_info_knn, path_to_nearest_neighbours)
+
+
+def save_nearest_neighbours_info(uuid, dict_all_info_knn: dict, path_to_nearest_neighbours):
     for regionkey, regiondf in dict_all_info_knn.items():
         for _, row in regiondf.iterrows():
             dict_row = {
@@ -65,6 +69,10 @@ def logging_nearest_neighbours(uuid, dict_all_info_knn: dict):
 
 def logging_classification(uuid, age_dict, gender_dict, ensemble_df):
     _, path_to_classification, _ = logging_manager()
+    save_classifiaction_info(uuid, age_dict, gender_dict, ensemble_df, path_to_classification)
+
+
+def save_classifiaction_info(uuid, age_dict, gender_dict, ensemble_df, path_to_classification):
     for regionkey, region_age_df in age_dict.items():
         region_gender_df = gender_dict[regionkey]
         dict_row = {
@@ -94,6 +102,10 @@ def logging_classification(uuid, age_dict, gender_dict, ensemble_df):
 
 def logging_input_data(uuid, ground_truth_data: dict):
     _, _, path_to_input_data = logging_manager()
+    save_input_data_info(uuid, ground_truth_data, path_to_input_data)
+
+
+def save_input_data_info(uuid, ground_truth_data: dict, path_to_input_data):
     add_entry_to_csv(
         path_to_input_data,
         {

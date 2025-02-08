@@ -1,11 +1,9 @@
 import pytest
 import numpy as np
 import cv2
-import os
 from pathlib import Path
 from unittest.mock import patch
 from hand_normalization.src import main
-from pipelines.regions_utils import HandRegions
 
 # Run in Terminal with: pytest tests/hand_normalization
 # === Global Paths === #
@@ -210,7 +208,7 @@ def test_detect_hand_contours_returns_largest_contour():
 
     contour_mask, largest_contour = main.detect_hand_contours(hand_mask, hand_mask.shape)
 
-    small_area = (100 - 50) * (100 - 50) 
+    # small_area = (100 - 50) * (100 - 50) 
     large_area = (280 - 150) * (280 - 150)
 
     assert len(largest_contour) > 0, "A contour should be detected."
@@ -456,7 +454,7 @@ def test_rotate_and_crop_region(
     assert result.shape == (50, 50, 3), f"Expected cropped image of shape (50, 50, 3), but got {result.shape}."
     mock_orientation.assert_called_once_with(dummy_landmarks)
     mock_angle.assert_called_once_with(dummy_region_with_mask["name"], dummy_landmarks, 1)
-    assert mock_rotate.call_count == 2, "rotate_image_no_crop should be called twice (for image and mask)."
+    assert mock_rotate.call_count == 3, "rotate_image_no_crop should be called three times (for image and mask and the rotationartifacts)."
     mock_bounding_box.assert_called_once()
     mock_crop.assert_called_once()
 

@@ -2,8 +2,10 @@ import numpy as np
 import statistics
 import pandas as pd
 
-from pipelines.regions_utils import PipelineDictKeys as Keys
-from pipelines.regions_utils import PipelineAPIKeys as APIKeys
+from utils.key_enums import PipelineDictKeys as Keys
+from utils.key_enums import PipelineAPIKeys as APIKeys
+
+# TODO: Readme
 
 
 def classify_age(dict_all_info_knn):
@@ -17,7 +19,6 @@ def classify_age(dict_all_info_knn):
         dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
     """
     dict_age = {}
-    # TODO: PipelineDictKeys verwenden
     for regionkey, region_df in dict_all_info_knn.items():
         region_mean_df = pd.DataFrame(columns=[APIKeys.CONFIDENCE_AGE.value, APIKeys.CLASSIFIED_AGE.value])
         age_list = region_df[Keys.AGE.value].to_list()
@@ -43,7 +44,6 @@ def classify_gender(dict_all_info_knn):
         dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
     """
     dict_gender = {}
-    # TODO: PipelineDictKeys verwenden
     for regionkey, region_df in dict_all_info_knn.items():
         region_mean_df = pd.DataFrame(columns=[APIKeys.CONFIDENCE_GENDER.value, APIKeys.CLASSIFIED_GENDER.value])
         gender_list = region_df[Keys.GENDER.value].to_list()
@@ -58,6 +58,7 @@ def classify_gender(dict_all_info_knn):
 
 
 def ensemble_age(age_dict):
+    # TODO docstring
     age_list = [df[APIKeys.CLASSIFIED_AGE.value].iloc[0] for df in age_dict.values()]
     mean_age = np.mean(age_list)
     min_age = np.min(age_list)
@@ -69,6 +70,7 @@ def ensemble_age(age_dict):
 
 
 def ensemble_gender(gender_dict):
+    # TODO: docstring
     gender_list = [df[APIKeys.CLASSIFIED_GENDER.value].iloc[0] for df in gender_dict.values()]
     mode_gender = statistics.mode(gender_list)
 

@@ -1,28 +1,17 @@
-from pymilvus import connections, utility, FieldSchema, CollectionSchema, DataType, Collection
+from pymilvus import (
+    connections,
+    utility,
+    FieldSchema,
+    CollectionSchema,
+    DataType,
+    Collection,
+)
 from typing import Dict, List, Any
+from utils.key_enums import HandRegions
 
-# from pipelines.regions_utils import HandRegions
-from enum import Enum
 import torch
 
 # TODO: Define global variables for collection_name, top_k search_params
-
-
-class HandRegions(Enum):
-    """
-    Used as region keys to
-    - save and load data
-    - in dicts that pass data down the pipelines.
-    """
-
-    HAND_0 = "Hand"
-    HANDBODY_1 = "HandBody"
-    THUMB_2 = "Thumb"
-    INDEXFINGER_3 = "IndexFinger"
-    MIDDLEFINGER_4 = "MiddleFinger"
-    RINGFINGER_5 = "RingFinger"
-    LITTLEFINGER_6 = "LittleFinger"
-
 
 uuid = "614f53d0-6aab-4da1-b929-8f1dc0817289"
 
@@ -48,7 +37,9 @@ search_params = {
 ###########################################################################
 
 
-def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str) -> bool:
+def add_embeddings_to_milvus(
+    uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str
+) -> bool:
     """
     Adds embeddings to the Milvus vector database.
 
@@ -129,7 +120,9 @@ def connect_to_host() -> None:
             return
 
 
-def prepare_data_for_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]]) -> Dict[str, List[Any]]:
+def prepare_data_for_milvus(
+    uuid: str, embeddings_dict: Dict[str, Dict[str, Any]]
+) -> Dict[str, List[Any]]:
     """
     Prepares data for insertion into Milvus.
 
@@ -180,7 +173,10 @@ def insert_embeddings(milvus_data: Dict[str, List[Any]], collection_name: str) -
 
 
 def search_embeddings_dict(
-    embeddings_dict: Dict[str, Dict[str, Any]], collection_name: str, search_params: Dict[str, Any], top_k: int
+    embeddings_dict: Dict[str, Dict[str, Any]],
+    collection_name: str,
+    search_params: Dict[str, Any],
+    top_k: int,
 ) -> Dict[str, List[Dict[str, Any]]]:
     """
     Search approximate nearest neighbor embeddings in the Milvus vector database.
@@ -282,7 +278,9 @@ def query_uuid(uuid_to_query: str, collection_name: str) -> List[Dict[str, Any]]
     collection.load()
 
     try:
-        results = collection.query(expr=f"uuid == '{uuid_to_query}'", output_fields=["uuid", "region"])
+        results = collection.query(
+            expr=f"uuid == '{uuid_to_query}'", output_fields=["uuid", "region"]
+        )
     except Exception as e:
         print(f"Error during query execution: {e}")
         return []
@@ -311,9 +309,3 @@ def drop_collection(collection_name: str) -> None:
         print(f"Collection '{collection_name}' deleted successfully!")
     else:
         print(f"Collection '{collection_name}' does not exist.")
-
-
-# drop_collection(collection_name)
-# add_embeddings_to_milvus(uuid, embeddings_dict, collection_name)
-
-print(search_embeddings_dict(embeddings_dict, collection_name, search_params, top_k))
