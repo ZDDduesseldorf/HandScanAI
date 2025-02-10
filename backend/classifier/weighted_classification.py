@@ -3,7 +3,7 @@ import numpy as np
 
 from utils.key_enums import PipelineAPIKeys as APIKeys
 from utils.key_enums import PipelineDictKeys as Keys
-from classifier.simple_classification import ensemble_age, ensemble_gender, confidence_gender
+from classifier.simple_classification import ensemble_age, ensemble_gender
 
 
 # TODO: was ist gutes gewicht?
@@ -62,7 +62,7 @@ def weighted_mode(dataframe, value, weight):
 def confidenceintervall_age(dict_all_info_knn):
     # TODO: konfidenz vielleicht etwas irreführend, Interquartilsbereich  vielleicht etwas besser
     list_age = []
-    for regionkey, region_df in dict_all_info_knn.items():
+    for _, region_df in dict_all_info_knn.items():
         region_age_list = region_df[Keys.AGE.value].to_list()
         list_age.extend(region_age_list)
 
@@ -76,7 +76,7 @@ def weighted_confidence_gender(dict_all_info_knn, predicted_gender):
     # TODO prüfen ob dies so sinnvoll ist
     weights_correct_knn = 0
     sum_weights = 0
-    for regionkey, region_df in dict_all_info_knn.items():
+    for _, region_df in dict_all_info_knn.items():
         region_df["calculated_weight"] = 1 - region_df[Keys.DISTANCE.value]  # TODO: oder 1/?
         weighted_sum = region_df.groupby(Keys.GENDER.value)["calculated_weight"].sum()
         weight_predicted_gender = weighted_sum.loc[predicted_gender]
@@ -98,7 +98,7 @@ def weighted_classfier(dict_all_info_knn):
     lower_interval_age, upper_interval_age = confidenceintervall_age(dict_all_info_knn)
     mode_gender = ensemble_gender(dict_gender)
     gender_confidence = weighted_confidence_gender(dict_all_info_knn, mode_gender)
-
+    gender_confidence = 0
     ensemble_df = pd.DataFrame(
         [
             {

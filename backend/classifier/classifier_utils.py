@@ -62,7 +62,7 @@ def run_generate_classifier_result(uuid, image_path, k, path_to_csv_age, path_to
         classified_gender(0,1), confidence_gender(float))
         0:female, 1:male
     """
-    _, _, embedding_csv_path, metadata_csv_path, folder_path_base = _path_manager(testing)
+    _, _, embedding_csv_path, metadata_csv_path, _ = _path_manager(testing)
 
     ######## STEP 1: image normalization #################################
 
@@ -140,7 +140,7 @@ def delete_same_uuid_from_nearest_neighbours(uuid, dict_all_info_knn):
 
     age = row[Keys.AGE.value].iloc[0]
     gender = row[Keys.GENDER.value].iloc[0]
-    for regionkey, region_df in dict_all_info_knn.items():
+    for _, region_df in dict_all_info_knn.items():
         region_df.reset_index(inplace=True)
         print(f"vorher : {region_df}")
         region_df.drop(region_df.loc[region_df[Keys.UUID.value] == uuid].index, inplace=True)
