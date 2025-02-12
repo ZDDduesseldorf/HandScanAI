@@ -2,12 +2,44 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import permutation_importance
+from sklearn.model_selection import RandomizedSearchCV
 
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
 
 
-def load_random_forest_data(path_to_csv):
+def calculate_feature_importances(path_to_age_csv, path_to_gender_csv):
+    """
+    Calculates the feature importances for both the RandomforestClassifier (gender) and RandomForestRegressor (age) and prints them.
+
+    Args:
+        path_to_age_csv (str): full path to csv with classification data from age region classifiers
+        path_to_gender_csv (str): full path to csv with classification data from gender region classifiers
+    """
+    print("---AGE---")
+    X_age, y_age = load_random_forest_data(path_to_age_csv)  # noqa: N806
+    X_age_train, X_age_test, y_age_train, y_age_test = prepare_data_for_random_forest(X_age, y_age)  # noqa: N806
+    forest_age = random_forest_regressor(X_age_train, y_age_train)
+    calculate_feature_importance(forest_age, X_age_test, y_age_test)
+
+    print("---GENDER---")
+    X_gender, y_gender = load_random_forest_data(path_to_gender_csv)  # noqa: N806
+    X_gender_train, X_gender_test, y_gender_train, y_gender_test = prepare_data_for_random_forest(X_gender, y_gender)  # noqa: N806
+    forest_gender = random_forest_classifier(X_gender_train, y_gender_train)
+    calculate_feature_importance(forest_gender, X_gender_test, y_gender_test)
+
+
+def load_random_forest_data(path_to_csv: str):
+    """
+    Loads data from csv into Dataframe and does data and label split.
+
+    Args:
+        path_to_csv (str): full path to csv with classification data
+
+    Returns:
+        X (pd.DataFrame): data containing mean classification results per region
+        y (pd.DataFrame): label
+    """
     data_raw = pd.read_csv(path_to_csv)
 
     data = data_raw.drop(Keys.UUID.value, axis=1)
@@ -18,25 +50,88 @@ def load_random_forest_data(path_to_csv):
     return X, y
 
 
-def prepare_data_for_random_forest(X, y):  # noqa: N803
+def prepare_data_for_random_forest(X: pd.DataFrame, y: pd.DataFrame):  # noqa: N803
+    """
+    Does train and test split 80:20.
+
+    Args:
+        X (pd.DataFrame): dataframe holding the data
+        y (pd.DataFrame): dataframe holding the corresponding labels
+
+    Returns:
+        X_train, X_test, y_train, y_test: train-test-split data and label
+    """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)  # noqa: N806
     return X_train, X_test, y_train, y_test
 
 
-def random_forest_regressor(X_train, y_train):  # noqa: N803
-    forest = RandomForestRegressor(n_estimators=50, random_state=0, max_depth=4)
-    forest.fit(X_train, y_train)
-    return forest
+def random_forest_regressor(X_train: pd.DataFrame, y_train: pd.DataFrame) -> RandomForestRegressor:  # noqa: N803
+    """
+    Creates a random forest regressor via hyperparameter search used for calculating feature importance for age prediction.
+
+    Args:
+        X_train (pd.DataFrame): training data from the train-test-split
+        y_train (pd.DataFrame): corresponding labels
+
+    Returns:
+        forest (RandomForestRegressor): best randomforestregressor for the given training data
+    """
+    # defaults
+    # forest = RandomForestRegressor(n_estimators=50, random_state=0, max_depth=4)
+    # forest.fit(X_train, y_train)
+
+    forest = RandomForestRegressor()
+    parameters = {
+        "max_depth": [1, 2, 3, 6, 8, 10],
+        "min_samples_leaf": [1, 3, 5, 8, 9, 12],
+        "n_estimators": [10, 20, 30, 50, 80, 100],
+    }
+    random_search = RandomizedSearchCV(forest, parameters, n_iter=20, verbose=2)
+    random_search.fit(X_train, y_train)
+    print(f"RandomForestRegressor best params random_search: {random_search.best_params_}")
+    return random_search.best_estimator_
 
 
-def random_forest_classifier(X_train, y_train):  # noqa: N803
-    forest = RandomForestClassifier(n_estimators=50, random_state=0, max_depth=4)
-    forest.fit(X_train, y_train)
-    return forest
+def random_forest_classifier(X_train: pd.DataFrame, y_train: pd.DataFrame) -> RandomForestClassifier:  # noqa: N803
+    """
+    Creates a random forest classifier via hyperparameter search used for calculating feature importance for gender prediction.
+
+    Args:
+        X_train (pd.DataFrame): training data from the train-test-split
+        y_train (pd.DataFrame): corresponding labels
+
+    Returns:
+        forest (RandomForestRegressor): best randomforestregressor for the given training data
+    """
+    # defaults
+    # forest = RandomForestClassifier(n_estimators=50, random_state=0, max_depth=4)
+    # forest.fit(X_train, y_train)
+
+    forest = RandomForestClassifier()
+    parameters = {
+        "max_depth": [1, 2, 3, 6, 8, 10],
+        "min_samples_leaf": [1, 3, 5, 8, 9, 12],
+        "n_estimators": [10, 20, 30, 50, 80, 100],
+    }
+    random_search = RandomizedSearchCV(forest, parameters, n_iter=20, verbose=2)
+    random_search.fit(X_train, y_train)
+    print(f"RandomForestClassifier best params random_search: {random_search.best_params_}")
+    return random_search.best_estimator_
 
 
-def feature_importance_age(forest_age, X_test, y_test):  # noqa: N803
-    result = permutation_importance(forest_age, X_test, y_test, n_repeats=10, random_state=0, n_jobs=-1)
+def calculate_feature_importance(
+    forest: (RandomForestClassifier | RandomForestRegressor),
+    X_test: pd.DataFrame,  # noqa: N803
+    y_test: pd.DataFrame,
+):
+    """
+    Calculates the feature importances for either a RandomforestClassifier (gender) or RandomForestRegressor (age) via built-in importance and permutation-importance and prints them.
+
+    Args:
+        forest (RandomForestClassifier | RandomForestRegressor): RandomforestClassifier for gender or RandomForestRegressor for age classification
+        X_test (pd.DataFrame): test data from the train-test-split
+        y_test (pd.DataFrame): corresponding labels
+    """
     feature_names = [
         HandRegions.HAND_0.value,
         HandRegions.HANDBODY_1.value,
@@ -46,27 +141,15 @@ def feature_importance_age(forest_age, X_test, y_test):  # noqa: N803
         HandRegions.RINGFINGER_5.value,
         HandRegions.LITTLEFINGER_6.value,
     ]
-    perm_imp_df = pd.DataFrame(
-        {"Feature": feature_names, "Permutation Importance": result.importances_mean}
-    ).sort_values("Permutation Importance", ascending=False)
-    print(perm_imp_df)
-
     # Built-in feature importance (Gini Importance)
-    importances = forest_age.feature_importances_
+    importances = forest.feature_importances_
     feature_imp_df = pd.DataFrame({"Feature": feature_names, "Gini Importance": importances}).sort_values(
         "Gini Importance", ascending=False
     )
     print(feature_imp_df)
 
-
-def calculate_feature_importances(path_to_age_csv, path_to_gender_csv):
-    print("---AGE---")
-    X_age, y_age = load_random_forest_data(path_to_age_csv)  # noqa: N806
-    X_age_train, X_age_test, y_age_train, y_age_test = prepare_data_for_random_forest(X_age, y_age)  # noqa: N806
-    forest_age = random_forest_regressor(X_age_train, y_age_train)
-    feature_importance_age(forest_age, X_age_test, y_age_test)
-    print("---GENDER---")
-    X_gender, y_gender = load_random_forest_data(path_to_gender_csv)  # noqa: N806
-    X_gender_train, X_gender_test, y_gender_train, y_gender_test = prepare_data_for_random_forest(X_gender, y_gender)  # noqa: N806
-    forest_gender = random_forest_classifier(X_gender_train, y_gender_train)
-    feature_importance_age(forest_gender, X_gender_test, y_gender_test)
+    result = permutation_importance(forest, X_test, y_test, n_repeats=10, random_state=0, n_jobs=-1)
+    perm_imp_df = pd.DataFrame(
+        {"Feature": feature_names, "Permutation Importance": result.importances_mean}
+    ).sort_values("Permutation Importance", ascending=False)
+    print(perm_imp_df)
