@@ -7,7 +7,7 @@ from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
 from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
 from utils.logging_utils import logging_nearest_neighbours, logging_classification
-from ann.milvus import search_embeddings_dict
+from vectordb.milvus import search_embeddings_dict
 # this file is used to generate the prediction of an image
 
 

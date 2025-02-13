@@ -6,7 +6,7 @@ from utils.key_enums import PipelineAPIKeys, PipelineDictKeys
 from utils.image_utils import copy_image_to_folder, get_image_path
 from .data_utils import map_gender_int_to_string
 from utils.logging_utils import logging_input_data
-from ann.milvus import add_embeddings_to_milvus
+from vectordb.milvus import add_embeddings_to_milvus
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
