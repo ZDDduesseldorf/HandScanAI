@@ -5,7 +5,7 @@ interface Props {
     alt:string
 }
 
-export default function Logo_xl({src, alt}:Props){
+export default function Logo_XL({src, alt}:Props){
     const Logo = styled('img')`
         width: 700px;
         margin-bottom: 1rem;

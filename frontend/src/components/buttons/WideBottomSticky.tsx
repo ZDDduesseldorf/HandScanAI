@@ -6,7 +6,7 @@ interface Props {
     children:string | React.ReactNode
 }
 
-export default function Wide({onClick,children}:Props){
+export default function WideBottomSticky({onClick,children}:Props){
     const Wide = styled(Button)`
         background-color: var(--primary);
         color: white;
@@ -16,8 +16,10 @@ export default function Wide({onClick,children}:Props){
         width: 360px;
         height: 55px;
         transition: background-color 0.3s;
-        text-transform: none;
+        position: fixed;
+        bottom: 120px;
         margin: auto;
+        text-transform: none;
         border-radius: 0;
         &:hover {
             background-color: var(--primary-light);
