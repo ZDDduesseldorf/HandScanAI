@@ -1,10 +1,11 @@
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-export default function Title(
-    {children}:
-    {children:string | React.ReactNode}
-) {
+interface Props {
+    children:string | React.ReactNode
+}
+
+export default function Title({children}:Props) {
     const Title = styled(Typography)`
         font-family: 'Delius Unicase', cursive;
         font-weight: 400;
@@ -17,4 +18,4 @@ export default function Title(
     return (
         <Title variant="h1">{children}</Title>
     );
-  };
+};

@@ -1,10 +1,11 @@
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-export default function Subtitle(
-    {children}:
-    {children:string | React.ReactNode}
-) {
+interface Props {
+  children:string | React.ReactNode
+}
+
+export default function Subtitle({children}:Props) {
     const Subtitle = styled(Typography)`
       font-family: 'Inter', sans-serif;
       color: var(--primary);

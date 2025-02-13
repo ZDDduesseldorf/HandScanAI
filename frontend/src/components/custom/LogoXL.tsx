@@ -1,12 +1,11 @@
 import { styled } from '@mui/material/styles';
 
-export default function Logo_xl(
-    {src, 
-        alt}:
-    {src:string,
-        alt:string
-    }
-) {
+interface Props {
+    src:string,
+    alt:string
+}
+
+export default function Logo_xl({src, alt}:Props){
     const Logo = styled('img')`
         width: 700px;
         margin-bottom: 1rem;
@@ -15,4 +14,4 @@ export default function Logo_xl(
     return (
         <Logo src={src} alt={alt} />
     );
-  };
+};

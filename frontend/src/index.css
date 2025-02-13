@@ -3,10 +3,6 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,6 +11,7 @@
   /* Define the projects default colors*/
   --primary: #0f3eb5;
   --primary-light: #516fe6;
+  --light-gray: #d9d9d9;
 }
 
 a {
@@ -57,7 +54,7 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}*/
+}
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -70,4 +67,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+}*/
