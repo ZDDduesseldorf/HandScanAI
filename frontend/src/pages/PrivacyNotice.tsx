@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Button, Box, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 
 const BoxLayout = styled(Box)`
   display: flex;

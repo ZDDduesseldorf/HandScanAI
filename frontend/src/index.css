@@ -11,6 +11,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Define the projects default colors*/
+  --primary: #0f3eb5;
+  --primary-light: #516fe6;
 }
 
 a {
@@ -29,12 +33,13 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
+/*
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
+}*/
 
+/*
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -52,7 +57,7 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+}*/
 
 @media (prefers-color-scheme: light) {
   :root {

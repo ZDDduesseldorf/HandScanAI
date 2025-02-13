@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, styled, Box } from '@mui/material';
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 
 const CenteredInformationText = styled(Typography)`
   font-family: 'Delius Unicase', cursive;

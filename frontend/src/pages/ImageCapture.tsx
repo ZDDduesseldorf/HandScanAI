@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 
 interface ServerMessage {
   flow?: string;

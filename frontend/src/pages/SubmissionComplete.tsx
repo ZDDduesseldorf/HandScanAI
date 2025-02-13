@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, styled } from '@mui/material';
 import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 
 const SecondaryHeading = styled(Typography)`
   display: flex;
