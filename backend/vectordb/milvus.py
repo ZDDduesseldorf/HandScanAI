@@ -11,25 +11,13 @@ from utils.key_enums import HandRegions
 
 import torch
 
-# TODO: Define global variables for collection_name, top_k search_params
+# Global variables
 
-uuid = "614f53d0-6aab-4da1-b929-8f1dc0817289"
+milvus_collection_name = "hand_regions"
 
-embeddings_dict = {
-    HandRegions.HAND_0.value: torch.tensor([0.1] * 1024),
-    HandRegions.HANDBODY_1.value: torch.tensor([0.2] * 1024),
-    HandRegions.THUMB_2.value: torch.tensor([0.6] * 1024),
-    HandRegions.INDEXFINGER_3.value: torch.tensor([0.3] * 1024),
-    HandRegions.MIDDLEFINGER_4.value: torch.tensor([0.4] * 1024),
-    HandRegions.RINGFINGER_5.value: torch.tensor([0.5] * 1024),
-    HandRegions.LITTLEFINGER_6.value: torch.tensor([0.6] * 1024),
-}
+milvus_default_top_k = 5
 
-collection_name = "hand_regions"
-
-top_k = 5
-
-search_params = {
+milvus_default_search_params = {
     "metric_type": "L2",  # Gleiche Metrik wie beim Index
     "params": {"nprobe": 10},  # Anzahl der durchsuchten Cluster (abhängig von nlist)
 }
@@ -37,9 +25,7 @@ search_params = {
 ###########################################################################
 
 
-def add_embeddings_to_milvus(
-    uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str
-) -> bool:
+def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str) -> bool:
     """
     Adds embeddings to the Milvus vector database.
 
@@ -120,9 +106,7 @@ def connect_to_host() -> None:
             return
 
 
-def prepare_data_for_milvus(
-    uuid: str, embeddings_dict: Dict[str, Dict[str, Any]]
-) -> Dict[str, List[Any]]:
+def prepare_data_for_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]]) -> Dict[str, List[Any]]:
     """
     Prepares data for insertion into Milvus.
 
@@ -140,7 +124,7 @@ def prepare_data_for_milvus(
     for region, values in embeddings_dict.items():
         uuids.append(uuid)
         regions.append(region)
-        embeddings.append(values.tolist())
+        embeddings.append(values[0].tolist())
 
     return {"UUIDS": uuids, "Regions": regions, "Embeddings": embeddings}
 
@@ -278,9 +262,7 @@ def query_uuid(uuid_to_query: str, collection_name: str) -> List[Dict[str, Any]]
     collection.load()
 
     try:
-        results = collection.query(
-            expr=f"uuid == '{uuid_to_query}'", output_fields=["uuid", "region"]
-        )
+        results = collection.query(expr=f"uuid == '{uuid_to_query}'", output_fields=["id", "uuid", "region"])
     except Exception as e:
         print(f"Error during query execution: {e}")
         return []

@@ -3,11 +3,16 @@ from pathlib import Path
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from utils.image_utils import get_image_path
-from .data_utils import build_info_knn, build_info_knn_from_csv
+from .data_utils import build_info_knn_from_milvus, build_info_knn_from_csv
 from .distance_calculation import calculate_distance
 from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
 from utils.logging_utils import logging_nearest_neighbours, logging_classification
-from vectordb.milvus import search_embeddings_dict
+from vectordb.milvus import (
+    search_embeddings_dict,
+    milvus_collection_name,
+    milvus_default_top_k,
+    milvus_default_search_params,
+)
 # this file is used to generate the prediction of an image
 
 
@@ -34,7 +39,13 @@ def _path_manager(testing):
 
 
 # TODO pydoc
-def run_inference_pipeline(uuid, testing=False):
+def run_inference_pipeline(
+    uuid,
+    testing=False,
+    milvus_collection_name=milvus_collection_name,
+    milvus_default_top_k=milvus_default_top_k,
+    milvus_default_search_params=milvus_default_search_params,
+):
     """
     pipeline to classify age and gender based on the hand image
 
@@ -69,16 +80,11 @@ def run_inference_pipeline(uuid, testing=False):
 
         dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
     else:
-        # TODO: Define global variables for collection_name, top_k, search_params
-        collection_name = "hand_regions"
-        top_k = 5
-        search_params = {
-            "metric_type": "L2",  # Gleiche Metrik wie beim Index
-            "params": {"nprobe": 10},  # Anzahl der durchsuchten Cluster (abhängig von nlist)
-        }
-        dict_all_dist = search_embeddings_dict(dict_embedding, collection_name, search_params, top_k)
+        dict_all_dist = search_embeddings_dict(
+            dict_embedding, milvus_collection_name, milvus_default_search_params, milvus_default_top_k
+        )
 
-        dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
+        dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
     ######## STEP 4: make a decision for prediction ######################
     print(dict_all_info_knn)
 

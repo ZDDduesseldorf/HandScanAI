@@ -10,5 +10,6 @@ def test_initial_data_pipeline(path_to_base_images, path_to_region_images):
         csv_folder_path=path_to_base_images,
         save_images=False,
         save_csvs=False,
+        save_milvus=False,
     )
     assert len(embeddings) == 4

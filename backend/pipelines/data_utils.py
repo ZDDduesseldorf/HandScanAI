@@ -72,7 +72,7 @@ def map_gender_int_to_string(int_gender):
     return map_gender[str(int_gender)]
 
 
-def build_info_knn(metadata_csv_path, knn_results: dict):
+def build_info_knn_from_milvus(metadata_csv_path, knn_results: dict):
     """
     Augment k-nearest neighbor search results with additional metadata (age and gender) from a CSV file.
     Each region is mapped to a DataFrame containing the combined information.
@@ -95,8 +95,8 @@ def build_info_knn(metadata_csv_path, knn_results: dict):
             columns=[DictKeys.UUID.value, DictKeys.DISTANCE.value, DictKeys.AGE.value, DictKeys.GENDER.value]
         )
         for hit in knn_list:
-            uuid = hit.get("uuid")
-            distance = hit.get("distance")
+            uuid = hit.get(DictKeys.UUID.value)
+            distance = hit.get(DictKeys.DISTANCE.value)
 
             row = metadata_df.loc[metadata_df[DictKeys.UUID.value] == uuid]
             if not row.empty:
@@ -119,7 +119,7 @@ def build_info_knn(metadata_csv_path, knn_results: dict):
     return dict_all_info_knn
 
 
-# TODO: Depreceated function, only for testing purposes
+# TODO: for testing purposes
 def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
     """
     Query of gender and age for knn of the image from csv.

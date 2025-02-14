@@ -6,12 +6,19 @@ from utils.key_enums import PipelineAPIKeys, PipelineDictKeys
 from utils.image_utils import copy_image_to_folder, get_image_path
 from .data_utils import map_gender_int_to_string
 from utils.logging_utils import logging_input_data
-from vectordb.milvus import add_embeddings_to_milvus
+from vectordb.milvus import add_embeddings_to_milvus, milvus_collection_name
 
 # before pipeline is started check is necessary to check the data and only if this is true start pipeline
 
 
-def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False):
+def run_add_new_embeddings_pipeline(
+    uuid,
+    ground_truth_data: dict,
+    milvus_collection_name=milvus_collection_name,
+    testing=False,
+    save_csvs=True,
+    save_milvus=True,
+):
     # TODO: docstring anpassen
     """
     pipeline to add classified and checked image to vektortree
@@ -63,11 +70,15 @@ def run_add_new_embeddings_pipeline(uuid, ground_truth_data: dict, testing=False
                 ),
             },
         )
-        # TODO: Auskommentiert, da Milvus genutzt wird
-        # added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
-        added_embeddings = add_embeddings_to_milvus(uuid, dict_embedding)
+
+        if save_csvs:
+            # for testing reasons and data redundancy
+            added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
+        if save_milvus:
+            added_embeddings = add_embeddings_to_milvus(uuid, dict_embedding, milvus_collection_name)
 
         ### Logging ####
+        # in case of errors, make sure logging has been setup correctly
         logging_input_data(uuid, ground_truth_data)
 
         return added_embeddings and added_metadata and copied_image
