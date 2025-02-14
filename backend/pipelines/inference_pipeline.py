@@ -42,6 +42,7 @@ def _path_manager(testing):
 def run_inference_pipeline(
     uuid,
     testing=False,
+    use_milvus=True,
     milvus_collection_name=milvus_collection_name,
     milvus_default_top_k=milvus_default_top_k,
     milvus_default_search_params=milvus_default_search_params,
@@ -73,8 +74,8 @@ def run_inference_pipeline(
     dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization)
 
     ######## STEP 3: search nearest neighbours ###########################
-    if testing:
-        # Only for testing purposes
+    if testing or not use_milvus:
+        # for testing purposes/ if milvus is not available
         k = 5  # anzahl nächster Nachbarn
         dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
