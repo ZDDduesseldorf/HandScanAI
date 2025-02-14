@@ -1,8 +1,8 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import permutation_importance
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.linear_model import LogisticRegression, LinearRegression
 
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
@@ -27,6 +27,9 @@ def calculate_feature_importances(path_to_age_csv, path_to_gender_csv):
     X_gender_train, X_gender_test, y_gender_train, y_gender_test = prepare_data_for_random_forest(X_gender, y_gender)  # noqa: N806
     forest_gender = random_forest_classifier(X_gender_train, y_gender_train)
     calculate_feature_importance(forest_gender, X_gender_test, y_gender_test)
+
+    print("Linear Models")
+    create_linear_models(X_age_train, y_age_train, X_gender_train, y_gender_train)
 
 
 def load_random_forest_data(path_to_csv: str):
@@ -153,3 +156,27 @@ def calculate_feature_importance(
         {"Feature": feature_names, "Permutation Importance": result.importances_mean}
     ).sort_values("Permutation Importance", ascending=False)
     print(perm_imp_df)
+
+
+def create_linear_models(
+    X_age_train: pd.DataFrame,  # noqa: N803
+    y_age_train: pd.DataFrame,
+    X_gender_train: pd.DataFrame,  # noqa: N803
+    y_gender_train: pd.DataFrame,
+):
+    """
+    Creates two linear models for the age- and gender-classification and prints their coefficients. Can be interpreted or used as weights.
+
+    Args:
+        X_age_train (pd.DataFrame): training data from the train-test-split für age classification
+        y_age_train (pd.DataFrame): corresponding labels
+        X_gender_train (pd.DataFrame): training data from the train-test-split für gender classification
+        y_gender_train (pd.DataFrame): corresponding labels
+    """
+    linear_model = LinearRegression()
+    linear_model.fit(X_age_train, y_age_train)
+    print(f"linear model coefs: {linear_model.coef_}")
+
+    logistic_model = LogisticRegression()
+    logistic_model.fit(X_gender_train, y_gender_train)
+    print(f"logistic model coefs: {logistic_model.coef_}")
