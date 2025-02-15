@@ -38,6 +38,13 @@ const SecondaryHeading = styled(Typography)`
 // Alter Accuracy (Wie sicher ist sich KI?)
 // Geschlecht Accuracy (Wie sicher ist sich KI?)
 
+const genderGuess = 0;
+const ageGuess = 26;
+const min_age = 20;
+const max_age = 26;
+const age_confidence = 97;
+const gender_confidence = 95;
+
 const age_marks: { label: string; value: number }[] = [
   { value: 15, label: '<15' },
   { value: 25, label: '25' },
@@ -59,6 +66,7 @@ const Result_1: React.FC = () => {
     );
   }
 
+  // Override globals with values from the backend scanResult
   const genderGuess = scanResult.classifiedAge;
   const ageGuess = scanResult.classifiedAge;
   const min_age = scanResult.minAge;

@@ -2,10 +2,19 @@
 
 ## How to Use
 
-Before calculating the embedding, you must call the functions `segment_hand_image()` and `resize_images()` inside `hand_normalization/src/main.py`.  
-- `segment_hand_image()` returns a list of slices of the main image in OpenCV format.  
-- `resize_images()` transforms the images to the required sizes for the embedding network.
+### normalizing image
 
+Before calculating the embedding, you must call the function `normalize_hand_image()` inside `hand_normalization/src/main.py`.
+
+It contains the following steps:
+
+- `segment_hand_image()` returns a list of slices of the main image in OpenCV format.
+- `resize_images()` transforms the images to the required sizes and rgb-format for the embedding network.
+- `build_regions_dict()` builds the dictionary used in the pipelines.
+
+### saving region images
+
+For saving the region images, use `save_region_images()`. Takes RGB-format, converts into BGR-format for openCV.
 
 ## What Happens Inside `segment_hand_image()`?
 
@@ -36,7 +45,7 @@ With the current four points, we can only create regions for the middle and ring
 
 ![Image with needed region defining points](https://github.com/user-attachments/assets/046c0f00-0563-4f39-8575-7643ed473052)
 
-The points for the index and pinky fingers are determined by casting a line from the defect between the middle and ring fingers to the next defect point on either side. The points where these lines intersect the contour become the new region-defining points.  
+The points for the index and pinky fingers are determined by casting a line from the defect between the middle and ring fingers to the next defect point on either side. The points where these lines intersect the contour become the new region-defining points.
 
 The second region-defining point for the thumb is determined using the same principle, but with the **THUMB_MCP** point detected by Mediapipe's hand landmark model.  
 The result looks like this:
@@ -49,7 +58,7 @@ After connecting the regions on an image containing just the contour mask, the r
 
 ![Contour_mask_region](https://github.com/user-attachments/assets/ceb95573-3c11-4924-8bd4-4a42c5b98d6c)
 
-We then use a different contour detection method provided by OpenCV to extract contours within contours. These contours are converted into bitmasks and sorted by size, ensuring that the contour of the entire hand is always first:  
+We then use a different contour detection method provided by OpenCV to extract contours within contours. These contours are converted into bitmasks and sorted by size, ensuring that the contour of the entire hand is always first:
 
 ![Regions Bitmask Grid](https://github.com/user-attachments/assets/3a0b8b19-bc57-4d85-b68c-9af9d7c344dd)
 
@@ -57,7 +66,7 @@ To identify which mask corresponds to which region, we use landmarks from the Me
 
 ### 5. Casting Bounding Boxes
 
-To align the bounding box with the fingers and other segments, we rotate each region to point upwards. The angle of each region is calculated using two landmarks within the region.  
+To align the bounding box with the fingers and other segments, we rotate each region to point upwards. The angle of each region is calculated using two landmarks within the region.
 
 Next, the bounding boxes are calculated to fit the region bitmask with a 5-pixel boundary. A copy of the original image is rotated along with the region and then clipped to the bounding box. After resizing the images, the result looks like this:
 

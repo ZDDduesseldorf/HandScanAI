@@ -9,6 +9,7 @@ import { CREATE_SCAN_ENTRY } from '@/services/mutations';
 import { CreateScanEntryModelData } from '@/services/graphqlTypes';
 import { useAppStore } from '@/store/appStore';
 import { Alert, Snackbar } from '@mui/material';
+import NavButton from '@/components/NavButton';
 
 const Container = styled(Box)`
   display: flex;
@@ -80,7 +81,7 @@ const Home: React.FC = () => {
     } catch (error) {
       console.error('Error creating scan entry:', error);
       setErrorMessage(
-        'Unable to open a session. The backend might be unavailable.',
+        'Unable to open a session. The backend might be unavailable.'
       );
     }
   };
@@ -94,7 +95,7 @@ const Home: React.FC = () => {
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
-      <StartButton onClick={() => void handleStartClick()}>Start</StartButton>
+      <StartButton onClick={handleStartClick}>Start</StartButton>
       {errorMessage && (
         <Snackbar
           open={!!errorMessage}
@@ -106,6 +107,7 @@ const Home: React.FC = () => {
           </Alert>
         </Snackbar>
       )}
+      <NavButton RouteTo="/explanation">Debug Explanation</NavButton>
     </Container>
   );
 };

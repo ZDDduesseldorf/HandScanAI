@@ -1,7 +1,5 @@
-// import React from 'react';
 import { Button } from '@mui/material';
 import { Typography, TextField, MenuItem, Box, styled } from '@mui/material';
-//import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 
@@ -20,9 +18,7 @@ export const BoxForm = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   gap: 20px; /* Optional: adds space between the two boxes */
-}
 `;
 
 const BodyLayout = styled(Box)`
@@ -33,7 +29,7 @@ const BodyLayout = styled(Box)`
 
 const BoxText = styled(Typography)`
   font-family: 'Poppins', sans-serif;
-  margin: 0 0 1 rem;
+  margin: 0 0 1rem;
   text-align: justify;
   // font-size: clamp(1rem, 2vw, 1.5rem);
   font-size: 0.8rem;
@@ -71,6 +67,7 @@ const Result_2: React.FC = () => {
     },
   ];
 
+  // Resolved merge conflict:
   const [ageInput, setAgeInput] = useState('');
   const [genderInput, setGenderInput] = useState('');
   const scanId = '5274cc1e-6413-4653-b14f-a4fcba138c99';
@@ -150,7 +147,7 @@ const Result_2: React.FC = () => {
           alert('Age: ' + ageInput + ' // Gender: ' + genderInput);
           console.log('Age:' + ageInput);
           console.log('Gender:' + genderInput);
-          //navigate('/')};
+          //navigate('/');
         }}
       >
         Weiter

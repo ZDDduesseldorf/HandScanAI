@@ -5,6 +5,8 @@ import uvicorn
 import pipelines.initial_data_pipeline as initial_pipeline
 from pipelines.initial_dataset_filter_pipeline import filter_11k_hands
 from utils.logging_utils import setup_csv_logging
+from hand_normalization.src import main as normalize
+import cv2
 
 
 cli = typer.Typer()
@@ -109,6 +111,19 @@ def filter_11k_dataset():
 def initial_setup_csv_logging():
     """Run the setup csv-logging funktion."""
     setup_csv_logging()
+
+@cli.command("normalisation_visual_test")
+def normalisation_visual_test():
+    """Run the a visual test of the normalize_hand_image() function"""
+    # TODO: Pfade müssen vor Verwendung angepasst werden
+    image_path = r"path/to/image/folder"
+    region_dict = normalize.normalize_hand_image(image_path)
+    image_list = list(region_dict.values())
+    grid_image = normalize.draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
+
+    cv2.imshow('Region Image Grid', grid_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     cli()

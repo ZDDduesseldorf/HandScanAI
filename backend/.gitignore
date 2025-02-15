@@ -1,8 +1,6 @@
 # cache
 __pycache__/
 *.pyc
-
-# Docker Volumes
 volumes/
 
 # Logs
@@ -30,3 +28,4 @@ media/
 
 # Generated Logs
 logs/
+tests/scenario_embeddings/result_csvs
