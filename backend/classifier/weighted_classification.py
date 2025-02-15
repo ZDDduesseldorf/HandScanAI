@@ -9,6 +9,16 @@ from utils.key_enums import HandRegions
 
 
 def weighted_classify_age(dict_all_info_knn):
+    """
+    weighted classifier for age prediction. Calculates the weighted mean of the age per region
+
+    Args:
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+
+    Returns:
+        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+
+    """
     dict_age = {}
     for regionkey, region_df in dict_all_info_knn.items():
         age_column = pd.to_numeric(region_df[Keys.AGE.value], errors="raise")
@@ -27,11 +37,32 @@ def weighted_classify_age(dict_all_info_knn):
 
 
 def weighted_mean(weights, values):
+    """
+    calcualtes the weighted mean
+    weighted_mean = sum(values[i] * weights[i]) / sum(weights)
+
+    Args:
+        weights (array-like): A list, a NumPy array or a Pandas serie with non-negative weight values.
+        values (array-like): A list, a NumPy array or a Pandas series with numerical values to be averaged.
+
+    Returns:
+        weighted_mean_age(float)
+    """
     weighted_mean_age = np.average(values, weights=weights)
     return weighted_mean_age
 
 
 def weighted_classify_gender(dict_all_info_knn):
+    """
+    weighted classifier for gender prediction. Calculates the weighted mode of the gender per region
+
+    Args:
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+
+    Returns:
+        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+
+    """
     dict_gender = {}
     for regionkey, region_df in dict_all_info_knn.items():
         region_df["calculated_weight"] = 1 - region_df[Keys.DISTANCE.value]
@@ -49,12 +80,31 @@ def weighted_classify_gender(dict_all_info_knn):
 
 
 def weighted_mode(dataframe, value, weight):
+    """_summary_
+    Calculates the weighted mode (most common value based on weights)
+    Args:
+        dataframe (pd.DataFrame): a pandas dataframe with the data to be analysed
+        value (str): name of the column with the values
+        weight (str): name of the column with the weights
+
+    Returns:
+        weighted_mode(int): 0: female, 1: male
+    """
     weighted_sum = dataframe.groupby(value)[weight].sum()
     weighted_mode = weighted_sum.idxmax()
     return weighted_mode
 
 
 def confidenceintervall_age(dict_all_info_knn):
+    """
+    calculates the lower and upper edge of the data interval. 5% of the data is cut off at the top and bottom.
+
+    Args:
+        dict_all_info_knn (dicionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+
+    Returns:
+        lower_quantile (int), upper_quantile(int)
+    """
     list_age = []
     for _, region_df in dict_all_info_knn.items():
         region_age_list = region_df[Keys.AGE.value].to_list()
@@ -67,6 +117,17 @@ def confidenceintervall_age(dict_all_info_knn):
 
 
 def caculate_weighted_confidence_gender(dict_all_info_knn, predicted_gender):
+    """
+    Calculates the weighted confidence of the predicted gender based on the weights of the gender of the nearest neighbours.
+    Calculates the sum of the weights of the neighbours with the same gender as the predicted gender by the sum of all weights
+
+    Args:
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+        predicted_gender (int): classified gender from ensemble_gender (0: female, 1: male)
+
+    Returns:
+        weighted_confidence_gender (float)
+    """
     weights_correct_knn = 0
     sum_weights = 0
     for _, region_df in dict_all_info_knn.items():
@@ -79,12 +140,23 @@ def caculate_weighted_confidence_gender(dict_all_info_knn, predicted_gender):
         sum_weights_region = region_df["calculated_weight"].sum()
         sum_weights += sum_weights_region
 
-    confidence_gender = weights_correct_knn / sum_weights
+    weighted_confidence_gender = weights_correct_knn / sum_weights
 
-    return confidence_gender
+    return weighted_confidence_gender
 
 
 def weighted_ensemble_age(dict_age, weight_dict):
+    """
+    Weighted ensemble classifier for age prediction. Calculates the weighted mean age from the age of the regions.
+
+    Args:
+        dict_age (dictionary): dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        weight_dict (dictionary): dict{regionkey(str): weight(float)}
+
+    Returns:
+        weighted_mean_age(float)
+
+    """
     age_list = [df[APIKeys.CLASSIFIED_AGE.value].iloc[0] for df in dict_age.values()]
     weight_list = []
     for _, weight in weight_dict.items():
@@ -95,6 +167,17 @@ def weighted_ensemble_age(dict_age, weight_dict):
 
 
 def weighted_ensemble_gender(dict_gender, weight_dict):
+    """_summary_
+
+    Weighted ensemble classifier for gender prediction. Calculates the weighted mode gender from the gender of the regions.
+
+    Args:
+        dict_gender (dictionary): dict{regionkey(str): region_mean_df(mean_distance, mean_gender)}
+        weight_dict (dictionary): dict{regionkey(str): weight(float)}
+
+    Returns:
+        weighted_mode_gender(int): [0: female, 1: male]
+    """
     ensemble_gender_df = pd.DataFrame(columns=[APIKeys.CLASSIFIED_GENDER.value, "calculated_weight"])
     for regionkey, region_df in dict_gender.items():
         new_row = {
@@ -107,6 +190,23 @@ def weighted_ensemble_gender(dict_gender, weight_dict):
 
 
 def weighted_classifier(dict_all_info_knn):
+    """
+    Weighted classifier for predicting age and gender from the data of the nearest neighbours with weights.
+    First calculating age and gender per region and than calcuate the final result.
+    Returns dataframe for Frontend.
+
+    Args:
+        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+
+    Returns:
+        ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
+        classified_gender(0,1), confidence_gender(float))
+        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+        0:female, 1:male
+    """
+
     # weights per region for the ensemble classifier
     weight_dict = {
         HandRegions.HAND_0.value: 1,

@@ -59,6 +59,17 @@ def classify_gender(dict_all_info_knn):
 
 
 def confidence_gender(dict_all_info_knn, predicted_gender):
+    """
+    Calculates the confidence of the predicted gender based on the gender of the nearest neighbours.
+    Calculates the sum of neighbours with the same gender by the number of neighbours
+
+    Args:
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+        predicted_gender (int): classified gender from ensemble_gender (0: female, 1: male)
+
+    Returns:
+        confidence_gender (float)
+    """
     list_gender = []
     for _, region_df in dict_all_info_knn.items():
         region_gender_list = region_df[Keys.GENDER.value].to_list()
@@ -71,7 +82,15 @@ def confidence_gender(dict_all_info_knn, predicted_gender):
 
 
 def ensemble_age(age_dict):
-    # TODO docstring
+    """
+    Simple classifier for age prediction. Calculates the mean age from the age of the regions.
+
+    Args:
+        age_dict (dict): dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+
+    Returns:
+        mean_age(float), min_age(float), max_age(float), mean_distance(float)
+    """
     age_list = [df[APIKeys.CLASSIFIED_AGE.value].iloc[0] for df in age_dict.values()]
     mean_age = np.mean(age_list)
     min_age = np.min(age_list)
@@ -83,7 +102,15 @@ def ensemble_age(age_dict):
 
 
 def ensemble_gender(gender_dict):
-    # TODO: docstring
+    """
+    Simple classifier for gender prediction. Calculates the mode gender from the gender of the regions.
+
+    Args:
+        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+
+    Returns:
+        mode_gender(int): 0: female, 1: male
+    """
     gender_list = [df[APIKeys.CLASSIFIED_GENDER.value].iloc[0] for df in gender_dict.values()]
     mode_gender = statistics.mode(gender_list)
 
@@ -92,7 +119,8 @@ def ensemble_gender(gender_dict):
 
 def simple_classifier(dict_all_info_knn):
     """
-    ensemble classifier of the prediction of age and gender from the individual hand regions forms.
+    Simple classifier for predicting age and gender from the data of the nearest neighbours.
+    First calculating age and gender per region and than calcuate the final result.
     Returns dataframe for frontend
 
     Args:
@@ -102,6 +130,8 @@ def simple_classifier(dict_all_info_knn):
     Returns:
         ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
         classified_gender(0,1), confidence_gender(float))
+        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
         0:female, 1:male
     """
 
