@@ -3,16 +3,16 @@ import time
 
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from pipelines.data_utils import build_info_knn
+from pipelines.data_utils import build_info_knn_from_csv
 from pipelines.distance_calculation import calculate_distance
 from pipelines.inference_pipeline import _path_manager
 from utils.image_utils import get_image_path
 from utils.logging_utils import save_nearest_neighbours_info
-from utils.csv_utils import check_or_create_folder, check_file_exists, create_csv_with_header, add_embedding_dict_to_csv
+from utils.csv_utils import check_or_create_folder, check_file_exists, create_csv_with_header
 from embeddings.models_utils import CNNModel, load_model
 from pipelines.initial_data_pipeline import run_initial_data_pipeline
 from utils.key_enums import PipelineDictKeys as Keys
-from classifier.classifier_utils import scenario_classifier
+# from classifier.classifier_utils import scenario_classifier
 
 # TODO: zum Ausführen der classifier_scenario verwenden
 """def test_scenario_classifier():
@@ -32,7 +32,11 @@ def scenario_path_manager():
     return path_to_result_csv
 
 
-def setup_scenario_structure(path_to_model_folder, model):
+def setup_scenario_structure(
+    path_to_model_folder,
+    model,
+    # model_name,
+):
     check_or_create_folder(path_to_model_folder)
     _, folder_path_region, _, _, folder_path_base = _path_manager(testing=False)
     start = time.time()
@@ -44,6 +48,8 @@ def setup_scenario_structure(path_to_model_folder, model):
         normalize=False,
         save_images=False,
         save_csvs=False,
+        save_milvus=False,
+        # milvus_collection_name=model_name,
     )
     end = time.time()
 
@@ -78,7 +84,7 @@ def run_scenarios_embeddings(setup=False):
     for model_name, model in models_dict.items():
         if setup:
             model_csv_path = path_to_result_csv / model_name
-            setup_scenario_structure(model_csv_path, model)
+            setup_scenario_structure(model_csv_path, model)  # , model_name)
         for uuid in uuid_list:
             run_distance_pipeline(uuid, model_name, model, k)
 
@@ -124,7 +130,7 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
 
     dict_all_dist = calculate_distance(dict_embedding, k, model_embedding_csv_path)
 
-    dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
+    dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
 
     if save_results:
         nearest_neighbour_csv_path = model_embedding_csv_path / "nearest_neighbours.csv"

@@ -13,7 +13,7 @@ import SubmissionComplete from '@/pages/SubmissionComplete';
 import Explanation from './pages/Explanation';
 import Sandbox from '@/pages/Sandbox';
 import BlackBox from '@/pages/BlackBox';
-import Layout from '@/components/Layout';
+import Layout from './Layout';
 import Result_1 from '@/pages/Result_1';
 import Result_2 from '@/pages/Result_2';
 
