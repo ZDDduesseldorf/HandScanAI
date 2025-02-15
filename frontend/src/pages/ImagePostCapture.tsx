@@ -18,6 +18,14 @@ const Container = styled(Box)`
   text-align: center;
 `;
 
+const ButtonContainer = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+`;
+
 const ImagePlaceholder = styled(Box)`
   width: 200px;
   height: 200px;
@@ -33,9 +41,19 @@ const StyledButton = styled(Button)`
   color: white;
   font-size: 1.2rem;
   padding: 10px 20px;
-  margin-top: 20px;
   &:hover {
     background-color: #0022aa;
+  }
+`;
+
+const OutlinedButton = styled(Button)`
+  border: 2px solid #0033cc;
+  color: #0033cc;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  background-color: transparent;
+  &:hover {
+    background-color: rgba(0, 51, 204, 0.1);
   }
 `;
 
@@ -65,11 +83,7 @@ const ImagePostCapture = () => {
       </StyledText>
       <ImagePlaceholder>
         {capturedImage ? (
-          <img
-            src={capturedImage}
-            alt="Captured"
-            style={{ maxWidth: '100%' }}
-          />
+          <img src={capturedImage} alt="Captured" style={{ maxWidth: '100%' }} />
         ) : (
           <Typography>Image placeholder</Typography>
         )}
@@ -78,9 +92,14 @@ const ImagePostCapture = () => {
         Klicke auf „Analyse starten“, um herauszufinden, was HandScanAI über
         deine Hand verrät!
       </StyledText>
-      <StyledButton onClick={() => navigate('/processing')}>
-        ANALYSE STARTEN
-      </StyledButton>
+      <ButtonContainer>
+        <StyledButton onClick={() => navigate('/processing')}>
+          Analyse starten
+        </StyledButton>
+        <OutlinedButton onClick={() => navigate('/image-capture')}>
+          Neu aufnehmen
+        </OutlinedButton>
+      </ButtonContainer>
     </Container>
   );
 };

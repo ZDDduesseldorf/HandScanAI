@@ -79,12 +79,12 @@ const ImageCapture = () => {
   const updateCapturedImage = useAppStore((state) => state.setCapturedImage);
   const videoRef = useRef<HTMLVideoElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const [instruction, setInstruction] = useState('Preparing camera...');
+  const [instruction, setInstruction] = useState('Kamera wird vorbereitet...');
 
   useEffect(() => {
     if (!scanEntry?.id) {
-      console.error('Invalid scan entry ID.');
-      alert('Scan entry ID is missing or invalid. Please restart the process.');
+      console.error('Ungültige Scan-Eintrags-ID.');
+      alert('Scan-Eintrags-ID fehlt oder ist ungültig. Bitte starte den Prozess neu.');
       navigate('/');
       return;
     }
@@ -110,7 +110,7 @@ const ImageCapture = () => {
           if (currentVideoRef) {
             currentVideoRef.srcObject = stream;
             currentVideoRef.play().catch((error) => {
-              console.error('Error playing video:', error);
+              console.error('Fehler beim Abspielen des Videos:', error);
             });
 
             currentVideoRef.onloadedmetadata = () => {
@@ -134,13 +134,13 @@ const ImageCapture = () => {
                     }
                   }, 'image/jpeg');
                 }
-              }, 100);
+              }, 333);
             };
           }
         })
         .catch((error) => {
-          setInstruction('Error accessing camera.');
-          console.error('Error accessing camera:', error);
+          setInstruction('Fehler beim Zugriff auf die Kamera.');
+          console.error('Fehler beim Zugriff auf die Kamera:', error);
         });
     };
 
@@ -152,34 +152,34 @@ const ImageCapture = () => {
           case 'validation':
             setInstruction(
               data.landmarks_detected
-                ? 'Hand detected. Waiting for conditions...'
-                : 'Place your hand in the camera frame.',
+                ? 'Hand erkannt. Warte auf die Bedingungen...'
+                : 'Bitte platziere deine Hand im Kamerarahmen.',
             );
             break;
           case 'timer':
-            setInstruction(`Taking picture in ${data.time} seconds...`);
+            setInstruction(`Foto wird in ${data.time} Sekunden aufgenommen...`);
             break;
           case 'taking_images':
-            setInstruction('Capturing image...');
+            setInstruction('Bild wird aufgenommen...');
             break;
           case 'success':
-            setInstruction('Image captured successfully!');
+            setInstruction('Bild erfolgreich aufgenommen!');
             updateCapturedImage(data.image!);
             setTimeout(() => navigate('/image-post-capture'), 1000);
             break;
           case 'error':
-            setInstruction(`Error: ${data.message}`);
+            setInstruction(`Fehler: ${data.message}`);
             break;
           default:
-            setInstruction('Awaiting further instructions...');
+            setInstruction('Warte auf weitere Anweisungen...');
         }
       } catch {
-        setInstruction('Error parsing server response.');
+        setInstruction('Fehler beim Verarbeiten der Server-Antwort.');
       }
     };
 
     ws.onclose = () => {
-      console.log('WebSocket connection closed');
+      console.log('WebSocket-Verbindung geschlossen');
       if (currentVideoRef?.srcObject) {
         const tracks = (currentVideoRef.srcObject as MediaStream).getTracks();
         tracks.forEach((track) => track.stop());
