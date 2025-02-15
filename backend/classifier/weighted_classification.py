@@ -106,7 +106,7 @@ def weighted_ensemble_gender(dict_gender, weight_dict):
     return weighted_mode_gender
 
 
-def weighted_classfier(dict_all_info_knn):
+def weighted_classifier(dict_all_info_knn):
     # weights per region for the ensemble classifier
     weight_dict = {
         HandRegions.HAND_0.value: 1,

@@ -4,7 +4,7 @@ from pipelines.data_utils import build_info_knn
 from pipelines.datasets import ImagePathDataset
 from pipelines.distance_calculation import calculate_distance
 from pipelines.inference_pipeline import _path_manager
-from classifier.weighted_classification import weighted_classfier
+from classifier.weighted_classification import weighted_classifier
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
 from utils.csv_utils import check_file_exists, check_or_create_folder, create_csv_with_header, add_entry_to_csv
@@ -83,7 +83,7 @@ def run_generate_classifier_result(uuid, image_path, k, path_to_csv_age, path_to
 
     ######## STEP 4: make a decision for prediction ######################
 
-    ensemble_df, age_dict, gender_dict = weighted_classfier(dict_info_knn)
+    ensemble_df, age_dict, gender_dict = weighted_classifier(dict_info_knn)
 
     dict_age = {
         Keys.UUID.value: uuid,

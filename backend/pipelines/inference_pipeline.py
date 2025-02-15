@@ -5,7 +5,7 @@ import hand_normalization.src.main as normalization
 from utils.image_utils import get_image_path
 from .data_utils import build_info_knn
 from .distance_calculation import calculate_distance
-from classifier.weighted_classification import weighted_classfier
+from classifier.weighted_classification import weighted_classifier
 from utils.logging_utils import logging_nearest_neighbours, logging_classification
 # this file is used to generate the prediction of an image
 
@@ -69,7 +69,7 @@ def run_inference_pipeline(uuid, testing=False):
     ######## STEP 4: make a decision for prediction ######################
 
     # TODO: für einfache Klassifizierung verwende simple_classifier
-    ensemble_df, age_dict, gender_dict = weighted_classfier(dict_all_info_knn)
+    ensemble_df, age_dict, gender_dict = weighted_classifier(dict_all_info_knn)
 
     #### Logging ####
     if not testing:
