@@ -83,7 +83,11 @@ const ImagePostCapture = () => {
       </StyledText>
       <ImagePlaceholder>
         {capturedImage ? (
-          <img src={capturedImage} alt="Captured" style={{ maxWidth: '100%' }} />
+          <img
+            src={capturedImage}
+            alt="Captured"
+            style={{ maxWidth: '100%' }}
+          />
         ) : (
           <Typography>Image placeholder</Typography>
         )}

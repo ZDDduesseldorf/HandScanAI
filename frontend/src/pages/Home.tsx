@@ -81,7 +81,7 @@ const Home: React.FC = () => {
     } catch (error) {
       console.error('Error creating scan entry:', error);
       setErrorMessage(
-        'Unable to open a session. The backend might be unavailable.'
+        'Unable to open a session. The backend might be unavailable.',
       );
     }
   };
@@ -95,7 +95,7 @@ const Home: React.FC = () => {
       <Logo src="/logo.png" alt="Hand Scan AI Logo" />
       <Title variant="h1">Hand Scan AI</Title>
       <Subtitle variant="h2">Scan it. Know it.</Subtitle>
-      <StartButton onClick={handleStartClick}>Start</StartButton>
+      <StartButton onClick={() => void handleStartClick()}>Start</StartButton>
       {errorMessage && (
         <Snackbar
           open={!!errorMessage}

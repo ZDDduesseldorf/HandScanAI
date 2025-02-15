@@ -84,7 +84,9 @@ const ImageCapture = () => {
   useEffect(() => {
     if (!scanEntry?.id) {
       console.error('Ungültige Scan-Eintrags-ID.');
-      alert('Scan-Eintrags-ID fehlt oder ist ungültig. Bitte starte den Prozess neu.');
+      alert(
+        'Scan-Eintrags-ID fehlt oder ist ungültig. Bitte starte den Prozess neu.',
+      );
       navigate('/');
       return;
     }
