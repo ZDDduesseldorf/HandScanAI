@@ -6,10 +6,6 @@ import StepLabel from '@mui/material/StepLabel'; // Label for each step in the S
 
 const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis', 'Abschluss'];
 
-interface Props {
-  pageNumber: number;
-}
-
 const FooterContainer = styled(Box)`
   width: 100%;
   position: fixed;
@@ -61,6 +57,10 @@ const StyledStepLabel = styled(StepLabel)(() => ({
     borderTopWidth: '20px', // Set the thickness of the horizontal line
   },
 }));
+
+interface Props {
+  pageNumber: number;
+}
 
 export default function FooterStepper({ pageNumber }: Props) {
   return (
