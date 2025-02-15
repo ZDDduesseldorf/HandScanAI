@@ -90,7 +90,7 @@ def ensemble_gender(gender_dict):
     return mode_gender
 
 
-def ensemble_classifier(dict_age, dict_gender, dict_all_info_knn):
+def simple_classifier(dict_all_info_knn):
     """
     ensemble classifier of the prediction of age and gender from the individual hand regions forms.
     Returns dataframe for frontend
@@ -104,6 +104,10 @@ def ensemble_classifier(dict_age, dict_gender, dict_all_info_knn):
         classified_gender(0,1), confidence_gender(float))
         0:female, 1:male
     """
+
+    dict_age = classify_age(dict_all_info_knn)
+    dict_gender = classify_gender(dict_all_info_knn)
+
     mean_age, min_age, max_age, mean_distance_age = ensemble_age(dict_age)
     mode_gender = ensemble_gender(dict_gender)
     gender_confidence = confidence_gender(dict_all_info_knn, mode_gender)
@@ -121,4 +125,4 @@ def ensemble_classifier(dict_age, dict_gender, dict_all_info_knn):
         ]
     )
 
-    return ensemble_df
+    return ensemble_df, dict_age, dict_gender
