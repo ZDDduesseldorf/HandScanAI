@@ -5,8 +5,8 @@ interface Props {
     children: React.ReactNode
 }
 
-export default function WideBottomSticky({onClick,children}:Props){
-    const Wide = styled(Button)`
+export default function WideBottomFixed({onClick,children}:Props){
+    const WideBottomFixed = styled(Button)`
         background-color: var(--primary);
         color: white;
         font-family: 'Delius Unicase', cursive;
@@ -26,6 +26,6 @@ export default function WideBottomSticky({onClick,children}:Props){
     `;
   
     return (
-        <Wide onClick={onClick}>{children}</Wide>
+        <WideBottomFixed onClick={onClick}>{children}</WideBottomFixed>
     );
   };

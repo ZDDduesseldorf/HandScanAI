@@ -5,8 +5,8 @@ interface Props {
   onClick: ()=>void;
 }
 
-export default function NarrowBottomSticky ({ onClick, children }:Props){
-  const NarrowBottomSticky = styled(Button)`
+export default function NarrowBottomFixed ({ onClick, children }:Props){
+  const NarrowBottomFixed = styled(Button)`
     background-color: var(--primary);
     border-radius: 0;
     color: white;
@@ -27,6 +27,6 @@ export default function NarrowBottomSticky ({ onClick, children }:Props){
   `;
 
   return (
-    <NarrowBottomSticky onClick={onClick}>{children}</NarrowBottomSticky>
+    <NarrowBottomFixed onClick={onClick}>{children}</NarrowBottomFixed>
   );
 };
