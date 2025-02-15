@@ -1,9 +1,8 @@
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+import { Button, styled } from '@mui/material';
 
 interface Props {
     onClick:()=>void,
-    children:string | React.ReactNode
+    children: React.ReactNode
 }
 
 export default function Wide({onClick,children}:Props){

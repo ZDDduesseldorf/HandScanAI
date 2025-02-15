@@ -1,8 +1,7 @@
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { Box, styled } from '@mui/material';
 
 interface Props {
-  children:string | React.ReactNode,
+  children:React.ReactNode,
   my:string,
   mx:string
 }

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
 import Header from '@/components/custom/Header';
-import TextCard from '@/components/cards/Text';
-import NarrowBottomSticky from '@/components/buttons/NarrowBottomSticky';
+import TextCard from '@/components/cards/WithText';
+import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
 import Centered from '@/components/layout/Centered';
 
 export default function PrivacyNotice() {

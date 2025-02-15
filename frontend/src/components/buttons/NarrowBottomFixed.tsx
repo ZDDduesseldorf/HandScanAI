@@ -1,5 +1,4 @@
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
+import { Button, styled } from '@mui/material';
 
 interface Props {
   children: React.ReactNode;

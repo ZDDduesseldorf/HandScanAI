@@ -1,5 +1,4 @@
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
+import { Typography, styled } from '@mui/material';
 
 interface Props {
   children:string | React.ReactNode

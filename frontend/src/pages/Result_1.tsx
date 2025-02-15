@@ -6,7 +6,7 @@ import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
 import Tertiary from '@/components/headings/Tertiary';
 import Justified from '@/components/text/Justified';
-import NarrowBottomSticky from '@/components/buttons/NarrowBottomSticky';
+import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
 
 // Vom Backend gebraucht:
 // Geschlecht Guess

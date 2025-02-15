@@ -1,14 +1,11 @@
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+import { Button, styled } from '@mui/material';
 
-export default function Narrow(
-  {onClick,
-      children
-  }:
-  {onClick:()=>void,
-      children:string | React.ReactNode
-  }
-) {
+interface Props {
+    onClick: () => void,
+    children: React.ReactNode
+}
+
+export default function Narrow({onClick, children}:Props){
     const Narrow = styled(Button)`
         background-color: var(--primary);
         color: white;
@@ -24,8 +21,8 @@ export default function Narrow(
             background-color: var(--primary-light);
         }
     `;
-  
+
     return (
         <Narrow onClick={onClick}>{children}</Narrow>
     );
-  };
+};
