@@ -171,4 +171,7 @@ def create_region_csvs(csv_folder_path):
     for region in HandRegions:
         csv_name = region.value + "_Embeddings.csv"
         csv_path = os.path.join(csv_folder_path, csv_name)
-        create_csv_with_header(csv_path, ["UUID", "Embedding"])
+        if not check_file_exists(csv_path):
+            create_csv_with_header(csv_path, ["UUID", "Embedding"])
+        else:
+            print(f"file already exists: {csv_path}")

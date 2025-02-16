@@ -46,7 +46,7 @@ def filter_11k_hands(folder_path: str, csv_path: str, new_dataset_path: str, new
         normalization_succeeded = True
         try:
             normalization.normalize_hand_image(image_path)
-        except (KeyError, ValueError, IndexError, TypeError):
+        except (IndexError, ValueError, KeyError, cv2.error, TypeError):
             normalization_succeeded = False
 
         # Check if its the dorsal side
