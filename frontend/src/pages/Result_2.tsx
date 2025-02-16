@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, TextField, MenuItem, Box, styled } from '@mui/material';
+import { TextField, MenuItem, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import Header from '@/components/custom/Header';
@@ -7,6 +7,7 @@ import Secondary from '@/components/headings/Secondary';
 import WithMargins from '@/components/layout/WithMargins';
 import Justified from '@/components/text/Justified';
 import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
+import WithText from '@/components/cards/WithText';
 
 // Vom Backend gebraucht:
 // Geschlecht Guess
@@ -18,21 +19,6 @@ import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
 
 const genderGuess = 'weiblich';
 const ageGuess = 26;
-
-const BoxForm = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px; /* Optional: adds space between the two boxes */
-`;
-
-const BoxText = styled(Typography)`
-  font-family: 'Poppins', sans-serif;
-  margin: 0 0 1rem;
-  text-align: justify;
-  /* font-size: clamp(1rem, 2vw, 1.5rem); */
-  font-size: 0.8rem;
-`;
 
 // Optionally, you can keep the GraphQL mutation if needed
 // const CORRECT_HANDDATA = gql`
@@ -86,50 +72,56 @@ export default function Result_2() {
           Auch wenn die KI leistungsstark ist, können Fehler auftreten.
           Überprüfe das Ergebnis, um sicherzugehen, dass es korrekt ist.
         </Justified>
-        <BoxForm>
-          <Secondary>Dein Alter</Secondary>
-          <BoxText>
-            Wahrscheinlich bist du {ageGuess} Jahre alt. <br />
-            Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben die
-            geschmeichelt! <br />
-            Teile uns dein echtes Alter mit - das hilft uns, HandScan AI zu
-            verbessern! <br />
-          </BoxText>
-          <TextField
-            id="ageInput"
-            value={ageInput}
-            label="Alter"
-            variant="outlined"
-            fullWidth
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setAgeInput(event.target.value);
-            }}
-          />
-          <Secondary>Dein Geschlecht</Secondary>
-          <BoxText>
-            Wahrscheinlich bist du {genderGuess}. <br />
-            Und was ist mit deinem Geschlecht? Stimmt die Vorhersage? <br />
-            Teile uns dein Geschlecht mit - das hilft uns, HandScan AI zu
-            verbessern! <br />
-          </BoxText>
-          <TextField
-            id="genderInput"
-            select
-            value={genderInput}
-            label="Geschlecht"
-            variant="outlined"
-            fullWidth
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setGenderInput(event.target.value);
-            }}
-          >
-            {genders.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </BoxForm>
+        <Grid2 container spacing={2}>
+          <Grid2 size={6}>
+            <WithText title="Dein Alter">
+              <p>
+                Wahrscheinlich bist du {ageGuess} Jahre alt. <br />
+                Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben dir
+                geschmeichelt! <br />
+                Teile uns dein echtes Alter mit - das hilft uns, HandScan AI zu
+                verbessern! <br />
+              </p>
+              <TextField
+                id="ageInput"
+                value={ageInput}
+                label="Alter"
+                variant="outlined"
+                fullWidth
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setAgeInput(event.target.value);
+                }}
+              />
+            </WithText>
+          </Grid2>
+          <Grid2 size={6}>
+            <WithText title="Dein Geschlecht">
+              <p>
+                Wahrscheinlich bist du {genderGuess}. <br />
+                Und was ist mit deinem Geschlecht? Stimmt die Vorhersage? <br />
+                Teile uns dein Geschlecht mit - das hilft uns, HandScan AI zu
+                verbessern! <br />
+              </p>
+              <TextField
+                id="genderInput"
+                select
+                value={genderInput}
+                label="Geschlecht"
+                variant="outlined"
+                fullWidth
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setGenderInput(event.target.value);
+                }}
+              >
+                {genders.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </WithText>
+          </Grid2>
+        </Grid2>
         <NarrowBottomSticky onClick={() => navigate('/submission-complete')}>
           Weiter
         </NarrowBottomSticky>
