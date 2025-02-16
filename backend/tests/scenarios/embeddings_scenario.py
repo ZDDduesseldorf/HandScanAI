@@ -12,12 +12,6 @@ from utils.csv_utils import check_or_create_folder, check_file_exists, create_cs
 from embeddings.models_utils import CNNModel, load_model
 from pipelines.initial_data_pipeline import run_initial_data_pipeline
 from utils.key_enums import PipelineDictKeys as Keys
-# from classifier.classifier_utils import scenario_classifier
-
-# TODO: zum Ausführen der classifier_scenario verwenden
-"""def test_scenario_classifier():
-    path_to_result_csv = scenario_path_manager()
-    scenario_classifier(path_to_result_csv, testing=True)"""
 
 
 # TODO: zum Ausführen der distance_pipeline verwenden
@@ -94,16 +88,6 @@ def run_scenarios_embeddings(setup=False):
     # These 1: nur 2 Bilder einer Person -> 1. Distanz 0, 2. anderes Bild
     # These 2: Augmentated Bilder -> Bilder der selben person am nächsten
     # alle Variablen hängen voneinander ab? Gridsearch?
-
-
-# def run_scenarios_classfiers():
-# uuids der QueryBilder (11k, eigene Bilder)
-# festgelegtes model
-# verschiedene ks (3,5,7,10)
-# verschiedene distanzmethoden ? (cosinus)
-# verschiedene Classfier pro Region (simple(mean, modus), gewichtung nach Distanz, Random Forest)
-# Ensemble Classifier (simple(mean, modus), Gewichtung nach Region)
-# Vergleich mit erwartetem Wert (Alter, Geschlecht)
 
 
 def run_distance_pipeline(uuid, model_name, model, k, save_results=True):

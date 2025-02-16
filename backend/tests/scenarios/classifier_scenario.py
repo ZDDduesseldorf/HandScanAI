@@ -1,6 +1,6 @@
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from pipelines.data_utils import build_info_knn
+from pipelines.data_utils import build_info_knn_from_csv
 from pipelines.datasets import ImagePathDataset
 from pipelines.distance_calculation import calculate_distance
 from pipelines.inference_pipeline import _path_manager
@@ -9,6 +9,13 @@ from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
 from utils.csv_utils import check_file_exists, check_or_create_folder, create_csv_with_header, add_entry_to_csv
 from utils.key_enums import PipelineAPIKeys as APIKeys
+# from scenarios.embeddings_scenario import scenario_path_manager
+
+
+# TODO: zum Ausführen der classifier_scenario verwenden
+"""def test_scenario_classifier():
+    path_to_result_csv = scenario_path_manager()
+    scenario_classifier(path_to_result_csv, testing=True)"""
 
 
 def setup_scenario_classifier(path_to_classifier_csv, path_to_csv_age, path_to_csv_gender, header_csv):
@@ -77,7 +84,7 @@ def run_generate_classifier_result(uuid, image_path, k, path_to_csv_age, path_to
 
     dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
-    dict_all_info_knn = build_info_knn(metadata_csv_path, dict_all_dist)
+    dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
 
     dict_info_knn, age, gender = delete_same_uuid_from_nearest_neighbours(uuid, dict_all_info_knn)
 
@@ -146,3 +153,13 @@ def delete_same_uuid_from_nearest_neighbours(uuid, dict_all_info_knn):
         region_df.drop(region_df.loc[region_df[Keys.UUID.value] == uuid].index, inplace=True)
         print(f"nachher: {region_df}")
     return dict_all_info_knn, age, gender
+
+
+# def run_scenarios_classfiers():
+# uuids der QueryBilder (11k, eigene Bilder)
+# festgelegtes model
+# verschiedene ks (3,5,7,10)
+# verschiedene distanzmethoden ? (cosinus)
+# verschiedene Classfier pro Region (simple(mean, modus), gewichtung nach Distanz, Random Forest)
+# Ensemble Classifier (simple(mean, modus), Gewichtung nach Region)
+# Vergleich mit erwartetem Wert (Alter, Geschlecht)
