@@ -1,4 +1,6 @@
+from numpy import ndarray
 import torch
+from sklearn.preprocessing import normalize
 
 from utils.image_utils import load_image_from_full_path
 from .models_utils import transforms_default, load_model
@@ -26,7 +28,7 @@ def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn
         model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
-        dict of region keys and of embeddings tensors corresponding to input dict
+        embeddings_dict (dict[str, torch.Tensor]): dict of region keys and of embeddings tensors corresponding to input dict
 
     Example:
         `calculate_embeddings_from_path_dict(regions_dict, load_model(models_utils.CNNModel.DENSENET_121))`
@@ -49,7 +51,7 @@ def calculate_embeddings_from_path_dict(
         model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
-        dict of region keys and of embeddings tensors corresponding to input dict
+        embeddings_dict (dict[str, torch.Tensor]): dict of region keys and of embeddings tensors corresponding to input dict
 
     Example:
         `calculate_embeddings_from_path_dict(regions_dict, load_model(models_utils.CNNModel.DENSENET_121))`
@@ -60,6 +62,29 @@ def calculate_embeddings_from_path_dict(
         image = load_image_from_full_path(image_path)
         embeddings_dict[region_key] = calculate_embedding(image, model)
     return embeddings_dict
+
+
+def normalize_embedding(embedding: torch.Tensor) -> ndarray:
+    """
+    Normalizes input vectors individually to unit norm (vector length) by scaling them.
+    "This process can be useful if quadratic form such as the dot-product is used, e.g. in calculating similarity/ distance between vectors." (scikit-learn.org)
+
+    L2 is the used (and default) norm because "the dot product of two l2-normalized TF-IDF vectors is the cosine similarity of the vectors and is the base similarity metric for the Vector Space Model commonly used by the Information Retrieval community."
+
+    Sources:
+    - https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.Normalizer.html
+    - https://scikit-learn.org/stable/modules/preprocessing.html#normalization
+
+    Args:
+        embedding (torch.Tensor): embedding-tensor of given image in form of torch.Size([1, 1024])
+
+    Returns:
+        normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
+    """
+    # extract the feature vector
+    feature_vector = embedding.squeeze().numpy()
+    # Scale input vectors individually to unit norm (vector length). This process can be useful if you plan to use a quadratic form such as the dot-product
+    return normalize(feature_vector.reshape(1, -1), norm="l2").flatten()
 
 
 def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> torch.Tensor:
@@ -74,7 +99,7 @@ def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> torch
         model (DenseNet | ResNet): loaded (pytorch)-model that generates embedding. Default: CNNModel.DenseNet121
 
     Returns:
-        embedding-tensor of given image
+        embedding (torch.Tensor): embedding-tensor of given image in form of torch.Size([1, 1024])
     """
 
     device = choose_device()
@@ -103,7 +128,7 @@ def preprocess_image(input_image: torch.Tensor, transforms=transforms_default) -
         transforms: transforms used on the image
 
     Returns:
-        tensor with values normalized to float values between 0 and 1
+        input_batch (torch.Tensor): tensor with values normalized to float values between 0 and 1
     """
 
     ## ready mini input_batch
@@ -127,6 +152,6 @@ def choose_device() -> torch.device:
     Chooses either 'cpu' or 'cuda' as device, depending on availability to run inference on.
 
     Returns:
-        a context manager that changes the selected device (typically gpu or cpu depending on availability).
+        device (torch.device): a context manager that changes the selected device (typically gpu or cpu depending on availability).
     """
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")

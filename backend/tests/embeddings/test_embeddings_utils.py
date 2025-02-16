@@ -1,5 +1,6 @@
 import pytest
 import torch
+import numpy as np
 from pathlib import Path
 
 from embeddings import embeddings_utils
@@ -78,6 +79,21 @@ def test_calculate_single_densenet_embedding(loaded_test_image, test_densenet):
     # expected dimensions of densenet embedding are [1, 1024]
     assert test_embeddings.shape[0] == 1
     assert test_embeddings.shape[1] == 1024
+
+
+def test_calculate_normalize_embedding(loaded_test_image, test_densenet):
+    test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_densenet)
+    normalized_embedding = embeddings_utils.normalize_embedding(test_embeddings)
+
+    # expected dimensions of densenet embedding are [1, 1024]
+    assert test_embeddings.shape[0] == 1
+    assert test_embeddings.shape[1] == 1024
+    assert len(normalized_embedding) == 1024
+
+    # expect original embeddings to have values over 1 and under -1 and normalized embeddings to stay within the bounds
+    test_embeddings_vector = test_embeddings.numpy()[0]
+    assert np.any((test_embeddings_vector > 1) | (test_embeddings_vector < -1))
+    assert not np.any((normalized_embedding > 1) | (normalized_embedding < -1))
 
 
 def test_calculate_single_resnet_embedding(loaded_test_image, test_resnet):
