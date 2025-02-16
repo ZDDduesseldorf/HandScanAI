@@ -11,7 +11,7 @@ export default function Subtitle({ children }: Props) {
     margin: 0 0 1.875rem;
     font-weight: 200;
     text-align: center;
-    font-size: 3em;
+    font-size: clamp(1rem, 2vw, 1.5rem);
   `;
 
   return <Subtitle variant="h2">{children}</Subtitle>;

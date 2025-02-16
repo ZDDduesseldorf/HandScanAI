@@ -4,7 +4,6 @@ import StyledTitle from '@/styles/StyledTitle';
 import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
-import NavButton from '@/components/buttons/Navigation';
 
 interface ServerMessage {
   flow: string;
@@ -225,7 +224,6 @@ const ImageCapture = () => {
         <InstructionBox>
           <Typography>{instruction}</Typography>
         </InstructionBox>
-        <NavButton RouteTo="/image-post-capture">Weiter</NavButton>
       </InfoSection>
     </Container>
   );

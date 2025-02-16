@@ -11,7 +11,7 @@ export default function Title({ children }: Props) {
     color: var(--primary);
     margin: 0 0 0.625rem;
     text-align: center;
-    font-size: 4em;
+    font-size: clamp(1.75rem, 4vw, 3.25rem);
   `;
 
   return <Title variant="h1">{children}</Title>;

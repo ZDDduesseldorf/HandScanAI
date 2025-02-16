@@ -12,12 +12,11 @@ export default function Wide({ onClick, children }: Props) {
     font-family: 'Delius Unicase', cursive;
     padding: 20px 120px;
     font-size: clamp(0.875rem, 1.75vw, 1.25rem);
-    width: 360px;
+    width: clamp(10rem, 20vw, 18rem);
     height: 55px;
     transition: background-color 0.3s;
     text-transform: none;
-    margin: auto;
-    border-radius: 0;
+    border-radius: 1rem;
     &:hover {
       background-color: var(--primary-light);
     }
