@@ -6,7 +6,8 @@ import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
 import WithMargins from '@/components/layout/WithMargins';
 import Justified from '@/components/text/Justified';
-import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
+import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight';
+import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 import WithText from '@/components/cards/WithText';
 
 // Vom Backend gebraucht:
@@ -72,8 +73,8 @@ export default function Result_2() {
           Auch wenn die KI leistungsstark ist, können Fehler auftreten.
           Überprüfe das Ergebnis, um sicherzugehen, dass es korrekt ist.
         </Justified>
-        <Grid2 container spacing={2}>
-          <Grid2 size={6}>
+        <Grid2 container spacing={8}>
+          <Grid2 size="grow">
             <WithText title="Dein Alter">
               <p>
                 Wahrscheinlich bist du {ageGuess} Jahre alt. <br />
@@ -94,7 +95,7 @@ export default function Result_2() {
               />
             </WithText>
           </Grid2>
-          <Grid2 size={6}>
+          <Grid2 size="grow">
             <WithText title="Dein Geschlecht">
               <p>
                 Wahrscheinlich bist du {genderGuess}. <br />
@@ -122,9 +123,12 @@ export default function Result_2() {
             </WithText>
           </Grid2>
         </Grid2>
-        <NarrowBottomSticky onClick={() => navigate('/submission-complete')}>
+        <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
+          Zurück
+        </NarrowFixedBottomLeft>
+        <NarrowFixedBottomRight onClick={() => navigate('/submission-complete')}>
           Weiter
-        </NarrowBottomSticky>
+        </NarrowFixedBottomRight>
       </WithMargins>
     </>
   );

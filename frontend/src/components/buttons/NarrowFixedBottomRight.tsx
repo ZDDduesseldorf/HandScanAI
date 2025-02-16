@@ -5,8 +5,8 @@ interface Props {
   onClick: () => void;
 }
 
-export default function NarrowBottomFixed({ onClick, children }: Props) {
-  const NarrowBottomFixed = styled(Button)`
+export default function NarrowFixedBottomRight({ onClick, children }: Props) {
+  const NarrowFixedBottomRight = styled(Button)`
     background-color: var(--primary);
     border-radius: 0;
     color: white;
@@ -26,5 +26,5 @@ export default function NarrowBottomFixed({ onClick, children }: Props) {
     }
   `;
 
-  return <NarrowBottomFixed onClick={onClick}>{children}</NarrowBottomFixed>;
+  return <NarrowFixedBottomRight onClick={onClick}>{children}</NarrowFixedBottomRight>;
 }
