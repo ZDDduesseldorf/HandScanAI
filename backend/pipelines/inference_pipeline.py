@@ -9,7 +9,7 @@ from .data_utils import (
     find_pictures_to_most_similar_nearest_neighbours,
 )
 from .distance_calculation import calculate_distance
-from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
+from classifier.weighted_classification import weighted_classifier
 from utils.logging_utils import logging_nearest_neighbours, logging_classification
 from vectordb.milvus import (
     search_embeddings_dict,
@@ -92,10 +92,11 @@ def run_inference_pipeline(
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
     ######## STEP 4: make a decision for prediction ######################
 
-    age_dict = classify_age(dict_all_info_knn)
-    gender_dict = classify_gender(dict_all_info_knn)
-    ensemble_df = ensemble_classifier(age_dict, gender_dict)
+    # TODO: für einfache Klassifizierung verwende simple_classifier
+    ensemble_df, age_dict, gender_dict = weighted_classifier(dict_all_info_knn)
+
     knn_info_df = find_pictures_to_most_similar_nearest_neighbours(dict_all_info_knn)
+
     #### Logging ####
     if not testing:
         logging_nearest_neighbours(uuid, dict_all_info_knn)

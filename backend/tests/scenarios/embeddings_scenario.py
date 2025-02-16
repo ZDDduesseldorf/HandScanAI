@@ -3,7 +3,7 @@ import time
 
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
-from pipelines.data_utils import build_info_knn_from_milvus
+from pipelines.data_utils import build_info_knn_from_csv
 from pipelines.distance_calculation import calculate_distance
 from pipelines.inference_pipeline import _path_manager
 from utils.image_utils import get_image_path
@@ -16,7 +16,7 @@ from utils.key_enums import PipelineDictKeys as Keys
 
 # TODO: zum Ausführen der distance_pipeline verwenden
 """def test_scenario_embeddings():
-    run_scenarios_embeddings(setup=True)"""
+    run_scenarios_embeddings(setup=False)"""
 
 
 def scenario_path_manager():
@@ -74,26 +74,12 @@ def run_scenarios_embeddings(setup=False):
         "RESNET_50": load_model(CNNModel.RESNET_50),
     }
     k = 10
-    uuid_list = [
-        "4179975e-fca3-4beb-a2c9-10cc700ed5f4",
-        "946e0eb9-5b0a-4e56-b99a-e665ac40de89",
-        "218ce52f-4a15-42d9-8e1e-2d40492fc1ce",
-        "23698a1f-d9ce-4df1-bd3a-e1de61a8f727",
-        "516d1d19-61c4-42e9-b2dc-2697e0ecb743",
-        "6976a5cd-276a-46d9-9e36-346c9bc0782a",
-        "0dc125e4-a90e-45d6-8f7b-81538b1c96c5",
-        "7116a897-a1a4-451e-a8fd-2e14cfeffb00",
-        "12ebe903-747d-4294-b953-a1104f4f7042",
-        "730cedf8-b717-403d-a464-148e45c00c3f",
-        "6b7fe815-8a38-4fe8-a196-13b0c4a3d1a3",
-        "25a13337-bb1d-4484-8135-066a6ac6876b",
-    ]
+    uuid_list = ["f32714b4-28a6-4e9b-9f72-2c33c3345636"]
     for model_name, model in models_dict.items():
         if setup:
             model_csv_path = path_to_result_csv / model_name
             setup_scenario_structure(model_csv_path, model)  # , model_name)
         for uuid in uuid_list:
-            print(model_name, uuid)
             run_distance_pipeline(uuid, model_name, model, k)
 
     # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?
@@ -102,16 +88,6 @@ def run_scenarios_embeddings(setup=False):
     # These 1: nur 2 Bilder einer Person -> 1. Distanz 0, 2. anderes Bild
     # These 2: Augmentated Bilder -> Bilder der selben person am nächsten
     # alle Variablen hängen voneinander ab? Gridsearch?
-
-
-# def run_scenarios_classfiers():
-# uuids der QueryBilder (11k, eigene Bilder)
-# festgelegtes model
-# verschiedene ks (3,5,7,10)
-# verschiedene distanzmethoden ? (cosinus)
-# verschiedene Classfier pro Region (simple(mean, modus), gewichtung nach Distanz, Random Forest)
-# Ensemble Classifier (simple(mean, modus), Gewichtung nach Region)
-# Vergleich mit erwartetem Wert (Alter, Geschlecht)
 
 
 def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
@@ -138,7 +114,7 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True):
 
     dict_all_dist = calculate_distance(dict_embedding, k, model_embedding_csv_path)
 
-    dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
+    dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
 
     if save_results:
         nearest_neighbour_csv_path = model_embedding_csv_path / "nearest_neighbours.csv"
