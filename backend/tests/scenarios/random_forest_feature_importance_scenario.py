@@ -1,4 +1,6 @@
 import pandas as pd
+
+# from pathlib import Path
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import permutation_importance
@@ -6,6 +8,15 @@ from sklearn.linear_model import LogisticRegression, LinearRegression
 
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
+
+
+# TODO: zum ausführen der feature_importance berechnung
+"""def test_calculate_feature_importances():
+    temp_base_dir = Path(__file__).resolve().parent
+    path_to_age_csv = temp_base_dir / "result_csvs" / "classifier" / "classification_data_age.csv"
+    path_to_gender_csv = temp_base_dir / "result_csvs" / "classifier" / "classification_data_gender.csv"
+
+    calculate_feature_importances(path_to_age_csv, path_to_gender_csv)"""
 
 
 def calculate_feature_importances(path_to_age_csv, path_to_gender_csv):
@@ -89,7 +100,7 @@ def random_forest_regressor(X_train: pd.DataFrame, y_train: pd.DataFrame) -> Ran
         "min_samples_leaf": [1, 3, 5, 8, 9, 12],
         "n_estimators": [10, 20, 30, 50, 80, 100],
     }
-    random_search = RandomizedSearchCV(forest, parameters, n_iter=20, verbose=2)
+    random_search = RandomizedSearchCV(forest, parameters, n_iter=20, verbose=2, random_state=0)
     random_search.fit(X_train, y_train)
     print(f"RandomForestRegressor best params random_search: {random_search.best_params_}")
     return random_search.best_estimator_
@@ -116,7 +127,7 @@ def random_forest_classifier(X_train: pd.DataFrame, y_train: pd.DataFrame) -> Ra
         "min_samples_leaf": [1, 3, 5, 8, 9, 12],
         "n_estimators": [10, 20, 30, 50, 80, 100],
     }
-    random_search = RandomizedSearchCV(forest, parameters, n_iter=20, verbose=2)
+    random_search = RandomizedSearchCV(forest, parameters, n_iter=20, verbose=2, random_state=0)
     random_search.fit(X_train, y_train)
     print(f"RandomForestClassifier best params random_search: {random_search.best_params_}")
     return random_search.best_estimator_
