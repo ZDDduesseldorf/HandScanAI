@@ -3,7 +3,11 @@ from pathlib import Path
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from utils.image_utils import get_image_path
-from .data_utils import build_info_knn_from_milvus, build_info_knn_from_csv
+from .data_utils import (
+    build_info_knn_from_milvus,
+    build_info_knn_from_csv,
+    find_pictures_to_most_similar_nearest_neighbours,
+)
 from .distance_calculation import calculate_distance
 from classifier.simple_classification import classify_age, classify_gender, ensemble_classifier
 from utils.logging_utils import logging_nearest_neighbours, logging_classification
@@ -87,14 +91,15 @@ def run_inference_pipeline(
 
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
     ######## STEP 4: make a decision for prediction ######################
-    print(dict_all_info_knn)
 
     age_dict = classify_age(dict_all_info_knn)
     gender_dict = classify_gender(dict_all_info_knn)
     ensemble_df = ensemble_classifier(age_dict, gender_dict)
-
+    print(ensemble_df)
+    knn_info_df = find_pictures_to_most_similar_nearest_neighbours(dict_all_info_knn)
+    print(knn_info_df)
     #### Logging ####
     if not testing:
         logging_nearest_neighbours(uuid, dict_all_info_knn)
         logging_classification(uuid, age_dict, gender_dict, ensemble_df)
-    return ensemble_df
+    return ensemble_df, knn_info_df

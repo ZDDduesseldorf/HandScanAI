@@ -196,7 +196,6 @@ def find_pictures_to_most_similar_nearest_neighbours(dict_all_info_knn):
 
     for regionkey, region_df in dict_all_info_knn.items():
         for _, row in region_df.iterrows():
-            print(row)
             new_row = {
                 DictKeys.REGION.value: regionkey,
                 DictKeys.UUID.value: row[DictKeys.UUID.value],
