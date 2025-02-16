@@ -1,8 +1,9 @@
 import { Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled(Box)`
   display: flex;
@@ -60,11 +61,33 @@ const OutlinedButton = styled(Button)`
 const StyledText = styled(Typography)`
   color: black;
   font-size: 1.6rem;
+  margin-top: 10px;
 `;
 
-const ImagePostCapture = () => {
+const ImagePostCapture: React.FC = () => {
   const navigate = useNavigate();
   const capturedImage = useAppStore((state) => state.capturedImage);
+  const [displayImage, setDisplayImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let objectURL: string | undefined;
+    if (capturedImage) {
+      fetch(capturedImage, { cache: 'no-store' })
+        .then((res: Response) => res.blob())
+        .then((blob: Blob) => {
+          objectURL = URL.createObjectURL(blob);
+          setDisplayImage(objectURL);
+        })
+        .catch((err: unknown) => {
+          console.error('Error fetching image:', err);
+        });
+    }
+    return () => {
+      if (objectURL) {
+        URL.revokeObjectURL(objectURL);
+      }
+    };
+  }, [capturedImage]);
 
   return (
     <Container>
@@ -75,18 +98,14 @@ const ImagePostCapture = () => {
       </StyledText>
       <StyledText>
         Warum ist das so wichtig? Künstliche Intelligenz wird durch Daten
-        trainiert. Je mehr Daten vorhanden sind, desto besser kann die KI Muster
-        erkennen, Zusammenhänge verstehen und präzisere Vorhersagen treffen.
-        Dein Foto trägt also dazu bei, dass HandScan AI nicht nur intelligenter,
-        sondern auch vielfältiger und gerechter wird – denn ein breiter
-        Datensatz hilft, Vorurteile (Bias) zu reduzieren.
+        trainiert – je mehr Daten, desto besser!
       </StyledText>
       <ImagePlaceholder>
-        {capturedImage ? (
+        {displayImage ? (
           <img
-            src={capturedImage}
+            src={displayImage}
             alt="Captured"
-            style={{ maxWidth: '100%' }}
+            style={{ maxWidth: '100%', borderRadius: '8px' }}
           />
         ) : (
           <Typography>Image placeholder</Typography>
