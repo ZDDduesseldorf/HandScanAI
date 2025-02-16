@@ -25,3 +25,25 @@ export interface ScanEntry {
 export interface CreateScanEntryModelData {
   createScanEntryModel: ScanEntry;
 }
+
+export interface UpdateScanEntryModelData {
+  updateScanEntryModel: ScanEntry;
+}
+
+export interface DeleteScanEntryModelData {
+  deleteScanEntryModel: boolean;
+}
+
+export interface ScanEntryInput {
+  realAge?: number | null;
+  realGender?: number | null;
+  confirmed?: boolean;
+}
+
+export interface GetScanEntryModelsData {
+  getScanEntryModels: ScanEntry[];
+}
+
+export interface GetScanEntryModelData {
+  getScanEntryModel: ScanEntry;
+}

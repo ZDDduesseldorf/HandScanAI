@@ -13,3 +13,31 @@ export const GET_SCAN_RESULT = gql`
     }
   }
 `;
+
+export const GET_SCAN_ENTRY_MODELS = gql`
+  query GetScanEntryModels {
+    getScanEntryModels {
+      id
+      imageExists
+      realAge
+      realGender
+      confirmed
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_SCAN_ENTRY_MODEL = gql`
+  query GetScanEntryModel($id: ID!) {
+    getScanEntryModel(id: $id) {
+      id
+      imageExists
+      realAge
+      realGender
+      confirmed
+      createdAt
+      updatedAt
+    }
+  }
+`;
