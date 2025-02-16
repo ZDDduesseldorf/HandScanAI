@@ -6,7 +6,7 @@ import ImageCapture from '@/pages/ImageCapture';
 import ImagePostCapture from '@/pages/ImagePostCapture';
 import Processing from '@/pages/Processing';
 import SubmissionComplete from '@/pages/SubmissionComplete';
-import Explanation from './pages/Explanation';
+import Explanation from '@/pages/Explanation';
 import Sandbox from '@/pages/Sandbox';
 import BlackBox from '@/pages/BlackBox';
 import Layout from '@/Layout';
