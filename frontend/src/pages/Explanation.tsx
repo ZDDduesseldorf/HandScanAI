@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
 import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 import GeneralButton from '@/components/GeneralButton';
 
 const BoxText = styled(Typography)`

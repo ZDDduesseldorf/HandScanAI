@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/NavButton';
 import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
+import NavButton from '@/components/buttons/Navigation';
 
 interface ServerMessage {
   flow: string;

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Typography, styled, Box } from '@mui/material';
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 import { useQuery } from '@apollo/client';
 import { GET_SCAN_RESULT } from '@/services/queries';
 import { GetScanResultData } from '@/services/graphqlTypes';
