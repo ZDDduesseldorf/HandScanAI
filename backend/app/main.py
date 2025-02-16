@@ -8,7 +8,7 @@ from .routes import router as api_router
 
 
 def get_application() -> FastAPI:
-    """ Initialize the FastAPI application """
+    """Initialize the FastAPI application"""
 
     _app = FastAPI(
         title="backend",
@@ -17,7 +17,8 @@ def get_application() -> FastAPI:
     )
     _app.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        # allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=["*"],  # this is a workaround
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

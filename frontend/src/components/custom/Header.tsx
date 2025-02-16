@@ -3,10 +3,10 @@ import { Box, styled } from '@mui/material';
 import Title from '@/components/headings/Title';
 
 interface Props {
-  title: string
+  title: string;
 }
 
-export default function Header({title}:Props) {
+export default function Header({ title }: Props) {
   const HorizontalBar = styled(Box)`
     display: flex;
     flex-direction: row;
@@ -17,7 +17,7 @@ export default function Header({title}:Props) {
     padding: 0;
     top: 0;
   `;
-  
+
   return (
     <HorizontalBar>
       <Title>{title}</Title>
@@ -28,5 +28,4 @@ export default function Header({title}:Props) {
       />
     </HorizontalBar>
   );
-};
-
+}

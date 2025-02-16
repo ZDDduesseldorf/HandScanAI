@@ -2,10 +2,10 @@ import { Button, styled } from '@mui/material';
 
 interface Props {
   children: React.ReactNode;
-  onClick: ()=>void;
+  onClick: () => void;
 }
 
-export default function NarrowBottomFixed ({ onClick, children }:Props){
+export default function NarrowBottomFixed({ onClick, children }: Props) {
   const NarrowBottomFixed = styled(Button)`
     background-color: var(--primary);
     border-radius: 0;
@@ -22,11 +22,9 @@ export default function NarrowBottomFixed ({ onClick, children }:Props){
     text-transform: none;
 
     &:hover {
-        background-color: var(--primary-light);
+      background-color: var(--primary-light);
     }
   `;
 
-  return (
-    <NarrowBottomFixed onClick={onClick}>{children}</NarrowBottomFixed>
-  );
-};
+  return <NarrowBottomFixed onClick={onClick}>{children}</NarrowBottomFixed>;
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, TextField, MenuItem, Box, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,24 +19,31 @@ import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
 const genderGuess = 'weiblich';
 const ageGuess = 26;
 
-export const BoxForm = styled(Box)`
+const BoxForm = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   gap: 20px; /* Optional: adds space between the two boxes */
-}
 `;
 
 const BoxText = styled(Typography)`
   font-family: 'Poppins', sans-serif;
-  margin: 0 0 1 rem;
+  margin: 0 0 1rem;
   text-align: justify;
-  // font-size: clamp(1rem, 2vw, 1.5rem);
+  /* font-size: clamp(1rem, 2vw, 1.5rem); */
   font-size: 0.8rem;
 `;
 
-export default function Result_2(){
+// Optionally, you can keep the GraphQL mutation if needed
+// const CORRECT_HANDDATA = gql`
+//   mutation MyMutation($id: ID!, $input: ScanEntryInput!) {
+//     updateScanEntryModel(id: $id, input: $input) {
+//       id
+//     }
+//   }
+// `;
+
+export default function Result_2() {
   const navigate = useNavigate();
 
   const genders = [
@@ -50,8 +57,25 @@ export default function Result_2(){
     },
   ];
 
-  const [ageInput, setAgeInput] = React.useState('');
-  const [genderInput, setGenderInput] = React.useState('');
+  const [ageInput, setAgeInput] = useState('');
+  const [genderInput, setGenderInput] = useState('');
+  // const scanId = '5274cc1e-6413-4653-b14f-a4fcba138c99';
+
+  // The updateScanEntry mutation can be used when implemented
+  // const [updateScanEntry, { error, data }] = useMutation(CORRECT_HANDDATA);
+
+  // handleSubmit function can be implemented later
+  // const handleSubmit = () => {
+  //   updateScanEntry({
+  //     variables: {
+  //       id: scanId,
+  //       input: {
+  //         realAge: parseInt(ageInput, 10),
+  //         realGender: parseInt(genderInput, 10),
+  //       },
+  //     },
+  //   }).then(() => alert('Daten wurden aktualisiert!'));
+  // };
 
   return (
     <>
@@ -59,8 +83,8 @@ export default function Result_2(){
       <WithMargins mx="2em" my="1.5em">
         <Secondary>KI kann Fehler machen</Secondary>
         <Justified>
-          Auch wenn die KI leistungsstark ist, können Fehler auftreten. Überprüfe
-          das Ergebnis, um sicherzugehen, dass es korrekt ist.
+          Auch wenn die KI leistungsstark ist, können Fehler auftreten.
+          Überprüfe das Ergebnis, um sicherzugehen, dass es korrekt ist.
         </Justified>
         <BoxForm>
           <Secondary>Dein Alter</Secondary>
@@ -106,8 +130,10 @@ export default function Result_2(){
             ))}
           </TextField>
         </BoxForm>
-        <NarrowBottomSticky onClick={() => {navigate('/submission-complete')}}>Weiter</NarrowBottomSticky>
+        <NarrowBottomSticky onClick={() => navigate('/submission-complete')}>
+          Weiter
+        </NarrowBottomSticky>
       </WithMargins>
     </>
   );
-};
+}

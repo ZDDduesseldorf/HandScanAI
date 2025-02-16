@@ -1,5 +1,6 @@
 import Slider from '@mui/material/Slider';
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/store/appStore';
 
 import WithMargins from '@/components/layout/WithMargins';
 import Header from '@/components/custom/Header';
@@ -15,12 +16,12 @@ import NarrowBottomSticky from '@/components/buttons/NarrowBottomFixed';
 // Alter Accuracy (Wie sicher ist sich KI?)
 // Geschlecht Accuracy (Wie sicher ist sich KI?)
 
-const genderGuess = 0;
-const ageGuess = 26;
-const min_age = 20;
-const max_age = 26;
-const age_confidence = 97;
-const gender_confidence = 95;
+// const genderGuess = 0;
+// const ageGuess = 26;
+// const min_age = 20;
+// const max_age = 26;
+// const age_confidence = 97;
+// const gender_confidence = 95;
 
 const age_marks: { label: string; value: number }[] = [
   { value: 15, label: '<15' },
@@ -33,15 +34,31 @@ const age_marks: { label: string; value: number }[] = [
   { value: 85, label: '85+' },
 ];
 
-export default function Result_1 () {
+export default function Result_1() {
   const navigate = useNavigate();
+  const scanResult = useAppStore((state) => state.scanResult);
+
+  if (!scanResult) {
+    return (
+      <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
+    );
+  }
+
+  // Override globals with values from the backend scanResult
+  const genderGuess = scanResult.classifiedAge;
+  const ageGuess = scanResult.classifiedAge;
+  const min_age = scanResult.minAge;
+  const max_age = scanResult.maxAge;
+  const age_confidence = scanResult.confidenceAge;
+  const gender_confidence = scanResult.confidenceGender;
 
   return (
     <>
       <Header title="Ergebnis" />
       <WithMargins mx="2em" my="1.5em">
         <Secondary>
-          Du bist {genderGuess ? 'weiblich' : 'männlich'} und {ageGuess} Jahre alt
+          Du bist {genderGuess ? 'weiblich' : 'männlich'} und {ageGuess} Jahre
+          alt
         </Secondary>
         <Tertiary>Dein Alter</Tertiary>
         <Justified>
@@ -75,8 +92,10 @@ export default function Result_1 () {
           min={0}
           max={1}
         />
-        <NarrowBottomSticky onClick={() => navigate("/result-2")}>Weiter</NarrowBottomSticky>
+        <NarrowBottomSticky onClick={() => navigate('/result-2')}>
+          Weiter
+        </NarrowBottomSticky>
       </WithMargins>
     </>
   );
-};
+}
