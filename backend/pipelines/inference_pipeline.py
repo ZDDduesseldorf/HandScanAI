@@ -95,9 +95,7 @@ def run_inference_pipeline(
     age_dict = classify_age(dict_all_info_knn)
     gender_dict = classify_gender(dict_all_info_knn)
     ensemble_df = ensemble_classifier(age_dict, gender_dict)
-    print(ensemble_df)
     knn_info_df = find_pictures_to_most_similar_nearest_neighbours(dict_all_info_knn)
-    print(knn_info_df)
     #### Logging ####
     if not testing:
         logging_nearest_neighbours(uuid, dict_all_info_knn)
