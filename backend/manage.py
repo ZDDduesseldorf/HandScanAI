@@ -89,6 +89,7 @@ def run_tests():
 @cli.command("initial_data_pipeline")
 def run_initial_data_pipeline():
     """Run the initial data pipeline."""
+    # TODO: Set correct paths and flags before running the pipeline
     temp_base_dir = Path(__file__).resolve().parent
     base_dataset_path = temp_base_dir / "path/to/baseImages"  # e.g. temp_base_dir / "app" / "media" / "BaseImages"
     region_dataset_path = temp_base_dir / "path/to/regionImages"  # e.g.temp_base_dir / "app" / "media" / "RegionImages"
@@ -101,9 +102,9 @@ def run_initial_data_pipeline():
 @cli.command("initial_dataset_filter")
 def filter_11k_dataset():
     """Run filter_11k function."""
-    # TODO: Pfade müssen vor Verwendung angepasst werden
+    # TODO: Set correct paths before running the pipeline (ideally build via os.path or pathlib.Path, for example see function run_initial_data_pipeline)
     folder_path_initial_dataset = "path/to/image/folder"  # current dataset
-    initial_csv_path = "path/to/csv"  # e.g. "J:\Dokumente\MMI\HandScanAI\Repo\HandScanAI\HandInfo.csv"
+    initial_csv_path = "path/to/csv"  # e.g. "path\to\HandInfo.csv"
     filtered_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
     new_csv_path = "CSV_filtered.csv"
     filter_11k_hands(folder_path_initial_dataset, initial_csv_path, filtered_dataset_path, new_csv_path)
@@ -118,7 +119,7 @@ def initial_setup_csv_logging():
 @cli.command("normalisation_visual_test")
 def normalisation_visual_test():
     """Run the a visual test of the normalize_hand_image() function"""
-    # TODO: Pfade müssen vor Verwendung angepasst werden
+    # TODO: Set correct paths before using the function
     image_path = r"path/to/image/folder"
     region_dict = normalize.normalize_hand_image(image_path)
     image_list = list(region_dict.values())
