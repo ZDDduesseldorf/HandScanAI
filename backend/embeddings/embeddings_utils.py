@@ -17,18 +17,17 @@ _default_cnn_model_ = load_model()
 ###############################################
 
 
-# TODO: update signature and docstring, check tensor dimensions
-def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn_model_) -> dict[str, torch.Tensor]:
+def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn_model_) -> dict[str, ndarray]:
     """
     Calculates the embedding of every image in the given dict of region keys and image-tensor values.
-    The tensor represents a 3 dimensional RGB array (3 x H x W) of an image with values being uint8 in [0, 255].
+    The ndarrays (here called image_tensors) in regions_dict represent 3-dimensional RGB arrays (3 x H x W) of images with values being uint8 in [0, 255].
 
     Args:
-        regions_dict (dict[str, numpyArray]): dict of region keys and image-path values
+        regions_dict (dict[str, ndarray]): dict of region keys and image_tensor values
         model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
-        embeddings_dict (dict[str, torch.Tensor]): dict of region keys and of embeddings tensors corresponding to input dict
+        embeddings_dict (dict[str, ndarray]): dict of region keys and of embeddings (float arrays) corresponding to input dict
 
     Example:
         `calculate_embeddings_from_path_dict(regions_dict, load_model(models_utils.CNNModel.DENSENET_121))`
@@ -40,9 +39,7 @@ def calculate_embeddings_from_tensor_dict(regions_dict: dict, model=_default_cnn
     return embeddings_dict
 
 
-def calculate_embeddings_from_path_dict(
-    regions_dict: dict[str, str], model=_default_cnn_model_
-) -> dict[str, torch.Tensor]:
+def calculate_embeddings_from_path_dict(regions_dict: dict[str, str], model=_default_cnn_model_) -> dict[str, ndarray]:
     """
     Calculates the embedding of every image in the given dict of region keys and image-path values.
 
@@ -51,7 +48,7 @@ def calculate_embeddings_from_path_dict(
         model (DenseNet | ResNet): loaded (pytorch)-model with which the embedding is generated. Default: DenseNet121
 
     Returns:
-        embeddings_dict (dict[str, torch.Tensor]): dict of region keys and of embeddings tensors corresponding to input dict
+        embeddings_dict (dict[str, ndarray]): dict of region keys and of embeddings (float arrays) corresponding to input dict
 
     Example:
         `calculate_embeddings_from_path_dict(regions_dict, load_model(models_utils.CNNModel.DENSENET_121))`
@@ -64,7 +61,7 @@ def calculate_embeddings_from_path_dict(
     return embeddings_dict
 
 
-def normalize_embedding(embedding: ndarray) -> ndarray:
+def normalize_embedding(embedding: (torch.Tensor | ndarray)) -> ndarray:
     """
     Normalizes input vectors individually to unit norm (vector length) by scaling them.
     "This process can be useful if quadratic form such as the dot-product is used, e.g. in calculating similarity/ distance between vectors." (scikit-learn.org)
@@ -76,7 +73,7 @@ def normalize_embedding(embedding: ndarray) -> ndarray:
     - https://scikit-learn.org/stable/modules/preprocessing.html#normalization
 
     Args:
-        embedding (ndarray): embedding-tensor of given image
+        embedding (torch.Tensor | ndarray): embedding-tensor of given image
 
     Returns:
         normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
@@ -87,7 +84,7 @@ def normalize_embedding(embedding: ndarray) -> ndarray:
     return normalize(feature_vector.reshape(1, -1), norm="l2").flatten()
 
 
-def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> ndarray:
+def calculate_embedding(image: (torch.Tensor | ndarray), model=_default_cnn_model_) -> ndarray:
     """
     Uses the given model to generate the embedding of an image.
     Pushes model and data to gpu (cuda) if possible to enhance performance.
@@ -95,7 +92,7 @@ def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> ndarr
     Returns a normalized embeddings-tensor of length 1024 (densenet) or 1000 (resnet).
 
     Args:
-        image (torch.Tensor): image as 3 dimensional RGB Tensor (3, H, W) with values of uint8 in range [0, 255]
+        image (torch.Tensor | ndarray): image as 3 dimensional RGB Tensor/array (3, H, W) with values of uint8 in range [0, 255]
         model (DenseNet | ResNet): loaded (pytorch)-model that generates embedding. Default: CNNModel.DenseNet121
 
     Returns:
@@ -118,13 +115,13 @@ def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> ndarr
     return normalize_embedding(embedding)
 
 
-def preprocess_image(input_image: torch.Tensor, transforms=transforms_default) -> torch.Tensor:
+def preprocess_image(input_image: (torch.Tensor | ndarray), transforms=transforms_default) -> torch.Tensor:
     """
     Preprocesses 3D RGB image tensor (by using the transforms on it) into an input_batch for neural network.
 
 
     Args:
-        input_image (torch.Tensor): 3 dimensional RGB Tensor of an image with values being uint8 in [0, 255]
+        input_image (torch.Tensor | ndarray): 3 dimensional RGB Tensor of an image with values being uint8 in [0, 255]
         transforms: transforms used on the image
 
     Returns:
