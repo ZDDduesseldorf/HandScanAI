@@ -7,6 +7,7 @@ from pipelines.initial_dataset_filter_pipeline import filter_11k_hands
 from utils.logging_utils import setup_csv_logging
 from hand_normalization.src import main as normalize
 import cv2
+from pathlib import Path
 
 
 cli = typer.Typer()
@@ -88,9 +89,10 @@ def run_tests():
 @cli.command("initial_data_pipeline")
 def run_initial_data_pipeline():
     """Run the initial data pipeline."""
-    base_dataset_path = "app/media/BaseImages"
-    region_dataset_path = "app/media/RegionImages"
-    csv_folder_path = "app/media/csv"
+    temp_base_dir = Path(__file__).resolve().parent
+    base_dataset_path = temp_base_dir / "path/to/baseImages"  # e.g. temp_base_dir / "app" / "media" / "BaseImages"
+    region_dataset_path = temp_base_dir / "path/to/regionImages"  # e.g.temp_base_dir / "app" / "media" / "RegionImages"
+    csv_folder_path = temp_base_dir / "path/to/csvFolder"  # temp_base_dir / "app" / "media" / "csv"
 
     # Call the pipeline with paths
     initial_pipeline.run_initial_data_pipeline(base_dataset_path, region_dataset_path, csv_folder_path)
@@ -112,6 +114,7 @@ def initial_setup_csv_logging():
     """Run the setup csv-logging funktion."""
     setup_csv_logging()
 
+
 @cli.command("normalisation_visual_test")
 def normalisation_visual_test():
     """Run the a visual test of the normalize_hand_image() function"""
@@ -121,9 +124,10 @@ def normalisation_visual_test():
     image_list = list(region_dict.values())
     grid_image = normalize.draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
 
-    cv2.imshow('Region Image Grid', grid_image)
+    cv2.imshow("Region Image Grid", grid_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     cli()
