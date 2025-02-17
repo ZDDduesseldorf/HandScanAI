@@ -57,7 +57,7 @@ export default function Result_1() {
       <Header title="Ergebnis" />
       <WithMargins mx="2em" my="1.5em">
         <Secondary>
-          Du bist {genderGuess ? 'weiblich' : 'männlich'} und {ageGuess} Jahre
+          Du bist {genderGuess ? 'männlich' : 'weiblich'} und {ageGuess} Jahre
           alt
         </Secondary>
         <Tertiary>Dein Alter</Tertiary>
@@ -77,20 +77,21 @@ export default function Result_1() {
         <Tertiary>Dein Geschlecht</Tertiary>
         <Justified>
           HandScan AI ist sich zu {gender_confidence}% sicher, dass du{' '}
-          {genderGuess ? 'weiblich' : 'männlich'} bist
+          {genderGuess ? 'männlich' : 'weiblich'} bist
         </Justified>
         <Slider
           disabled
-          defaultValue={genderGuess}
+          defaultValue={gender_confidence}
           valueLabelDisplay="auto"
           aria-label="Gender guess"
           track={false}
           marks={[
-            { value: 0, label: 'männlich' },
-            { value: 1, label: 'weiblich' },
+            { value: 0, label: '0%' },
+            { value: 50, label: '50%'},
+            { value: 100, label: '100%' },
           ]}
           min={0}
-          max={1}
+          max={100}
         />
         <NarrowBottomSticky onClick={() => navigate('/result-2')}>
           Weiter

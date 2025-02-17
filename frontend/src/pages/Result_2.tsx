@@ -36,11 +36,11 @@ export default function Result_2() {
   const genders = [
     {
       value: '0',
-      label: 'männlich',
+      label: 'weiblich',
     },
     {
       value: '1',
-      label: 'weiblich',
+      label: 'männlich',
     },
   ];
 
