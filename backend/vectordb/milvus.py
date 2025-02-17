@@ -17,7 +17,7 @@ milvus_collection_name = "hand_regions"
 
 milvus_default_top_k = 5
 
-milvus_metric_type = "L2"
+milvus_metric_type = "COSINE"
 
 milvus_index_params = {
     "index_type": "IVF_FLAT",
@@ -127,7 +127,7 @@ def prepare_data_for_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]
     for region, values in embeddings_dict.items():
         uuids.append(uuid)
         regions.append(region)
-        embeddings.append(values[0].tolist())
+        embeddings.append(values.tolist())
 
     return {"UUIDS": uuids, "Regions": regions, "Embeddings": embeddings}
 

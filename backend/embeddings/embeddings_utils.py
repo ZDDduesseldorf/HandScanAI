@@ -64,7 +64,7 @@ def calculate_embeddings_from_path_dict(
     return embeddings_dict
 
 
-def normalize_embedding(embedding: torch.Tensor) -> ndarray:
+def normalize_embedding(embedding: ndarray) -> ndarray:
     """
     Normalizes input vectors individually to unit norm (vector length) by scaling them.
     "This process can be useful if quadratic form such as the dot-product is used, e.g. in calculating similarity/ distance between vectors." (scikit-learn.org)
@@ -76,30 +76,30 @@ def normalize_embedding(embedding: torch.Tensor) -> ndarray:
     - https://scikit-learn.org/stable/modules/preprocessing.html#normalization
 
     Args:
-        embedding (torch.Tensor): embedding-tensor of given image in form of torch.Size([1, 1024])
+        embedding (ndarray): embedding-tensor of given image
 
     Returns:
         normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
     """
     # extract the feature vector
-    feature_vector = embedding.squeeze().numpy()
+    feature_vector = embedding.squeeze()
     # Scale input vectors individually to unit norm (vector length). This process can be useful if you plan to use a quadratic form such as the dot-product
     return normalize(feature_vector.reshape(1, -1), norm="l2").flatten()
 
 
-def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> torch.Tensor:
+def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> ndarray:
     """
     Uses the given model to generate the embedding of an image.
     Pushes model and data to gpu (cuda) if possible to enhance performance.
     Since the model does not get trained, no-grad (flag to stop backpropagation calculations) is used.
-    Returns an embeddings-tensor of torch.Size([1, 1024]) (densenet) or torch.Size([1, 1000]) (resnet).
+    Returns a normalized embeddings-tensor of length 1024 (densenet) or 1000 (resnet).
 
     Args:
         image (torch.Tensor): image as 3 dimensional RGB Tensor (3, H, W) with values of uint8 in range [0, 255]
         model (DenseNet | ResNet): loaded (pytorch)-model that generates embedding. Default: CNNModel.DenseNet121
 
     Returns:
-        embedding (torch.Tensor): embedding-tensor of given image in form of torch.Size([1, 1024])
+        normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
     """
 
     device = choose_device()
@@ -115,7 +115,7 @@ def calculate_embedding(image: torch.Tensor, model=_default_cnn_model_) -> torch
         embedding = model(input_batch)
 
     # output embeddings-tensor
-    return embedding
+    return normalize_embedding(embedding)
 
 
 def preprocess_image(input_image: torch.Tensor, transforms=transforms_default) -> torch.Tensor:

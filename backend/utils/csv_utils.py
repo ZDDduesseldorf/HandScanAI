@@ -154,7 +154,7 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
     for region, embedding in embeddings_dict.items():
         csv_name = region + "_Embeddings.csv"
         file_path = os.path.join(embedding_csvs_folder_path, csv_name)
-        if not add_entry_to_csv(file_path, {"UUID": uuid, "Embedding": embedding.numpy().tolist()}):
+        if not add_entry_to_csv(file_path, {"UUID": uuid, "Embedding": embedding.tolist()}):
             success = False
 
     return success

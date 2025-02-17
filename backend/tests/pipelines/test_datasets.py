@@ -52,4 +52,4 @@ def test_dataset_with_embeddings_calculation(path_to_region_images):
         assert type(test_embeddings) is dict
         assert len(test_embeddings) == 7
         # expect embeddings to have correct dimensions
-        assert test_embeddings[HandRegions.HAND_0.value].shape[1] == 1024
+        assert len(test_embeddings[HandRegions.HAND_0.value]) == 1024
