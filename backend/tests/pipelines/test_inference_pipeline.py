@@ -19,4 +19,5 @@ def test_run_inference_pipeline():
     classification_df, knn_info_df = run_inference_pipeline(uuid, testing=True, use_milvus=False)
     # column: index + 5 Parameter
     assert classification_df.shape == (1, 6)
+    # 3 rows each with 4 columns
     assert knn_info_df.shape == (3, 4)

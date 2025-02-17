@@ -6,7 +6,7 @@ from utils.image_utils import get_image_path
 from .data_utils import (
     build_info_knn_from_milvus,
     build_info_knn_from_csv,
-    find_pictures_to_most_similar_nearest_neighbours,
+    find_most_similar_nearest_neighbours,
 )
 from .distance_calculation import calculate_distance
 from classifier.weighted_classification import weighted_classifier
@@ -95,7 +95,7 @@ def run_inference_pipeline(
     # TODO: für einfache Klassifizierung verwende simple_classifier
     ensemble_df, age_dict, gender_dict = weighted_classifier(dict_all_info_knn)
 
-    knn_info_df = find_pictures_to_most_similar_nearest_neighbours(dict_all_info_knn)
+    knn_info_df = find_most_similar_nearest_neighbours(dict_all_info_knn)
 
     #### Logging ####
     if not testing:

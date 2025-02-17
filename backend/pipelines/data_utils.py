@@ -173,7 +173,7 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
     return dict_all_info_knn
 
 
-def find_pictures_to_most_similar_nearest_neighbours(dict_all_info_knn):
+def find_most_similar_nearest_neighbours(dict_all_info_knn):
     """
     From all the nearest neighbours in each region, n are selected that have the shortest distance and differ in uuid.
     Saving of region, uuid, age and gender in dataframe for transfer to frontend
