@@ -32,7 +32,9 @@ lint.ignore = [
     "S101",
     "S603",
     "S607",
-    "E501"
+    "E501",
+    "UP006",
+    "UP035"
 ]
 
 [tool.pytest.ini_options]
