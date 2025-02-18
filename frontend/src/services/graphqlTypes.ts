@@ -9,7 +9,9 @@ export interface ScanResult {
 }
 
 export interface GetScanResultData {
-  getScanResult: ScanResult;
+  getScanResult: {
+    resultClassifier: ScanResult;
+  }
 }
 
 export interface ScanEntry {

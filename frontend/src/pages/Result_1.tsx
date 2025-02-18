@@ -16,22 +16,22 @@ import NarrowBottomSticky from '@/components/buttons/NarrowFixedBottomRight';
 // Alter Accuracy (Wie sicher ist sich KI?)
 // Geschlecht Accuracy (Wie sicher ist sich KI?)
 
-const genderGuess = 0;
-const ageGuess = 26;
-const min_age = 20;
-const max_age = 26;
+//const genderGuess = 0;
+//const ageGuess = 26;
+//const min_age = 20;
+//const max_age = 26;
 // const age_confidence = 97;
-const gender_confidence = 95;
+//const gender_confidence = 95;
 
 export default function Result_1() {
   const navigate = useNavigate();
   const scanResult = useAppStore((state) => state.scanResult);
-  /*
+  
   if (!scanResult) {
     return (
       <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
     );
-  }*/
+  }
 
   const age_marks: { label: string; value: number }[] = [
     { value: 15, label: '<15' },
@@ -45,25 +45,25 @@ export default function Result_1() {
   ];
 
   // Override globals with values from the backend scanResult
-  //const genderGuess = scanResult.classifiedAge;
-  //const ageGuess = scanResult.classifiedAge;
-  //const min_age = scanResult.minAge;
-  //const max_age = scanResult.maxAge;
+  const genderGuess = scanResult.classifiedAge;
+  const ageGuess = scanResult.classifiedAge;
+  const min_age = scanResult.minAge;
+  const max_age = scanResult.maxAge;
   //const age_confidence = scanResult.confidenceAge;
-  //const gender_confidence = scanResult.confidenceGender;
+  const gender_confidence = scanResult.confidenceGender;
 
   return (
     <>
       <Header title="Ergebnis" />
       <WithMargins mx="2em" my="1.5em">
         <Secondary>
-          Du bist {genderGuess ? 'männlich' : 'weiblich'} und {ageGuess} Jahre
+          Du bist {genderGuess == 1 ? 'männlich' : 'weiblich'} und {Math.round(ageGuess)} Jahre
           alt
         </Secondary>
         <Tertiary>Dein Alter</Tertiary>
         <Justified>
-          HandScan AI denkt, dass du wahrscheinlich {ageGuess} Jahre alt bist, 
-          denn 90% von ähnlichen Händen waren ebenfalls zwischen {min_age} und {max_age} Jahre alt.
+          HandScan AI denkt, dass du wahrscheinlich {Math.round(ageGuess)} Jahre alt bist, 
+          denn 90% von ähnlichen Händen waren ebenfalls zwischen {Math.round(min_age)} und {Math.round(max_age)} Jahre alt.
         </Justified>
         <Slider
           disabled
@@ -76,12 +76,12 @@ export default function Result_1() {
         />
         <Tertiary>Dein Geschlecht</Tertiary>
         <Justified>
-          HandScan AI ist sich zu {gender_confidence}% sicher, dass du{' '}
-          {genderGuess ? 'männlich' : 'weiblich'} bist
+          HandScan AI ist sich zu {Math.round(gender_confidence*100)}% sicher, dass du{' '}
+          {genderGuess == 1 ? 'männlich' : 'weiblich'} bist
         </Justified>
         <Slider
           disabled
-          defaultValue={gender_confidence}
+          defaultValue={gender_confidence*100}
           valueLabelDisplay="auto"
           aria-label="Gender guess"
           track={false}

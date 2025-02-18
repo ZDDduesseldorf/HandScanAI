@@ -27,8 +27,8 @@ const Processing: React.FC = () => {
   const { setScanResult } = useAppStore();
 
   useEffect(() => {
-    if (data?.getScanResult) {
-      setScanResult(data.getScanResult);
+    if (data?.getScanResult.resultClassifier) {
+      setScanResult(data.getScanResult.resultClassifier);
     }
   }, [data, setScanResult]);
   if (error) return <p>Error: {error.message}</p>;
