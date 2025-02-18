@@ -87,7 +87,6 @@ def run_inference_pipeline(
 
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
     ######## STEP 4: make a decision for prediction ######################
-    print(dict_all_info_knn)
 
     # TODO: für einfache Klassifizierung verwende simple_classifier
     ensemble_df, age_dict, gender_dict = weighted_classifier(dict_all_info_knn)

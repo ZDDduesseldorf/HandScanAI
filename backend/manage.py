@@ -9,7 +9,6 @@ from hand_normalization.src import main as normalize
 import cv2
 from pathlib import Path
 
-
 cli = typer.Typer()
 
 
@@ -96,7 +95,15 @@ def run_initial_data_pipeline():
     csv_folder_path = temp_base_dir / "path/to/csvFolder"  # temp_base_dir / "app" / "media" / "csv"
 
     # Call the pipeline with paths
-    initial_pipeline.run_initial_data_pipeline(base_dataset_path, region_dataset_path, csv_folder_path)
+    initial_pipeline.run_initial_data_pipeline(
+        base_dataset_path,
+        region_dataset_path,
+        csv_folder_path,
+        normalize=False,
+        save_images=False,
+        save_csvs=True,
+        save_milvus=True,
+    )
 
 
 @cli.command("initial_dataset_filter")

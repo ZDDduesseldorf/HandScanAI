@@ -20,7 +20,7 @@ milvus_default_top_k = 5
 milvus_metric_type = "COSINE"
 
 milvus_index_params = {
-    "index_type": "IVF_FLAT",
+    "index_type": "FLAT",
     "metric_type": milvus_metric_type,
     "params": {"nlist": 128},
 }
@@ -193,7 +193,7 @@ def search_embeddings_dict(
 
         try:
             results = collection.search(
-                data=query_vector,
+                data=[query_vector],  # Type List required
                 anns_field="vector",
                 param=search_params,
                 limit=top_k,
