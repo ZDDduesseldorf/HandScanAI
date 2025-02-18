@@ -170,7 +170,7 @@ def bulk_import_with_initial_data_pipeline():
             - copy the corresponding region-images (with the same uuids as the NewImages) from TempRegionImages into RegionImages.
             - copy corresponding metadata (same uuids) into Metadata.csv in csv-folder. Keep the correct format in mind.
 
-    By changing the flags, it is also possible to use already calculated region-images or recalculate embeddings from scratch. For further information on the use of the flags see `setup_new_project_with_initial_data_pipeline` or docstring of `run_initial_data_pipeline`.
+    By changing the flags, it is also possible to use already normalized region-images or recalculate embeddings from scratch. For further information on the use of the flags see `setup_new_project_with_initial_data_pipeline` or docstring of `run_initial_data_pipeline`.
     """
 
     temp_base_dir = Path(__file__).resolve().parent
