@@ -17,6 +17,8 @@
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
     - [Server starten](#server-starten)
   - [Setup](#setup)
+    - [setup media](#setup-media)
+    - [setup logging](#setup-logging)
   - [Entwicklung in VSCode](#entwicklung-in-vscode)
     - [Extensions](#extensions)
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
@@ -27,10 +29,10 @@
     - [tests](#tests)
     - [validation](#validation)
     - [Weitere Module](#weitere-module)
-  - [Formatierung und Linter](#formatierung-und-linter)
+  - [Formatting and Linter](#formatting-and-linter)
     - [Code Checks](#code-checks)
-    - [Code formatieren](#code-formatieren)
-  - [Tests ausführen](#tests-ausführen)
+    - [Code formatting](#code-formatting)
+  - [Run tests](#run-tests)
 
 ## Installation mit Docker und Dev Container
 
@@ -128,16 +130,20 @@ Der Server sollte nun unter `http://127.0.0.1:8000/` erreichbar sein.
 
 ## Setup
 
-Ordnerstruktur anlegen
+Setup necessary to use the application. Describes creation of folder structures and base data.
 
-backend/app/media
+### setup media
 
-- BaseImages: Alle Bilder des BaseDataset
-- csv: Metadata.csv und region_Embeddings.csv (erstellt durch initial_data_pipeline)
-- QueryImages: Bilder aus Frontend werden in diesem Ordner abgespeichert
-- RegionImages: Ergebnis Handnormalization
+Create `backend/app/media` and inside
 
-backend/logs
+- `BaseImages`: contains all images of BaseDataset
+- `csv`: contains Metadata.csv and {region}_Embeddings.csv (created via `manage.py setup_new_project_data`, see `manage.py` docstrings for further information. Important: Create embedding-csvs new on every new computer/ don't copy them between devices.)
+- `QueryImages`: place where images from frontend are saved
+- `RegionImages`: results of hand-normalization
+
+### setup logging
+
+Create `backend/logs` and run
 
 ```sh
   python manage.py setup_csv_logging
@@ -147,9 +153,9 @@ backend/logs
 
 ### Extensions
 
-- Ruff: https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff
+- Ruff: <https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff>
 
-- Python: https://marketplace.visualstudio.com/items?itemName=ms-python.python
+- Python: <https://marketplace.visualstudio.com/items?itemName=ms-python.python>
 
 ### Python Interpreter einstellen
 
@@ -205,7 +211,7 @@ Weitere Module können auf ähnliche Weise hinzugefügt werden, indem Sie neue V
 
 Durch das Hinzufügen neuer Module auf diese Weise bleibt die Codebasis organisiert und modular, was die Wartung und Erweiterung der Anwendung erleichtert.
 
-## Formatierung und Linter
+## Formatting and Linter
 
 ### Code Checks
 
@@ -213,13 +219,13 @@ Durch das Hinzufügen neuer Module auf diese Weise bleibt die Codebasis organisi
 python manage.py check
 ```
 
-### Code formatieren
+### Code formatting
 
 ```sh
 python manage.py format
 ```
 
-## Tests ausführen
+## Run tests
 
 ```sh
 python manage.py test
