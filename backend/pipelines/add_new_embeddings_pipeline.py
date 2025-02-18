@@ -8,30 +8,36 @@ from .data_utils import map_gender_int_to_string
 from utils.logging_utils import logging_input_data
 from vectordb.milvus import add_embeddings_to_milvus, milvus_collection_name
 
-# before pipeline is started check is necessary to check the data and only if this is true start pipeline
+# INFORMATION: only start pipeline if ground_truth_data was checked for plausibility
 
 
 def run_add_new_embeddings_pipeline(
-    uuid,
-    ground_truth_data: dict,
-    milvus_collection_name=milvus_collection_name,
-    testing=False,
-    save_csvs=True,
-    save_milvus=True,
+    uuid: str,
+    ground_truth_data: dict[str, int],
+    testing: bool = False,
+    save_csvs: bool = True,
+    save_milvus: bool = True,
+    milvus_collection_name: str = milvus_collection_name,
 ):
-    # TODO: docstring anpassen
     """
-    pipeline to add classified and checked image to vektortree
-    checking if the age and gender details are logical
+    Pipeline to process a classified and checked image by
+    - saving its normalized region images
+    - copying the image from the query-images into the folder for base-images
+    - logging its metadata and adding its metadata to the metadata csv file
+    - adding its embeddings to region-csv-files and/ or vector-database
 
     Args:
         uuid (str): Unique identifier for the image
+        ground_truth_data (dict[str, int]): metadata containing age and gender
+        testing (bool, optional): Flag whether or not to enable data saving. Defaults to False to enable unit testing.
+        save_csvs (bool, optional): Flag whether or not to save embeddings in region-csv-files. Use instead of milvus, for testing or for data redundancy. Defaults to True.
+        save_milvus (bool, optional): Flag whether or not to save embeddings in milvus-collection. Defaults to True.
+        milvus_collection_name (str, optional): Name of the milvus collection. Defaults to milvus_collection_name.
 
     Returns:
-        actual: dict = {region(str): embedding(torch.Tensor)}
-
-
+        success (bool): True if image was copied, metadata was saved and embeddings were saved correctly
     """
+    # use default paths depending on test- or production-mode
     folder_path_query, folder_path_region, embedding_csv_path, metadata_csv_path, folder_path_base = _path_manager(
         testing
     )
@@ -83,4 +89,4 @@ def run_add_new_embeddings_pipeline(
 
         return added_embeddings and added_metadata and copied_image
 
-    # für uns report sinnvoll mit vorhergesagtem und bestimmten Alter und Geschlecht, Timestamp?
+    # TODO: für uns report sinnvoll mit vorhergesagtem und bestimmten Alter und Geschlecht, Timestamp?
