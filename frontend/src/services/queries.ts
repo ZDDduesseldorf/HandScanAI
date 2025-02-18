@@ -4,14 +4,20 @@ export const GET_SCAN_RESULT = gql`
   query GetScanResult($id: ID!) {
     getScanResult(id: $id) {
       resultClassifier {
-      classifiedAge
-      classifiedGender
-      confidenceAge
-      confidenceGender
-      id
-      maxAge
-      minAge
-    }
+        classifiedAge
+        classifiedGender
+        confidenceAge
+        confidenceGender
+        id
+        maxAge
+        minAge
+      }
+      nearestNeigbhourInfo {
+        id
+        gender
+        age
+        region
+      }
     }
   }
 `;

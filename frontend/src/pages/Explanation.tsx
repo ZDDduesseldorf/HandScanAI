@@ -1,8 +1,16 @@
 import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
-import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/buttons/Navigation';
 import GeneralButton from '@/components/GeneralButton';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useAppStore } from '@/store/appStore';
+
+import Header from '@/components/custom/Header';
+import WithMargins from '@/components/layout/WithMargins';
+import Secondary from '@/components/headings/Secondary';
+import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight';
+import NearestNeighbourLayout from '@/components/custom/NearestNeighbourLayout';
 
 const BoxText = styled(Typography)`
   font-family: 'Poppins', sans-serif;
@@ -20,14 +28,7 @@ const SecondaryHeading = styled(Typography)`
   font-size: clamp(1rem, 2vw, 1.5rem);
   color: #000000;
 `;
-const HorizImageBox = styled(Box)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 20px;
-  // objectFit: contain;
-}
-`;
+
 
 const ArrowTextBox = styled(Box)`
   display: flex;
@@ -41,50 +42,41 @@ const VerticalElements = styled(Box)`
   justify-content: center;
 }
 `;
-const HandText = styled(Box)`
-font-family: 'Delius Unicase', cursive;
-margin-top: 1.5rem;
-text-align: left;
-font-size: clamp(0.5rem, 2vw, 1rem);
-color: #0F3EB5;
-}
-`;
+
 
 const Explanation: React.FC = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const capturedImage = useAppStore((state) => state.capturedImage);
+  const [displayImage, setDisplayImage] = useState<string>();
+  const nearestNeighbours = useAppStore((state) => state.nearestNeighbours);
+
+  useEffect(() => {
+    let objectURL: string;
+    if (capturedImage) {
+      fetch(capturedImage, { cache: 'no-store' })
+        .then((res: Response) => res.blob())
+        .then((blob: Blob) => {
+          objectURL = URL.createObjectURL(blob);
+          setDisplayImage(objectURL);
+        })
+        .catch((err: unknown) => {
+          console.error('Error fetching image:', err);
+        });
+    }
+  }, [capturedImage]);
 
   return (
-    <Box>
-      <StyledTitle>Erklärung</StyledTitle>
-      <SecondaryHeading>
+    <WithMargins mx="2em" my="1.5em">
+      <Header title="Erklärung" />
+      <Secondary>
         Hier siehst du dein Bild und drei weitere die vom alter und Geschlecht
         doch gut zu deinem passen sollten, oder?
-      </SecondaryHeading>
-      <BoxText>
+      </Secondary>
+      <p>
         Hand Scan AI nutzt diese Ähnlichkeiten, um dir eine Vorhersage zu geben,
         basierend auf den Bildern, die am meisten mit deinem Bild übereinstimmen
-      </BoxText>
-      <HorizImageBox>
-        <VerticalElements>
-          <img src="/Hand.png" alt="Hand Scan AI Logo" />
-          <HandText>
-            Dein Bild: <br></br> Weiblich, 28
-          </HandText>
-        </VerticalElements>
-        <img src="/ArrowRight.png" alt="Hand Scan AI Logo" />
-        <VerticalElements>
-          <img src="/Hand.png" />
-          <HandText>Männlich, 23</HandText>
-        </VerticalElements>
-        <VerticalElements>
-          <img src="/Hand.png" />
-          <HandText>Weiblich, 20</HandText>
-        </VerticalElements>
-        <VerticalElements>
-          <img src="/Hand.png" />
-          <HandText>Männlich, 19</HandText>
-        </VerticalElements>
-      </HorizImageBox>
+      </p>
+      <NearestNeighbourLayout src={displayImage} nearestNeighbours={nearestNeighbours}/>
       <SecondaryHeading style={{ textAlign: 'center' }}>
         Statt Hand Scan AI kannst du auch k-NN Algorithmus sagen
       </SecondaryHeading>
@@ -155,8 +147,8 @@ const Explanation: React.FC = () => {
       <div style={{ textAlign: 'left', marginTop: 15 }}>
         <GeneralButton RouteTo="/blackbox">Erklärung</GeneralButton>
       </div>
-      <NavButton RouteTo="/results-gender">Weiter</NavButton>
-    </Box>
+      <NarrowFixedBottomRight onClick={() => navigate("/submission-complete")}>Weiter</NarrowFixedBottomRight>
+    </WithMargins>
   );
 };
 

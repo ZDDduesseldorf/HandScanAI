@@ -47,8 +47,7 @@ export default function Result_2() {
         },
       },
     }).then(() => {
-      console.log("Daten wurden aktualisiert")
-      navigate('/submission-complete')
+      navigate('/explanation')
     });
   };
 

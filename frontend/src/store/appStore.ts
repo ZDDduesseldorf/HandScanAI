@@ -1,14 +1,16 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
-import { ScanResult, ScanEntry } from '@/services/graphqlTypes';
+import { ScanResult, ScanEntry, NearestNeighbour } from '@/services/graphqlTypes';
 
 interface AppState {
   scanEntry: ScanEntry | null;
   scanResult: ScanResult | null;
   capturedImage: string | null;
+  nearestNeighbours: NearestNeighbour[] | null;
   setScanEntry: (entry: ScanEntry) => void;
   setScanResult: (data: ScanResult) => void;
   setCapturedImage: (image: string) => void;
+  setNearestNeighbours: (data: NearestNeighbour[]) => void;
 }
 
 const storeCreator: StateCreator<AppState> = (set) => ({
@@ -27,6 +29,11 @@ const storeCreator: StateCreator<AppState> = (set) => ({
     set(() => ({
       capturedImage: image,
     })),
+  nearestNeighbours: null,
+  setNearestNeighbours: (data) =>
+    set(() => ({
+      nearestNeighbours: data,
+    }))
 });
 
 export const useAppStore = create<AppState>(storeCreator);
