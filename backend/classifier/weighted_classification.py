@@ -95,7 +95,7 @@ def weighted_mode(dataframe, value, weight):
     return weighted_mode
 
 
-def confidenceintervall_age(dict_all_info_knn):
+def confidence_intervall_age(dict_all_info_knn):
     """
     calculates the lower and upper edge of the data interval. 5% of the data is cut off at the top and bottom.
 
@@ -224,7 +224,7 @@ def weighted_classifier(dict_all_info_knn):
 
     # calcuate predicted age, gender an their confidence
     weighted_mean_age = weighted_ensemble_age(dict_age, weight_dict)
-    lower_interval_age, upper_interval_age = confidenceintervall_age(dict_all_info_knn)
+    lower_interval_age, upper_interval_age = confidence_intervall_age(dict_all_info_knn)
     confidence_age = 0  # aktuell nicht berechnet
     weighted_mode_gender = weighted_ensemble_gender(dict_gender, weight_dict)
     weighted_confidence_gender = caculate_weighted_confidence_gender(dict_all_info_knn, weighted_mode_gender)

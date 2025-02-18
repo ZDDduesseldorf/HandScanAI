@@ -17,8 +17,16 @@ milvus_collection_name = "hand_regions"
 
 milvus_default_top_k = 5
 
+milvus_metric_type = "COSINE"
+
+milvus_index_params = {
+    "index_type": "FLAT",
+    "metric_type": milvus_metric_type,
+    "params": {"nlist": 128},
+}
+
 milvus_default_search_params = {
-    "metric_type": "L2",  # Gleiche Metrik wie beim Index
+    "metric_type": milvus_metric_type,  # Gleiche Metrik wie beim Index
     "params": {"nprobe": 10},  # Anzahl der durchsuchten Cluster (abhängig von nlist)
 }
 
@@ -79,13 +87,8 @@ def create_miluvs_collection(collection_name: str) -> None:
                 collection.create_partition(partition_name=partition_name)
                 print(f"Partition '{partition_name}' successfully created.")
 
-        index_params = {
-            "index_type": "IVF_FLAT",
-            "metric_type": "L2",
-            "params": {"nlist": 128},
-        }
         if not collection.has_index():
-            collection.create_index(field_name="vector", index_params=index_params)
+            collection.create_index(field_name="vector", index_params=milvus_index_params)
     else:
         collection = Collection(name=collection_name)
         print(f"Collection '{collection_name}' exists.")
@@ -124,7 +127,7 @@ def prepare_data_for_milvus(uuid: str, embeddings_dict: Dict[str, Dict[str, Any]
     for region, values in embeddings_dict.items():
         uuids.append(uuid)
         regions.append(region)
-        embeddings.append(values[0].tolist())
+        embeddings.append(values.tolist())
 
     return {"UUIDS": uuids, "Regions": regions, "Embeddings": embeddings}
 
@@ -190,7 +193,7 @@ def search_embeddings_dict(
 
         try:
             results = collection.search(
-                data=query_vector,
+                data=[query_vector],  # Type List required
                 anns_field="vector",
                 param=search_params,
                 limit=top_k,

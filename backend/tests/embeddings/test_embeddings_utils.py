@@ -1,5 +1,6 @@
 import pytest
 import torch
+import numpy as np
 from pathlib import Path
 
 from embeddings import embeddings_utils
@@ -73,18 +74,30 @@ def test_preprocess_image(loaded_test_image):
     assert image_tensor.shape[3] == 224
 
 
+def test_calculate_normalize_embedding():
+    embedding = np.array([0.0, -2.9, 11.333])
+    normalized_embedding = embeddings_utils.normalize_embedding(embedding)
+
+    # expect length to stay the same
+    assert len(normalized_embedding) == 3
+    # expect original embeddings to have values over 1 and under -1 and normalized embeddings to stay within these bounds
+    assert np.any((embedding > 1) | (embedding < -1))
+    assert not np.any((normalized_embedding > 1) | (normalized_embedding < -1))
+
+
 def test_calculate_single_densenet_embedding(loaded_test_image, test_densenet):
     test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_densenet)
-    # expected dimensions of densenet embedding are [1, 1024]
-    assert test_embeddings.shape[0] == 1
-    assert test_embeddings.shape[1] == 1024
+    # expected dimensions of densenet embedding are 1024
+    assert len(test_embeddings) == 1024
+
+    # expect embedding to be normalized and its values to stay in the bounds of 1:-1
+    assert not np.any((test_embeddings > 1) | (test_embeddings < -1))
 
 
 def test_calculate_single_resnet_embedding(loaded_test_image, test_resnet):
     test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_resnet)
-    # expected dimensions of resnet embedding are [1, 1000]
-    assert test_embeddings.shape[0] == 1
-    assert test_embeddings.shape[1] == 1000
+    # expected dimensions of resnet embedding are 1000
+    assert len(test_embeddings) == 1000
 
 
 def test_calculate_embeddings_from_path_dict(region_dict: dict):
@@ -97,13 +110,13 @@ def test_calculate_embeddings_from_path_dict(region_dict: dict):
     # expect the result dict to have the same keys as the input dict
     assert embeddings_dict.keys() == region_dict.keys()
     # expect the embedding-value to have the correct length for the densenet used per default (1024)
-    assert embeddings_dict[HandRegions.HAND_0.value].shape[1] == 1024
+    assert len(embeddings_dict[HandRegions.HAND_0.value]) == 1024
 
 
 def test_calculate_embeddings_with_resnet(region_dict: dict, test_resnet):
     test_embeddings = embeddings_utils.calculate_embeddings_from_path_dict(region_dict, test_resnet)
     # expected dimensions of resnet embedding are [1, 1000]
-    assert test_embeddings[HandRegions.HAND_0.value].shape[1] == 1000
+    assert len(test_embeddings[HandRegions.HAND_0.value]) == 1000
     # expected length of the resulting array is the same as input dict
     assert len(test_embeddings) == len(test_embeddings)
 
@@ -122,4 +135,4 @@ def test_calculate_embeddings_from_tensor_dict(absolute_image_path):
     # expect the result dict to have the same keys as the input dict
     assert embeddings_dict.keys() == region_numarray_dict.keys()
     # expect the embedding-value to have the correct length for the densenet used per default (1024)
-    assert embeddings_dict[HandRegions.HAND_0.value].shape[1] == 1024
+    assert len(embeddings_dict[HandRegions.HAND_0.value]) == 1024

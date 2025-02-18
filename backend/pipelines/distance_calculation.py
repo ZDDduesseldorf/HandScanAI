@@ -35,7 +35,9 @@ def calculate_distance(dict_embedding: dict, k, embedding_csv_path):
         # aufruf region_embeddings_from_csv(regionkey)
         list_uuid, list_embeddings = region_embeddings_from_csv(regionkey, embedding_csv_path)
 
-        image_embedding = embedding
+        # convert lists to np arrays, reshape 1D arrays to 2D-arrays to be able to be used by cdist
+        image_embedding = np.array(embedding).reshape(1, -1)
+
         list_dist = distance.cdist(image_embedding, list_embeddings, "cosine")
         list_dist = list_dist[0]
         # sortiert distanzen und speichert deren indexe ab
