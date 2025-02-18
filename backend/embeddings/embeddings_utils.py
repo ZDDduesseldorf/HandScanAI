@@ -61,7 +61,7 @@ def calculate_embeddings_from_path_dict(regions_dict: dict[str, str], model=_def
     return embeddings_dict
 
 
-def normalize_embedding(embedding: (torch.Tensor | ndarray)) -> ndarray:
+def normalize_embedding(embedding: ndarray) -> ndarray:
     """
     Normalizes input vectors individually to unit norm (vector length) by scaling them.
     "This process can be useful if quadratic form such as the dot-product is used, e.g. in calculating similarity/ distance between vectors." (scikit-learn.org)
@@ -73,13 +73,13 @@ def normalize_embedding(embedding: (torch.Tensor | ndarray)) -> ndarray:
     - https://scikit-learn.org/stable/modules/preprocessing.html#normalization
 
     Args:
-        embedding (torch.Tensor | ndarray): embedding-tensor of given image
+        embedding (ndarray): embedding-tensor of given image
 
     Returns:
         normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
     """
     # extract the feature vector
-    feature_vector = embedding.squeeze().numpy()
+    feature_vector = embedding.squeeze()
     # Scale input vectors individually to unit norm (vector length). This process can be useful if you plan to use a quadratic form such as the dot-product
     return normalize(feature_vector.reshape(1, -1), norm="l2").flatten()
 
