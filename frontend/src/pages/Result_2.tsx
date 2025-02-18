@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { TextField, MenuItem, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+
+import { useAppStore } from '@/store/appStore';
+import { UPDATE_SCAN_ENTRY } from '@/services/mutations';
 
 import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
@@ -10,25 +14,8 @@ import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight'
 import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 import WithText from '@/components/cards/WithText';
 
-// Vom Backend gebraucht:
-// Geschlecht Guess
-// Alter Guess
-
-// ans Backend schicken:
-// actual age
-// actual gender
-
 const genderGuess = 'weiblich';
 const ageGuess = 26;
-
-// Optionally, you can keep the GraphQL mutation if needed
-// const CORRECT_HANDDATA = gql`
-//   mutation MyMutation($id: ID!, $input: ScanEntryInput!) {
-//     updateScanEntryModel(id: $id, input: $input) {
-//       id
-//     }
-//   }
-// `;
 
 export default function Result_2() {
   const navigate = useNavigate();
@@ -46,23 +33,24 @@ export default function Result_2() {
 
   const [ageInput, setAgeInput] = useState('');
   const [genderInput, setGenderInput] = useState('');
-  // const scanId = '5274cc1e-6413-4653-b14f-a4fcba138c99';
+  const scanId = useAppStore((state) => state.scanResult?.id);
 
-  // The updateScanEntry mutation can be used when implemented
-  // const [updateScanEntry, { error, data }] = useMutation(CORRECT_HANDDATA);
+  const [updateScanEntry] = useMutation(UPDATE_SCAN_ENTRY);
 
-  // handleSubmit function can be implemented later
-  // const handleSubmit = () => {
-  //   updateScanEntry({
-  //     variables: {
-  //       id: scanId,
-  //       input: {
-  //         realAge: parseInt(ageInput, 10),
-  //         realGender: parseInt(genderInput, 10),
-  //       },
-  //     },
-  //   }).then(() => alert('Daten wurden aktualisiert!'));
-  // };
+  const handleSubmit = () => {
+    updateScanEntry({
+      variables: {
+        id: scanId,
+        input: {
+          realAge: parseInt(ageInput, 10),
+          realGender: parseInt(genderInput, 10),
+        },
+      },
+    }).then(() => {
+      console.log("Daten wurden aktualisiert")
+      navigate('/submission-complete')
+    });
+  };
 
   return (
     <>
@@ -126,7 +114,7 @@ export default function Result_2() {
         <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
           Zurück
         </NarrowFixedBottomLeft>
-        <NarrowFixedBottomRight onClick={() => navigate('/submission-complete')}>
+        <NarrowFixedBottomRight onClick={handleSubmit}>
           Weiter
         </NarrowFixedBottomRight>
       </WithMargins>
