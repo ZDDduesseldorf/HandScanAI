@@ -14,9 +14,6 @@ import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight'
 import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 import WithText from '@/components/cards/WithText';
 
-const genderGuess = 'weiblich';
-const ageGuess = 26;
-
 export default function Result_2() {
   const navigate = useNavigate();
 
@@ -36,6 +33,14 @@ export default function Result_2() {
   const scanId = useAppStore((state) => state.scanResult?.id);
 
   const [updateScanEntry] = useMutation(UPDATE_SCAN_ENTRY);
+  
+  const scanResult = useAppStore((state) => state.scanResult);
+  
+  if (!scanResult) {
+    return (
+      <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
+    );
+  }
 
   const handleSubmit = () => {
     updateScanEntry({
@@ -64,7 +69,7 @@ export default function Result_2() {
           <Grid2 size="grow">
             <WithText title="Dein Alter">
               <p>
-                Wahrscheinlich bist du {ageGuess} Jahre alt. <br />
+                Wahrscheinlich bist du {Math.round(scanResult.classifiedAge)} Jahre alt. <br />
                 Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben dir
                 geschmeichelt! <br />
                 Teile uns dein echtes Alter mit - das hilft uns, HandScan AI zu
@@ -85,7 +90,7 @@ export default function Result_2() {
           <Grid2 size="grow">
             <WithText title="Dein Geschlecht">
               <p>
-                Wahrscheinlich bist du {genderGuess}. <br />
+                Wahrscheinlich bist du {scanResult.classifiedGender == 0 ? "weiblich" : "männlich"}. <br />
                 Und was ist mit deinem Geschlecht? Stimmt die Vorhersage? <br />
                 Teile uns dein Geschlecht mit - das hilft uns, HandScan AI zu
                 verbessern! <br />

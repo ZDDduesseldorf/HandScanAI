@@ -12,8 +12,8 @@ export default function NarrowFixedBottomLeft({ onClick, children }: Props) {
     color: white;
     font-family: 'Delius Unicase', cursive;
     position: fixed;
-    bottom: 120px;
-    left: 80px;
+    bottom: 10vh;
+    left: 5vw;
     padding: 16px 24px;
     font-size: 1.5em;
     width: 146px;
