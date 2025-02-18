@@ -171,3 +171,42 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
         dict_all_info_knn[regionkey] = region_df
 
     return dict_all_info_knn
+
+
+def find_most_similar_nearest_neighbours(dict_all_info_knn):
+    """
+    From all the nearest neighbours in each region, n are selected that have the shortest distance and differ in uuid.
+    Saving of region, uuid, age and gender in dataframe for transfer to frontend
+
+    Args:
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+
+    Returns:
+        pd.Dataframe: (region, uuid, age, gender) with n rows
+    """
+    knn_info_df = pd.DataFrame(
+        columns=[
+            DictKeys.REGION.value,
+            DictKeys.UUID.value,
+            DictKeys.DISTANCE.value,
+            DictKeys.AGE.value,
+            DictKeys.GENDER.value,
+        ]
+    )
+
+    for regionkey, region_df in dict_all_info_knn.items():
+        for _, row in region_df.iterrows():
+            new_row = {
+                DictKeys.REGION.value: regionkey,
+                DictKeys.UUID.value: row[DictKeys.UUID.value],
+                DictKeys.DISTANCE.value: row[DictKeys.DISTANCE.value],
+                DictKeys.AGE.value: row[DictKeys.AGE.value],
+                DictKeys.GENDER.value: row[DictKeys.GENDER.value],
+            }
+            knn_info_df = pd.concat([knn_info_df, pd.DataFrame([new_row])])
+
+    knn_info_df = knn_info_df.sort_values(by=[DictKeys.DISTANCE.value])
+    knn_info_df = knn_info_df.drop_duplicates(subset=DictKeys.UUID.value)
+    knn_info_df = knn_info_df.head(3)
+    knn_info_df = knn_info_df.drop(DictKeys.DISTANCE.value, axis=1)
+    return knn_info_df
