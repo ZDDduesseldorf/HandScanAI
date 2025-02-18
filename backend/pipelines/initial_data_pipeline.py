@@ -21,7 +21,7 @@ def run_initial_data_pipeline(
     save_csvs=True,
     save_milvus=True,
     milvus_collection_name=milvus_collection_name,
-):
+) -> list:
     """
     This Funktion
     - takes a base dataset (containing images and the corresponding metadata as csv),
@@ -42,6 +42,9 @@ def run_initial_data_pipeline(
         save_csvs (bool): choose whether or not to save the embeddings in csv-files. Defaults to True. False skips the setup of the csvs and the saving of the embeddings in the csv-files.
         save_milvus (bool): choose whether or not to save the embeddings in a milvus vector database. Defaults to True. False skips the saving of the embeddings in the vector database.
         milvus_collection_name (str): name of the milvus-collection the embeddings are supposed to be saved in. Aside from test scenarios, the default collection name is used.
+
+    Returns:
+        embeddings_all_test (list): Only used for unit-tests. Contains a dictionary per image with its uuid and a bool whether or not saving the embeddings was successful.
     """
     ######## STEP 1: Hand normalization #######################################################################
     # skip this if normalized images already exist
@@ -98,7 +101,7 @@ def run_initial_data_pipeline(
         # for return value for unit tests
         embeddings_dict = {
             Keys.UUID.value: image_path_regions_cluster[Keys.UUID.value],
-            Keys.EMBEDDINGS.value: embeddings_regions_dict,
+            # Keys.EMBEDDINGS.value: embeddings_regions_dict, # comment in for small tests, leave out for larger datasets
             Keys.SAVED_EMBEDDINGS.value: added_embedding,
         }
 
