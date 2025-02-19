@@ -1,10 +1,8 @@
 import numpy as np
+from pathlib import Path
 import time
 from .datasets import ImagePathDataset, DatasetRegionClusters
-from embeddings.embeddings_utils import (
-    calculate_embeddings_from_path_dict,
-    _default_cnn_model_,
-)
+from embeddings.embeddings_utils import calculate_embeddings_from_path_dict, _default_cnn_model_, default_model_name
 import hand_normalization.src.main as normalization
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.csv_utils import create_region_csvs, add_embedding_dict_to_csv
@@ -12,16 +10,16 @@ from vectordb.milvus import add_embeddings_to_milvus, milvus_collection_name
 
 
 def run_initial_data_pipeline(
-    base_dataset_path,
-    region_dataset_path,
-    csv_folder_path,
+    base_dataset_path: (Path | str),
+    region_dataset_path: (Path | str),
+    csv_folder_path: (Path | str),
     model=_default_cnn_model_,
-    normalize=True,
-    save_images=True,
-    save_csvs=True,
-    save_milvus=True,
-    milvus_collection_name=milvus_collection_name,
-    model_name="DENSENET_121",
+    normalize: bool = True,
+    save_images: bool = True,
+    save_csvs: bool = True,
+    save_milvus: bool = True,
+    milvus_collection_name: str = milvus_collection_name,
+    model_name: str = default_model_name,
 ) -> list:
     """
     This Funktion
@@ -43,6 +41,7 @@ def run_initial_data_pipeline(
         save_csvs (bool): choose whether or not to save the embeddings in csv-files. Defaults to True. False skips the setup of the csvs and the saving of the embeddings in the csv-files.
         save_milvus (bool): choose whether or not to save the embeddings in a milvus vector database. Defaults to True. False skips the saving of the embeddings in the vector database.
         milvus_collection_name (str): name of the milvus-collection the embeddings are supposed to be saved in. Aside from test scenarios, the default collection name is used.
+        model_name (str): name of the model used as key for milvus collection. Default is name of default model.
 
     Returns:
         embeddings_all_test (list): Only used for unit-tests. Contains a dictionary per image with its uuid and a bool whether or not saving the embeddings was successful.
