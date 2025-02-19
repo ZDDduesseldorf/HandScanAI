@@ -4,7 +4,7 @@ import Stepper from '@mui/material/Stepper'; // Stepper component for creating p
 import Step from '@mui/material/Step'; // Represents an individual step in the Stepper
 import StepLabel from '@mui/material/StepLabel'; // Label for each step in the Stepper
 
-const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis', 'Abschluss'];
+const steps = ['Info', 'Bildaufnahme', 'Berechnung', 'Ergebnis', 'Erklärung'];
 
 const FooterContainer = styled(Box)`
   width: 100%;

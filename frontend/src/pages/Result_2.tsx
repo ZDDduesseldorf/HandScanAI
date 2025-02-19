@@ -57,71 +57,69 @@ export default function Result_2() {
   };
 
   return (
-    <>
+    <WithMargins mx="2em" my="1.5em">
       <Header title="Ergebnis" />
-      <WithMargins mx="2em" my="1.5em">
-        <Secondary>KI kann Fehler machen</Secondary>
-        <Justified>
-          Auch wenn die KI leistungsstark ist, können Fehler auftreten.
-          Überprüfe das Ergebnis, um sicherzugehen, dass es korrekt ist.
-        </Justified>
-        <Grid2 container spacing={8}>
-          <Grid2 size="grow">
-            <WithText title="Dein Alter">
-              <p>
-                Wahrscheinlich bist du {Math.round(scanResult.classifiedAge)} Jahre alt. <br />
-                Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben dir
-                geschmeichelt! <br />
-                Teile uns dein echtes Alter mit - das hilft uns, HandScan AI zu
-                verbessern! <br />
-              </p>
-              <TextField
-                id="ageInput"
-                value={ageInput}
-                label="Alter"
-                variant="outlined"
-                fullWidth
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setAgeInput(event.target.value);
-                }}
-              />
-            </WithText>
-          </Grid2>
-          <Grid2 size="grow">
-            <WithText title="Dein Geschlecht">
-              <p>
-                Wahrscheinlich bist du {scanResult.classifiedGender == 0 ? "weiblich" : "männlich"}. <br />
-                Und was ist mit deinem Geschlecht? Stimmt die Vorhersage? <br />
-                Teile uns dein Geschlecht mit - das hilft uns, HandScan AI zu
-                verbessern! <br />
-              </p>
-              <TextField
-                id="genderInput"
-                select
-                value={genderInput}
-                label="Geschlecht"
-                variant="outlined"
-                fullWidth
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setGenderInput(event.target.value);
-                }}
-              >
-                {genders.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </WithText>
-          </Grid2>
+      <Secondary>KI kann Fehler machen</Secondary>
+      <Justified>
+        Auch wenn die KI leistungsstark ist, können Fehler auftreten.
+        Überprüfe das Ergebnis, um sicherzugehen, dass es korrekt ist.
+      </Justified>
+      <Grid2 container spacing={8}>
+        <Grid2 size="grow">
+          <WithText title="Dein Alter">
+            <p>
+              Wahrscheinlich bist du {Math.round(scanResult.classifiedAge)} Jahre alt. <br />
+              Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben dir
+              geschmeichelt! <br />
+              Teile uns dein echtes Alter mit - das hilft uns, HandScan AI zu
+              verbessern! <br />
+            </p>
+            <TextField
+              id="ageInput"
+              value={ageInput}
+              label="Alter"
+              variant="outlined"
+              fullWidth
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setAgeInput(event.target.value);
+              }}
+            />
+          </WithText>
         </Grid2>
-        <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
-          Zurück
-        </NarrowFixedBottomLeft>
-        <NarrowFixedBottomRight onClick={handleSubmit}>
-          Weiter
-        </NarrowFixedBottomRight>
-      </WithMargins>
-    </>
+        <Grid2 size="grow">
+          <WithText title="Dein Geschlecht">
+            <p>
+              Wahrscheinlich bist du {scanResult.classifiedGender == 0 ? "weiblich" : "männlich"}. <br />
+              Und was ist mit deinem Geschlecht? Stimmt die Vorhersage? <br />
+              Teile uns dein Geschlecht mit - das hilft uns, HandScan AI zu
+              verbessern! <br />
+            </p>
+            <TextField
+              id="genderInput"
+              select
+              value={genderInput}
+              label="Geschlecht"
+              variant="outlined"
+              fullWidth
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setGenderInput(event.target.value);
+              }}
+            >
+              {genders.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </WithText>
+        </Grid2>
+      </Grid2>
+      <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
+        Zurück
+      </NarrowFixedBottomLeft>
+      <NarrowFixedBottomRight onClick={handleSubmit}>
+        Weiter
+      </NarrowFixedBottomRight>
+    </WithMargins>
   );
 }

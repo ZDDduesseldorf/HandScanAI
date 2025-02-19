@@ -9,6 +9,7 @@ import WithMargins from '@/components/layout/WithMargins';
 import Horizontal from '@/components/layout/Horizontal';
 import Secondary from '@/components/headings/Secondary';
 import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight';
+import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 import Wide from '@/components/buttons/Wide';
 import NearestNeighbourLayout from '@/components/custom/NearestNeighbourLayout';
 
@@ -116,6 +117,9 @@ const Explanation: React.FC = () => {
         Embeddings kennenzulernen, die für die Vorhersagen wichtig sind.
       </p>
       <Wide onClick={() => navigate("/blackbox")}>Erfahre mehr über KI</Wide>
+      <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
+        Zurück
+      </NarrowFixedBottomLeft>
       <NarrowFixedBottomRight onClick={() => navigate("/submission-complete")}>Weiter</NarrowFixedBottomRight>
     </WithMargins>
   );
