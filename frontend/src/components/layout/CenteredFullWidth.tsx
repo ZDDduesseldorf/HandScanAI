@@ -2,9 +2,10 @@ import { Box, styled } from '@mui/material';
 
 interface Props {
   children: React.ReactNode;
+  style?: string;
 }
 
-export default function CenteredFullWidth({ children }: Props) {
+export default function CenteredFullWidth({ children, style = '' }: Props) {
   const Centered = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -13,6 +14,7 @@ export default function CenteredFullWidth({ children }: Props) {
     height: 100vh;
     width: 100vw;
     background-color: white;
+    ${style}
   `;
 
   return <Centered>{children}</Centered>;
