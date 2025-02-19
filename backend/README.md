@@ -24,10 +24,16 @@
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
   - [Projektstruktur](#projektstruktur)
     - [app](#app)
+    - [classifier](#classifier)
     - [embeddings](#embeddings)
+    - [hand-normalization](#hand-normalization)
     - [lib](#lib)
+    - [logs](#logs)
+    - [pipelines](#pipelines)
     - [tests](#tests)
+    - [utils](#utils)
     - [validation](#validation)
+    - [vectordb](#vectordb)
     - [Weitere Module](#weitere-module)
   - [Formatting and Linter](#formatting-and-linter)
     - [Code Checks](#code-checks)
@@ -185,28 +191,51 @@ Das Verzeichnis `app` enthält die Hauptanwendung und die Routen für das FastAP
 - `lifetime.py`: Hier werden Funktionen definiert, die beim Starten und Beenden der Anwendung ausgeführt werden.
 - `api/`: Hier sind die Geschäftslogik und die Service-Funktionen implementiert, die von den Routern verwendet werden.
 - `static/`: Hier befinden sich statische Dateien, wie z.B. Bilder usw.
-- `utils/`: Hier sind Hilfsfunktionen der Anwendung zu finden.
 - `core/`: Dieses Verzeichnis enthält die Konfigurationsdateien.
 - `db/`: Dieses Verzeichnis ist für die Datenhaltung zuständig.
 - `media/`: Erstellte Medien durch die Anwendung, gehört nicht ins Repo.
 
 Diese Struktur hilft dabei, den Code sauber und modular zu halten, was die Wartung und Erweiterung der Anwendung erleichtert.
 
+### classifier
+
+TODO
+
 ### embeddings
 
-Das Verzeichnis `embeddings` enthält die Module, die zur Berechnung der Embeddings durch CNNs verwendet werden. Es enthält eine eigene Readme für weitere Informationen.
+The directory `embeddings` contains the modules that are used for embeddings calculation via CNNs. Those embeddings are later used to determine similarities between images. See the embeddings-Readme for further information.
+
+### hand-normalization
+
+TODO
 
 ### lib
 
 Das Verzeichnis `lib` enthält allgemeine Bibliotheksfunktionen und Hilfsprogramme, die in verschiedenen Teilen der Anwendung verwendet werden können. Diese Funktionen sind oft wiederverwendbar und abstrahieren komplexe Logik, um sie einfacher zugänglich zu machen.
 
+### logs
+
+The directory `logs` is not committed to the repo but is needed to store csv-files that are used to collect various data. It gets created automatically upon starting the backend docker container or has to be setup manually. For further information, see [Setup](#setup).
+
+### pipelines
+
+TODO
+
 ### tests
 
 Das Verzeichnis `tests` enthält die Unit- und Integrationstests des Backends, die mittels `pytest` implementiert wurden. Es enthält eine eigene Readme für weitere Informationen.
 
+### utils
+
+The directory `utils` contains several modules with helper functions that are useful all across the app (e.g. enums used as dict-keys or functions to save data in csv-files). See utils' Readme for further details.
+
 ### validation
 
 Das Verzeichnis `validation` enthält alle Validierungskomponenten der Anwendung.
+
+### vectordb
+
+TODO
 
 ### Weitere Module
 
@@ -235,6 +264,8 @@ python manage.py format
 ```sh
 python manage.py test
 ```
+
+See also Readme in `tests`-module.
 
 ## Backups erstellen und wiederherstellen
 
