@@ -49,7 +49,7 @@ def setup_csv_logging():
         Keys.UUID.value,
         Keys.REGION.value,
         Keys.NEIGHBOUR_UUID.value,
-        Keys.DISTANCE.value,
+        Keys.SIMILARITY.value,
         Keys.AGE.value,
         Keys.GENDER.value,
     ]
@@ -107,7 +107,7 @@ def save_nearest_neighbours_info(uuid: str, dict_all_info_knn: dict, path_to_nea
                 Keys.UUID.value: uuid,
                 Keys.REGION.value: regionkey,
                 Keys.NEIGHBOUR_UUID.value: row[Keys.UUID.value],
-                Keys.DISTANCE.value: row[Keys.DISTANCE.value],
+                Keys.SIMILARITY.value: row[Keys.SIMILARITY.value],
                 Keys.AGE.value: row[Keys.AGE.value],
                 Keys.GENDER.value: row[Keys.GENDER.value],
             }

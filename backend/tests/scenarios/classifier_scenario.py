@@ -2,7 +2,7 @@ from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from pipelines.data_utils import build_info_knn_from_csv
 from pipelines.datasets import ImagePathDataset
-from pipelines.distance_calculation import calculate_distance
+from pipelines.distance_calculation import calculate_cosine_distance
 from pipelines.inference_pipeline import _path_manager
 from classifier.weighted_classification import weighted_classifier
 from utils.key_enums import PipelineDictKeys as Keys
@@ -82,7 +82,7 @@ def run_generate_classifier_result(uuid, image_path, k, path_to_csv_age, path_to
 
     ######## STEP 3: search nearest neighbours ###########################
 
-    dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
+    dict_all_dist = calculate_cosine_distance(dict_embedding, k, embedding_csv_path)
 
     dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
 
