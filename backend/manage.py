@@ -10,10 +10,10 @@ from pathlib import Path
 import zipfile
 from datetime import datetime
 import cv2
-from pathlib import Path
 
 
 cli = typer.Typer()
+
 
 @cli.command("runserver")
 def run_server(
@@ -143,6 +143,7 @@ def normalisation_visual_test():
 BACKUP_DIR = Path("backup")
 BACKUP_FOLDERS = [Path("volumes"), Path("logs"), Path("app/media")]
 
+
 @cli.command("create_backup")
 def create_backup():
     """Create a backup of the volumes, logs, and media folders."""
@@ -155,7 +156,7 @@ def create_backup():
         backup_zip_path = BACKUP_DIR / f"backup_{date_str}.zip"
 
         # Create ZIP file and preserve folder structure
-        with zipfile.ZipFile(backup_zip_path, 'w', zipfile.ZIP_DEFLATED) as backup_zip:
+        with zipfile.ZipFile(backup_zip_path, "w", zipfile.ZIP_DEFLATED) as backup_zip:
             for folder in BACKUP_FOLDERS:
                 if folder.exists():
                     for file_path in folder.rglob("*"):
@@ -178,7 +179,7 @@ def create_backup():
 @cli.command("restore_backup")
 def restore_backup(backup_file: str):
     """Restore a backup by wiping old data and extracting from a ZIP file."""
-    
+
     backup_path = BACKUP_DIR / backup_file
 
     if not backup_path.exists():
@@ -201,7 +202,7 @@ def restore_backup(backup_file: str):
                 folder.rmdir()  # Finally, remove the main directory
 
         typer.echo(f"Extracting backup from {backup_path}...")
-        with zipfile.ZipFile(backup_path, 'r') as backup_zip:
+        with zipfile.ZipFile(backup_path, "r") as backup_zip:
             backup_zip.extractall(Path("."))  # Restore to current directory
 
         typer.echo("Backup successfully restored!")
@@ -209,6 +210,7 @@ def restore_backup(backup_file: str):
     except Exception as e:
         typer.echo(f"Error restoring backup: {e}", err=True)
         typer.Exit(1)
+
 
 if __name__ == "__main__":
     cli()
