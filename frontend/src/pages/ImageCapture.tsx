@@ -1,9 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import StyledTitle from '@/styles/StyledTitle';
 import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
+import WithMargins from '@/components/layout/WithMargins';
+import Header from '@/components/custom/Header';
+import Secondary from '@/components/headings/Secondary';
+import Horizontal from '@/components/layout/Horizontal';
 
 interface ServerMessage {
   flow: string;
@@ -21,11 +24,10 @@ const Container = styled(Box)`
   align-items: center;
   justify-content: space-between;
   width: 80%;
-  margin: 20px auto;
-  padding: 20px;
+  margin: 0 auto;
+  padding: 1em;
   background-color: #f0f0f0;
   border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const VideoWrapper = styled(Box)`
@@ -33,8 +35,7 @@ const VideoWrapper = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30%;
-  height: 60vh;
+  height: 50vh;
 `;
 
 const Video = styled('video')`
@@ -67,12 +68,7 @@ const InstructionBox = styled(Box)`
   font-size: 16px;
 `;
 
-const StyledText = styled(Typography)`
-  color: black;
-  font-size: 1.6rem;
-`;
-
-const ImageCapture = () => {
+export default function ImageCapture() {
   const navigate = useNavigate();
   const scanEntry = useAppStore((state) => state.scanEntry);
   const updateCapturedImage = useAppStore((state) => state.setCapturedImage);
@@ -205,28 +201,52 @@ const ImageCapture = () => {
   }, [scanEntry?.id, navigate, updateCapturedImage]);
 
   return (
-    <Container>
-      <VideoWrapper>
-        <Video ref={videoRef} autoPlay playsInline />
-      </VideoWrapper>
-      <InfoSection>
-        <StyledTitle>Bildaufnahme</StyledTitle>
-        <StyledText>
-          HandScan AI nimmt automatisch Bilder deiner Hand auf. Sobald die
-          Kamera eine Hand erkennt, wird der Countdown gestartet.
-        </StyledText>
-        <StyledText sx={{ mt: 1 }}>
-          👉 Bitte lege deine Hand mit der Handfläche nach unten in die Fotobox.
-        </StyledText>
-        <StyledText sx={{ mt: 1 }}>
-          👉 Es ist egal, ob du die rechte oder linke Hand nimmst.
-        </StyledText>
-        <InstructionBox>
-          <Typography>{instruction}</Typography>
-        </InstructionBox>
-      </InfoSection>
-    </Container>
+    <WithMargins mx="2em" my="1.5em">
+      <Header title="Bildaufnahme" />
+      <Container>
+        <VideoWrapper>
+          <Video ref={videoRef} autoPlay playsInline />
+        </VideoWrapper>
+        <InfoSection>
+          <Secondary>Positionierung</Secondary>
+          <p style={{ fontSize: '1.25em' }}>
+            HandScan AI nimmt automatisch Bilder deiner Hand auf. Sobald die
+            Kamera eine Hand erkennt, wird der Countdown gestartet.
+          </p>
+          <Horizontal>
+            <img
+              src="/ArrowRight.png"
+              alt="Hand Scan AI Logo"
+              style={{
+                objectFit: 'contain',
+                alignSelf: 'center',
+                height: ' 25px',
+              }}
+            />
+            <p style={{ fontSize: '1.25em' }}>
+              Bitte lege deine Hand mit der Handfläche nach unten in die
+              Fotobox.
+            </p>
+          </Horizontal>
+          <Horizontal>
+            <img
+              src="/ArrowRight.png"
+              alt="Hand Scan AI Logo"
+              style={{
+                objectFit: 'contain',
+                alignSelf: 'center',
+                height: ' 25px',
+              }}
+            />
+            <p style={{ fontSize: '1.25em' }}>
+              Es ist egal, ob du die rechte oder linke Hand nimmst.
+            </p>
+          </Horizontal>
+          <InstructionBox>
+            <Typography>{instruction}</Typography>
+          </InstructionBox>
+        </InfoSection>
+      </Container>
+    </WithMargins>
   );
-};
-
-export default ImageCapture;
+}
