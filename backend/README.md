@@ -31,7 +31,7 @@
     - [Code Checks](#code-checks)
     - [Code formatieren](#code-formatieren)
   - [Tests ausführen](#tests-ausführen)
-
+  - [Backups erstellen/wiederherstellen](#backups-erstellen-und-wiederherstellen)
 ## Installation mit Docker und Dev Container
 
 ### Schritte zur Installation
@@ -224,3 +224,25 @@ python manage.py format
 ```sh
 python manage.py test
 ```
+
+
+## Backups erstellen und wiederherstellen
+
+### Backup erstellen
+
+Um ein Backup der Ordner `volumes`, `logs` und `app/media` zu erstellen, führen Sie den folgenden Befehl aus:
+
+```sh
+python manage.py create_backup
+```
+Das Backup wird im Ordner backup erstellt und der Dateiname enthält das aktuelle Datum und die Uhrzeit.
+
+### Backup wiederherstellen
+
+Um ein Backup wiederherzustellen, muss die Datei unter dem Ordner `backup` stehen. Danach führen Sie den folgenden Befehl aus und geben Sie den Namen der Backup-Datei an:
+
+```sh
+python manage.py restore_backup <backup_datei>
+```
+
+**!!Hinweis!!**: Alle vorhandene Daten werden gelöscht und überschrieben, damit keinen Konflikt zwischen Vorhandenen Daten entsteht!
