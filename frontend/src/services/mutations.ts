@@ -15,10 +15,7 @@ export const CREATE_SCAN_ENTRY = gql`
 `;
 
 export const UPDATE_SCAN_ENTRY = gql`
-  mutation UpdateScanEntry(
-    $id: ID!
-    $input: ScanEntryInput!
-  ) {
+  mutation UpdateScanEntry($id: ID!, $input: ScanEntryInput!) {
     updateScanEntryModel(id: $id, input: $input) {
       id
       imageExists

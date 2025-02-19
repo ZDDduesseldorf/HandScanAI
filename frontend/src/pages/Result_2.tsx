@@ -42,16 +42,13 @@ export default function Result_2() {
     );
   }
 
-  function isNumber(value?: string | number): boolean
-  {
-    return ((value != null) &&
-            (value !== '') &&
-            !isNaN(Number(value.toString())));
+  function isNumber(value?: string | number): boolean {
+    return value != null && value !== '' && !isNaN(Number(value.toString()));
   }
 
   function handleSubmit() {
     //check if the inputs are valid
-    if(ageInput && genderInput && isNumber(ageInput)) {
+    if (ageInput && genderInput && isNumber(ageInput)) {
       //send to backend and navigate
       updateScanEntry({
         variables: {
@@ -64,14 +61,14 @@ export default function Result_2() {
         },
       })
         .then(() => {
-          navigate("/explanation");
+          navigate('/explanation');
         })
         .catch((e) => console.error(e));
     } else {
       //just navigate
-      navigate("/explanation");
+      navigate('/explanation');
     }
-  };
+  }
 
   return (
     <WithMargins mx="2em" my="1.5em">
