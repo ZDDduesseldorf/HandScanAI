@@ -49,6 +49,7 @@ export default function Result_2() {
         input: {
           realAge: parseInt(ageInput, 10),
           realGender: parseInt(genderInput, 10),
+          confirmed: true
         },
       },
     }).then(() => {
