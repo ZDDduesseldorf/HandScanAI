@@ -1,13 +1,11 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Box, styled } from '@mui/material';
-import FooterStepper from '@/components/FooterStepper';
-import TitleBar from '@/components/TitleBar';
+import FooterStepper from '@/components/navigation/Stepper';
 
 const ScrollableBox = styled(Box)`
   margin: 20px 30px;
   overflow-y: auto;
-  max-height: calc(100vh - 300px); /* Adjust based on your layout */
 `;
 
 const Layout: React.FC = () => {
@@ -16,6 +14,7 @@ const Layout: React.FC = () => {
   const stepMap: Record<string, number> = {
     '/privacy-notice': 0,
     '/image-capture': 1,
+    '/image-post-capture': 1,
     '/processing': 2,
     '/result-1': 3,
     '/result-2': 3,
@@ -27,9 +26,6 @@ const Layout: React.FC = () => {
 
   return (
     <Box>
-      {/* Title Bar */}
-      <TitleBar>HandScan AI</TitleBar>
-
       {/* Page Content */}
       <ScrollableBox>
         <Outlet />

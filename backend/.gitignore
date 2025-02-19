@@ -32,3 +32,5 @@ tests/scenario_embeddings/result_csvs
 
 # Generated Backup
 backup/
+tests/scenarios/result_csvs
+

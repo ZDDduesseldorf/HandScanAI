@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Box, styled } from '@mui/material';
 
-import NavButton from '@/components/NavButton';
+import NavButton from '@/components/buttons/Navigation';
 import StyledTitle from '@/styles/StyledTitle';
 
 const BottomMiddleLayout = styled(Box)`

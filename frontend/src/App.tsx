@@ -1,19 +1,15 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from '@/pages/Home';
 import PrivacyNotice from '@/pages/PrivacyNotice';
 import ImageCapture from '@/pages/ImageCapture';
+import ImagePostCapture from '@/pages/ImagePostCapture';
 import Processing from '@/pages/Processing';
 import SubmissionComplete from '@/pages/SubmissionComplete';
-import Explanation from './pages/Explanation';
+import Explanation from '@/pages/Explanation';
 import Sandbox from '@/pages/Sandbox';
 import BlackBox from '@/pages/BlackBox';
-import Layout from '@/components/Layout';
+import Layout from '@/Layout';
 import Result_1 from '@/pages/Result_1';
 import Result_2 from '@/pages/Result_2';
 
@@ -58,6 +54,10 @@ const App: React.FC = () => {
             <Route element={<Layout />}>
               <Route path="/privacy-notice" element={<PrivacyNotice />} />
               <Route path="/image-capture" element={<ImageCapture />} />
+              <Route
+                path="/image-post-capture"
+                element={<ImagePostCapture />}
+              />
               <Route path="/processing" element={<Processing />} />
               <Route path="/blackbox" element={<BlackBox />} />
               <Route path="/explanation" element={<Explanation />} />
@@ -76,10 +76,4 @@ const App: React.FC = () => {
   );
 };
 
-const AppWrapper: React.FC = () => (
-  <Router>
-    <App />
-  </Router>
-);
-
-export default AppWrapper;
+export default App;

@@ -3,7 +3,7 @@
 ## Environment Setup
 
 1. Copy `.env.example` to `.env`.
-2. Fill in the `VITE_API_BASE_URL` with the appropriate value.
+2. Fill in the `VITE_GRAPHQL_ENDPOINT` with the appropriate value.
 
 ## Installation
 
