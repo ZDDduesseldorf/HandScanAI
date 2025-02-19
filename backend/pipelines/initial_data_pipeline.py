@@ -21,6 +21,7 @@ def run_initial_data_pipeline(
     save_csvs=True,
     save_milvus=True,
     milvus_collection_name=milvus_collection_name,
+    model_name="DENSENET_121",
 ) -> list:
     """
     This Funktion
@@ -96,7 +97,9 @@ def run_initial_data_pipeline(
             # for usage of csvs and test scenarios
             added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
         if save_milvus:
-            added_embedding = add_embeddings_to_milvus(uuid, embeddings_regions_dict, milvus_collection_name)
+            added_embedding = add_embeddings_to_milvus(
+                uuid, embeddings_regions_dict, milvus_collection_name, model_name
+            )
 
         # for return value for unit tests
         embeddings_dict = {
