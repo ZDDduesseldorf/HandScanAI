@@ -43,40 +43,56 @@ export default function Result_1() {
         Du bist {genderGuess == 1 ? 'männlich' : 'weiblich'} und{' '}
         {Math.round(ageGuess)} Jahre alt
       </Secondary>
-      <Tertiary>Dein Alter</Tertiary>
-      <Justified>
-        HandScan AI denkt, dass du wahrscheinlich {Math.round(ageGuess)} Jahre
-        alt bist, denn 90% von ähnlichen Händen waren ebenfalls zwischen{' '}
-        {Math.round(min_age)} und {Math.round(max_age)} Jahre alt.
-      </Justified>
-      <Slider
-        disabled
-        defaultValue={ageGuess}
-        aria-label="Age guess"
-        track={false}
-        marks={age_marks}
-        min={15}
-        max={85}
-      />
-      <Tertiary>Dein Geschlecht</Tertiary>
-      <Justified>
-        HandScan AI ist sich zu {Math.round(gender_confidence * 100)}% sicher,
-        dass du {genderGuess == 1 ? 'männlich' : 'weiblich'} bist
-      </Justified>
-      <Slider
-        disabled
-        defaultValue={gender_confidence * 100}
-        valueLabelDisplay="auto"
-        aria-label="Gender guess"
-        track={false}
-        marks={[
-          { value: 0, label: '0%' },
-          { value: 50, label: '50%' },
-          { value: 100, label: '100%' },
-        ]}
-        min={0}
-        max={100}
-      />
+      <div style={{ marginTop: '4em' }}>
+        <Tertiary>Dein Alter</Tertiary>
+        <Justified>
+          HandScan AI denkt, dass du wahrscheinlich {Math.round(ageGuess)} Jahre
+          alt bist, denn 90% von ähnlichen Händen waren ebenfalls zwischen{' '}
+          {Math.round(min_age)} und {Math.round(max_age)} Jahre alt.
+        </Justified>
+        <Slider
+          disabled
+          defaultValue={ageGuess}
+          aria-label="Age guess"
+          track={false}
+          marks={age_marks}
+          min={15}
+          max={85}
+          style={{
+            width: '70vw',
+            margin: '1em 1.5em',
+            color: 'var(--primary)',
+          }}
+        />
+      </div>
+      <div style={{ marginTop: '4em' }}>
+        <Tertiary>Dein Geschlecht</Tertiary>
+        <Justified>
+          HandScan AI ist sich zu {Math.round(gender_confidence * 100)}% sicher,
+          dass du {genderGuess == 1 ? 'männlich' : 'weiblich'} bist.
+        </Justified>
+        <Slider
+          disabled
+          defaultValue={gender_confidence * 100}
+          valueLabelDisplay="auto"
+          aria-label="Gender guess"
+          track={false}
+          marks={[
+            { value: 0, label: '0%' },
+            { value: 25, label: '25%' },
+            { value: 50, label: '50%' },
+            { value: 75, label: '75%' },
+            { value: 100, label: '100%' },
+          ]}
+          min={0}
+          max={100}
+          style={{
+            width: '70vw',
+            margin: '1em 1.5em',
+            color: 'var(--primary)',
+          }}
+        />
+      </div>
       <NarrowBottomSticky onClick={() => navigate('/result-2')}>
         Weiter
       </NarrowBottomSticky>
