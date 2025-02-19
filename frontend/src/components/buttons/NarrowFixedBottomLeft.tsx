@@ -5,15 +5,15 @@ interface Props {
   onClick: () => void;
 }
 
-export default function NarrowBottomFixed({ onClick, children }: Props) {
-  const NarrowBottomFixed = styled(Button)`
+export default function NarrowFixedBottomLeft({ onClick, children }: Props) {
+  const NarrowFixedBottomLeft = styled(Button)`
     background-color: var(--primary);
     border-radius: 0;
     color: white;
     font-family: 'Delius Unicase', cursive;
     position: fixed;
-    bottom: 120px;
-    right: 80px;
+    bottom: 10vh;
+    left: 5vw;
     padding: 16px 24px;
     font-size: 1.5em;
     width: 146px;
@@ -26,5 +26,7 @@ export default function NarrowBottomFixed({ onClick, children }: Props) {
     }
   `;
 
-  return <NarrowBottomFixed onClick={onClick}>{children}</NarrowBottomFixed>;
+  return (
+    <NarrowFixedBottomLeft onClick={onClick}>{children}</NarrowFixedBottomLeft>
+  );
 }

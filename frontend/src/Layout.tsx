@@ -18,8 +18,8 @@ const Layout: React.FC = () => {
     '/processing': 2,
     '/result-1': 3,
     '/result-2': 3,
-    '/blackbox': 3,
-    '/submission-complete': 4,
+    '/explanation': 4,
+    '/blackbox': 4,
   };
 
   const currentStep = stepMap[location.pathname] ?? -1; // Default to -1 if not found
