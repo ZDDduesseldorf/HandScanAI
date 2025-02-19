@@ -16,9 +16,9 @@ from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_defa
 
 
 # TODO: zum Ausführen der distance_pipeline verwenden
-def test_scenario_embeddings():
+"""def test_scenario_embeddings():
     cleanup_tests()
-    run_scenarios_embeddings(setup=True)
+    run_scenarios_embeddings(setup=True)"""
 
 
 def cleanup_tests():
@@ -43,7 +43,6 @@ def setup_scenario_structure(
     _, folder_path_region, _, _, folder_path_base = _path_manager(testing=False)
     start = time.time()
 
-    print(f"setup {model_name}")
     run_initial_data_pipeline(
         folder_path_base,
         folder_path_region,
@@ -54,6 +53,7 @@ def setup_scenario_structure(
         save_csvs=False,
         save_milvus=True,
         milvus_collection_name=model_name,
+        model_name=model_name,
     )
     end = time.time()
 
@@ -103,7 +103,6 @@ def run_scenarios_embeddings(setup=False):
             model_csv_path = path_to_result_csv / model_name
             setup_scenario_structure(model_csv_path, model, model_name)
         for uuid in uuid_list:
-            print(model_name)
             run_distance_pipeline(uuid, model_name, model, k, use_milvus=True)
 
     # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?

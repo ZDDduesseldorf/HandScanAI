@@ -14,14 +14,12 @@ from utils.logging_utils import logging_nearest_neighbours, logging_classificati
 from vectordb.milvus import (
     search_embeddings_dict,
     milvus_collection_name,
-    milvus_default_top_k,
     milvus_default_search_params,
 )
 # this file is used to generate the prediction of an image
 
 
 # is triggered by the ‘Analyse Starten’ button in the frontend. Transfer of the uuid of the current image
-# TODO: Wo werden Bilder aus Frontend gespeichert? -> QueryImages
 def _path_manager(testing):
     # TODO: docstring
     temp_base_dir = Path(__file__).resolve().parent.parent
