@@ -19,7 +19,7 @@
   - [Setup](#setup)
     - [setup media](#setup-media)
     - [setup logging](#setup-logging)
-  - [Entwicklung in VSCode](#entwicklung-in-vscode)
+  - [Developing in VSCode](#developing-in-vscode)
     - [Extensions](#extensions)
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
   - [Projektstruktur](#projektstruktur)
@@ -143,13 +143,9 @@ Create `backend/app/media` and inside
 
 ### setup logging
 
-Create `backend/logs` and run
+The `logs-folder` in `backend` and its contents are automatically created when starting the docker container (via `startup()` in `lifetime.py`). The log-csvs lie in a folder named after the current date to make distinctions between sessions easier.
 
-```sh
-  python manage.py setup_csv_logging
-```
-
-## Entwicklung in VSCode
+## Developing in VSCode
 
 ### Extensions
 
