@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,12 +7,12 @@ import Header from '@/components/custom/Header';
 import WithMargins from '@/components/layout/WithMargins';
 import Horizontal from '@/components/layout/Horizontal';
 import Secondary from '@/components/headings/Secondary';
+import Centered from '@/components/layout/Centered';
 import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight';
 import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
-import Wide from '@/components/buttons/Wide';
 import NearestNeighbourLayout from '@/components/custom/NearestNeighbourLayout';
 
-const Explanation: React.FC = () => {
+export default function Explanation() {
   const navigate = useNavigate();
   const capturedImage = useAppStore((state) => state.capturedImage);
   const [displayImage, setDisplayImage] = useState<string>();
@@ -45,14 +44,10 @@ const Explanation: React.FC = () => {
     <WithMargins mx="2em" my="1.5em">
       <Header title="Erklärung" />
       <Secondary>
-        Hier siehst du dein Bild und drei weitere die vom alter und Geschlecht
-        doch gut zu deinem passen sollten, oder?
+        k-nearest Neighbors (k-NN): Deine Nächsten Nachbarn
       </Secondary>
       <p>
-        Hand Scan AI nutzt diese Ähnlichkeiten, um dir eine Vorhersage zu geben,
-        basierend auf den Bildern, die am meisten mit deinem Bild
-        übereinstimmen. Es kann sein, dass du hier im Vergleich die gleiche Hand
-        öfters siehst. Woran das liegen kann, kannst du weiter unten lesen.
+      Hier siehst du dein Bild und drei weitere, die vom Alter und Geschlecht doch gut zu deinem passen sollten, oder? HandScan AI nutzt nämlich einen k-NN Algorithmus, um die Vorhersage zu treffen. k-Nearest Neighbors (k-NN) ist eine Methode des maschinellen Lernens, die auf der Annahme basiert, dass ähnliche Bilder ähnliche Ergebnisse liefern. 
       </p>
       <NearestNeighbourLayout
         src={displayImage}
@@ -60,33 +55,27 @@ const Explanation: React.FC = () => {
         genderGuess={scanResult.classifiedGender}
         nearestNeighbours={nearestNeighbours}
       />
-      <Secondary>
-        Statt Hand Scan AI kannst du auch k-NN Algorithmus sagen
+      <Centered style="max-width: 70vw;">
+      <Secondary centered={true} style="margin-bottom:0">
+      Statt Hand Scan AI kannst du auch k-NN Algorithmus sagen
       </Secondary>
-      <p>
-        „k-Nearest Neighbors (k-NN)“ ist eine Methode des maschinellen Lernens,
-        die auf der Annahme basiert, dass ähnliche Bilder ähnliche Ergebnisse
-        liefern. Nachfolgend die wichtigsten Schritte:
+      <p style={{textAlign:"center"}}>
+      „k-Nearest Neighbors (k-NN)“ ist eine Methode des maschinellen Lernens, die auf der Annahme basiert, dass ähnliche Bilder ähnliche Ergebnisse liefern. Nachfolgend die wichtigsten Schritte:
       </p>
-      <Horizontal>
+      <Horizontal margin="2em 0 1em 0">
         <img
           src="/ArrowRight.png"
           alt="Hand Scan AI Logo"
           style={{ objectFit: 'contain', alignSelf: 'start' }}
         />
         <div>
-          <Secondary>Normalisierung </Secondary>
+          <Secondary>Normalisierung</Secondary>
           <p>
-            Bevor die Bilder miteinander verglichen werden, müssen sie
-            normalisiert werden. Das bedeutet, dass die Daten so umgewandelt
-            werden, dass sie alle auf der gleichen Skala sind. Gleichzeitig
-            unterteilen wir dein Handbild in verschidene Regionen wie Daumen und
-            Mittelfinger, um Merkmale detaillierter analysieren zu können und
-            deine Handstellung das Ergebnis nicht beeinflusst.
+          Die Bilder werden einheitlich angepasst und in Regionen unterteilt, um eine präzisere Analyse, unabhängig von der Handstellung, zu ermöglichen.
           </p>
         </div>
       </Horizontal>
-      <Horizontal>
+      <Horizontal margin="1em 0">
         <img
           src="/ArrowRight.png"
           alt="Hand Scan AI Logo"
@@ -95,18 +84,11 @@ const Explanation: React.FC = () => {
         <div>
           <Secondary>Embeddings + Distanzberechnung</Secondary>
           <p>
-            uerst wird dein Bild als eine Zahlenrepräsentation (Embedding)
-            umgewandelt, damit es vom Algorithmus besser gelesen und verarbeitet
-            werden kann. Um herauszufinden, welche Bilder am ähnlichsten sind,
-            wird die Distanz zwischen den Merkmalen des Bildes und den anderen
-            Bildern berechnet. Dies geschieht mit mathematischen Methoden, wie
-            der euklidischen Distanz, die misst, wie „weit“ ein Bild von einem
-            anderen entfernt ist. Je kleiner die Distanz, desto ähnlicher sind
-            sich die Bilder.
+          Das Bild wird in eine Zahlenrepräsentation umgewandelt, und die Ähnlichkeit wird durch die Berechnung der euklidischen Distanz zwischen den Bildmerkmalen bestimmt.
           </p>
         </div>
       </Horizontal>
-      <Horizontal>
+      <Horizontal margin="1em 0">
         <img
           src="/ArrowRight.png"
           alt="Hand Scan AI Logo"
@@ -115,25 +97,11 @@ const Explanation: React.FC = () => {
         <div>
           <Secondary>Vorhersage</Secondary>
           <p>
-            Nachdem die Entfernungen berechnet wurden, wählt die k-NN-Methode
-            die nächsten Nachbarn (also die k ähnlichsten Bilder) aus und trifft
-            eine Vorhersage. Zum Beispiel, wenn die meisten der nächsten
-            Nachbarn ein bestimmtes Geschlecht oder Alter haben, wird dieses
-            auch für din Bild vorhergesagt. Die Vorhersage basiert also auf der
-            Mehrheit der „nächsten Nachbarn“. Wenn du oder deine nächsten
-            Nachbarn schon mal HandScan AI genutzt, dann kann es deshalb
-            vorkommen, dass du die gleichen Hände im Vergleich siehst, da deine
-            Hand sich selbst natürlich im besten Fall am ähnlichsten ist.
+          Die k-NN-Methode bestimmt die k ähnlichsten Bilder und leitet daraus eine Vorhersage ab, basierend auf der Mehrheit der nächsten Nachbarn.
           </p>
         </div>
       </Horizontal>
-      <Secondary>Mehr zur KI</Secondary>
-      <p>
-        Klicke hier, um mehr über die „Black Box KI“ zu erfahren und den
-        zugrunde liegenden Algorithmus zu entdecken und Fachbegriffe wie
-        Embeddings kennenzulernen, die für die Vorhersagen wichtig sind.
-      </p>
-      <Wide onClick={() => navigate('/blackbox')}>Erfahre mehr über KI</Wide>
+      </Centered>
       <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
         Zurück
       </NarrowFixedBottomLeft>
@@ -143,5 +111,3 @@ const Explanation: React.FC = () => {
     </WithMargins>
   );
 };
-
-export default Explanation;
