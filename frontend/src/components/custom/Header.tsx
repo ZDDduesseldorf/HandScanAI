@@ -12,8 +12,7 @@ export default function Header({ title }: Props) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    max-width: 95%;
-    margin: 1rem auto;
+    margin: 1em auto;
     padding: 0;
     top: 0;
   `;

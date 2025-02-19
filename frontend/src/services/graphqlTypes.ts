@@ -8,8 +8,18 @@ export interface ScanResult {
   confidenceGender: number;
 }
 
+export interface NearestNeighbour {
+  id: string;
+  gender: number;
+  age: number;
+  region: string;
+}
+
 export interface GetScanResultData {
-  getScanResult: ScanResult;
+  getScanResult: {
+    resultClassifier: ScanResult;
+    nearestNeigbhourInfo: NearestNeighbour[];
+  };
 }
 
 export interface ScanEntry {

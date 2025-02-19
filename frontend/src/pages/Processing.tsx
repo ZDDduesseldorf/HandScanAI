@@ -25,12 +25,16 @@ const Processing: React.FC = () => {
     },
   );
   const { setScanResult } = useAppStore();
+  const { setNearestNeighbours } = useAppStore();
 
   useEffect(() => {
-    if (data?.getScanResult) {
-      setScanResult(data.getScanResult);
+    if (data?.getScanResult.resultClassifier) {
+      setScanResult(data.getScanResult.resultClassifier);
     }
-  }, [data, setScanResult]);
+    if (data?.getScanResult.nearestNeigbhourInfo) {
+      setNearestNeighbours(data.getScanResult.nearestNeigbhourInfo);
+    }
+  }, [data, setScanResult, setNearestNeighbours]);
   if (error) return <p>Error: {error.message}</p>;
 
   return (
