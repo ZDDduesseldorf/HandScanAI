@@ -32,23 +32,52 @@ export default function Result_2() {
    */
   const navigate = useNavigate();
 
+  /**
+   * A list that stores the genders that are available for selection in the select menu.
+   */
   const genders = [
-    {
-      value: '0',
-      label: 'weiblich',
-    },
-    {
-      value: '1',
-      label: 'männlich',
-    },
+    { value: '0', label: 'weiblich' },
+    { value: '1', label: 'männlich' },
   ];
 
-  const [ageInput, setAgeInput] = useState('');
-  const [genderInput, setGenderInput] = useState('');
+  const [
+    /**
+     * User input of their actual age that is stored in React state.
+     */
+    ageInput,
+    /**
+     * Saves the actual age in React state.
+     */
+    setAgeInput,
+  ] = useState('');
+
+  const [
+    /**
+     * User input of their actual gender that is stored in React state.
+     */
+    genderInput,
+    /**
+     * Saves the actual gender in React state.
+     */
+    setGenderInput,
+  ] = useState('');
+
+  /**
+   * The id of the personal result of the scan stored in the React app store.
+   */
   const scanId = useAppStore((state) => state.scanResult?.id);
 
-  const [updateScanEntry] = useMutation(UPDATE_SCAN_ENTRY);
+  const [
+    /**
+     * Mutation to update the saved scan data
+     * @see https://www.apollographql.com/docs/react/data/mutations
+     */
+    updateScanEntry,
+  ] = useMutation(UPDATE_SCAN_ENTRY);
 
+  /**
+   * The personal result of the scan stored in the React app store.
+   */
   const scanResult = useAppStore((state) => state.scanResult);
 
   if (!scanResult) {
@@ -57,13 +86,27 @@ export default function Result_2() {
     );
   }
 
-  function isNumber(value?: string | number): boolean {
+  /**
+   * Checks whether a given string or number is numeric, i.e. consists only of
+   * numbers.
+   *
+   * @param value string or number to be checked
+   * @returns True, if the given string or number is numeric
+   */
+  function isNumeric(value?: string | number): boolean {
     return value != null && value !== '' && !isNaN(Number(value.toString()));
   }
 
+  /**
+   * Handels all actions that take place when the user leaves the page. If there is
+   * input data, it is minimally validated and sent to the backend if the validation
+   * is passed.
+   * If the data is not complete or does not pass validation, the page simply
+   * navigates to the next without sending anything to the backend.
+   */
   function handleSubmit() {
     //check if the inputs are valid
-    if (ageInput && genderInput && isNumber(ageInput)) {
+    if (ageInput && genderInput && isNumeric(ageInput)) {
       //send to backend and navigate
       updateScanEntry({
         variables: {
