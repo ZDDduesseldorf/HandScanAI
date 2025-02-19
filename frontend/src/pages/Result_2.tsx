@@ -1,11 +1,14 @@
+//external imports
 import React, { useState } from 'react';
 import { TextField, MenuItem, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 
+//internal imports
 import { useAppStore } from '@/store/appStore';
 import { UPDATE_SCAN_ENTRY } from '@/services/mutations';
 
+//component imports
 import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
 import WithMargins from '@/components/layout/WithMargins';
@@ -14,7 +17,19 @@ import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight'
 import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 import WithText from '@/components/cards/WithText';
 
+/**
+ * The second results page offers the option of entering the actual data for age
+ * and gender. The data entered is simply validated and then sent to the backend.
+ * So far, only male and female can be specified for gender, as HandScan AI has
+ * not yet been trained for different genders.
+ *
+ * @returns Page showing input field to input actual data
+ */
 export default function Result_2() {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
   const navigate = useNavigate();
 
   const genders = [
