@@ -145,6 +145,12 @@ Create `backend/app/media` and inside
 
 The `logs-folder` in `backend` and its contents are automatically created when starting the docker container (via `startup()` in `lifetime.py`). The log-csvs lie in a folder named after the current date to make distinctions between sessions easier.
 
+To manually set up the correct logging file structure (in case of an error or development outside of docker), in the commandline use
+
+```sh
+python manage.py setup_csv_logging
+```
+
 ## Developing in VSCode
 
 ### Extensions
