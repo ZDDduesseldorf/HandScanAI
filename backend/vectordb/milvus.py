@@ -15,8 +15,6 @@ import torch
 
 milvus_collection_name = "hand_regions"
 
-milvus_default_top_k = 5
-
 milvus_metric_type = "COSINE"
 
 milvus_index_params = {
@@ -70,12 +68,6 @@ def create_miluvs_collection(collection_name: str, model_name="DENSENET_121") ->
     Returns:
         None
     """
-    """fields = [
-        FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
-        FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
-        FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=20),
-        FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1024),
-    ]"""
 
     fields_dict = {
         "DENSENET_121": [
@@ -88,7 +80,7 @@ def create_miluvs_collection(collection_name: str, model_name="DENSENET_121") ->
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
             FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
             FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=20),
-            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1664),  # Check if this is the correct dimension
+            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1664),
         ],
         "RESNET_50": [
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),

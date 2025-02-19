@@ -45,10 +45,10 @@ def _path_manager(testing):
 # TODO pydoc
 def run_inference_pipeline(
     uuid,
+    k=5,
     testing=False,
     use_milvus=True,
     milvus_collection_name=milvus_collection_name,
-    milvus_default_top_k=milvus_default_top_k,
     milvus_default_search_params=milvus_default_search_params,
 ):
     """
@@ -80,14 +80,11 @@ def run_inference_pipeline(
     ######## STEP 3: search nearest neighbours ###########################
     if testing or not use_milvus:
         # for testing purposes/ if milvus is not available
-        k = 5  # anzahl nächster Nachbarn
         dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
 
         dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
     else:
-        dict_all_dist = search_embeddings_dict(
-            dict_embedding, milvus_collection_name, milvus_default_search_params, milvus_default_top_k
-        )
+        dict_all_dist = search_embeddings_dict(dict_embedding, milvus_collection_name, milvus_default_search_params, k)
 
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
     ######## STEP 4: make a decision for prediction ######################

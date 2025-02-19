@@ -12,13 +12,13 @@ from utils.csv_utils import check_or_create_folder, check_file_exists, create_cs
 from embeddings.models_utils import CNNModel, load_model
 from pipelines.initial_data_pipeline import run_initial_data_pipeline
 from utils.key_enums import PipelineDictKeys as Keys
-from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_default_search_params, milvus_default_top_k
+from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_default_search_params
 
 
 # TODO: zum Ausführen der distance_pipeline verwenden
-"""def test_scenario_embeddings():
+def test_scenario_embeddings():
     cleanup_tests()
-    run_scenarios_embeddings(setup=True)"""
+    run_scenarios_embeddings(setup=True)
 
 
 def cleanup_tests():
@@ -140,9 +140,7 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True, use_mil
         dict_all_dist = calculate_distance(dict_embedding, k, model_embedding_csv_path)
         dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
     else:
-        dict_all_dist = search_embeddings_dict(
-            dict_embedding, model_name, milvus_default_search_params, milvus_default_top_k
-        )
+        dict_all_dist = search_embeddings_dict(dict_embedding, model_name, milvus_default_search_params, k)
 
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
 
