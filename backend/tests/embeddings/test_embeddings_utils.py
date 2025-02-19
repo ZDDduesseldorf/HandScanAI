@@ -35,8 +35,13 @@ def loaded_test_image(image_name, path_to_images):
 
 
 @pytest.fixture()
-def test_densenet():
+def test_densenet121():
     yield models_utils.load_model(models_utils.CNNModel.DENSENET_121)
+
+
+@pytest.fixture()
+def test_densenet169():
+    yield models_utils.load_model(models_utils.CNNModel.DENSENET_169)
 
 
 @pytest.fixture()
@@ -85,8 +90,8 @@ def test_calculate_normalize_embedding():
     assert not np.any((normalized_embedding > 1) | (normalized_embedding < -1))
 
 
-def test_calculate_single_densenet_embedding(loaded_test_image, test_densenet):
-    test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_densenet)
+def test_calculate_single_densenet_embedding(loaded_test_image, test_densenet121):
+    test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_densenet121)
     # expected dimensions of densenet embedding are 1024
     assert len(test_embeddings) == 1024
 
@@ -98,6 +103,12 @@ def test_calculate_single_resnet_embedding(loaded_test_image, test_resnet):
     test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_resnet)
     # expected dimensions of resnet embedding are 1000
     assert len(test_embeddings) == 1000
+
+
+def test_calculate_single_densenet169_embedding(loaded_test_image, test_densenet169):
+    test_embeddings = embeddings_utils.calculate_embedding(loaded_test_image, test_densenet169)
+    # expected dimensions of resnet embedding are 1664
+    assert len(test_embeddings) == 1664
 
 
 def test_calculate_embeddings_from_path_dict(region_dict: dict):
