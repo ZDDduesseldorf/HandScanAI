@@ -1,12 +1,24 @@
+//external imports
 import { useNavigate } from 'react-router-dom';
 
+//component imports
 import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
 import Centered from '@/components/layout/Centered';
 import WithMargins from '@/components/layout/WithMargins';
 import NarrowFixedBottomMiddle from '@/components/buttons/NarrowFixedBottomMiddle';
 
+/**
+ * Displays a simple thank you text and a button to return to the home page after
+ * using the application.
+ *
+ * @returns Page showing a thank you text for using the application
+ */
 export default function SubmissionComplete() {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
   const navigate = useNavigate();
 
   return (
