@@ -15,8 +15,6 @@ import torch
 
 milvus_collection_name = "hand_regions"
 
-milvus_default_top_k = 5
-
 milvus_metric_type = "COSINE"
 
 milvus_index_params = {
@@ -33,7 +31,9 @@ milvus_default_search_params = {
 ###########################################################################
 
 
-def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str) -> bool:
+def add_embeddings_to_milvus(
+    uuid: str, embeddings_dict: Dict[str, torch.Tensor], collection_name: str, model_name="DENSENET_121"
+) -> bool:
     """
     Adds embeddings to the Milvus vector database.
 
@@ -47,7 +47,7 @@ def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, torch.Tensor]
     """
     try:
         connect_to_host()
-        create_miluvs_collection(collection_name)
+        create_miluvs_collection(collection_name, model_name)
         milvus_data = prepare_data_for_milvus(uuid, embeddings_dict)
         insert_embeddings(milvus_data, collection_name)
         print("Successfully added embeddings.")
@@ -58,7 +58,7 @@ def add_embeddings_to_milvus(uuid: str, embeddings_dict: Dict[str, torch.Tensor]
         return False
 
 
-def create_miluvs_collection(collection_name: str) -> None:
+def create_miluvs_collection(collection_name: str, model_name="DENSENET_121") -> None:
     """
     Connects to Milvus and initializes the collection if it does not exist.
 
@@ -68,14 +68,29 @@ def create_miluvs_collection(collection_name: str) -> None:
     Returns:
         None
     """
-    fields = [
-        FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
-        FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
-        FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=20),
-        FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1024),
-    ]
 
-    schema = CollectionSchema(fields, description="HandRegions-Embedding")
+    fields_dict = {
+        "DENSENET_121": [
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+            FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
+            FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=20),
+            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1024),
+        ],
+        "DENSENET_169": [
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+            FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
+            FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=20),
+            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1664),
+        ],
+        "RESNET_50": [
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+            FieldSchema(name="uuid", dtype=DataType.VARCHAR, max_length=36),
+            FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=20),
+            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=1000),
+        ],
+    }
+
+    schema = CollectionSchema(fields=fields_dict[model_name], description="HandRegions-Embedding")
 
     if not utility.has_collection(collection_name):
         collection = Collection(name=collection_name, schema=schema)
