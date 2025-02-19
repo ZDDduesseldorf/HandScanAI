@@ -13,7 +13,7 @@ def dict_all_info_knn():
         HandRegions.HAND_0.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
@@ -21,7 +21,7 @@ def dict_all_info_knn():
         HandRegions.HANDBODY_1.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
@@ -29,7 +29,7 @@ def dict_all_info_knn():
         HandRegions.THUMB_2.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
@@ -37,7 +37,7 @@ def dict_all_info_knn():
         HandRegions.INDEXFINGER_3.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
@@ -45,7 +45,7 @@ def dict_all_info_knn():
         HandRegions.MIDDLEFINGER_4.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
@@ -53,7 +53,7 @@ def dict_all_info_knn():
         HandRegions.RINGFINGER_5.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
@@ -61,7 +61,7 @@ def dict_all_info_knn():
         HandRegions.LITTLEFINGER_6.value: pd.DataFrame(
             {
                 DictKeys.UUID.value: ["1", "2"],
-                DictKeys.SIMILARITY.value: [0, 0.5],
+                DictKeys.SIMILARITY.value: [1, 0.5],
                 DictKeys.AGE.value: [20, 26],
                 DictKeys.GENDER.value: [0, 1],
             },
