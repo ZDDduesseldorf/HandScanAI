@@ -10,7 +10,7 @@ export default function Horizontal({ children, margin }: Props) {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    margin: ${margin ? margin : "auto"};
+    margin: ${margin ? margin : 'auto'};
   `;
 
   return <Horizontal>{children}</Horizontal>;

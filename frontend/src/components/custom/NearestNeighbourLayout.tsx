@@ -46,12 +46,15 @@ export default function NearestNeighbourLayout({
           {Math.round(ageGuess)}
         </HandText>
       </Vertical>
-      <img
-        src="/ArrowRight.png"
-        alt="Hand Scan AI Logo"
-        style={{ objectFit: 'contain', alignSelf: 'center' }}
-      />
-
+      <Vertical>
+        <div style={{ height: '200px', flex: 'wrap', alignContent: 'center' }}>
+          <img
+            src="/ArrowRight.png"
+            alt="Hand Scan AI Logo"
+            style={{ objectFit: 'contain', alignSelf: 'center' }}
+          />
+        </div>
+      </Vertical>
       {nearestNeighbours?.map((neighbour: NearestNeighbour, idx: number) => (
         <Vertical key={idx}>
           <img
