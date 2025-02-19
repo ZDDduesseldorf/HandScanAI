@@ -42,21 +42,35 @@ export default function Result_2() {
     );
   }
 
-  const handleSubmit = () => {
-    updateScanEntry({
-      variables: {
-        id: scanId,
-        input: {
-          realAge: parseInt(ageInput, 10),
-          realGender: parseInt(genderInput, 10),
-          confirmed: true,
+  function isNumber(value?: string | number): boolean
+  {
+    return ((value != null) &&
+            (value !== '') &&
+            !isNaN(Number(value.toString())));
+  }
+
+  function handleSubmit() {
+    //check if the inputs are valid
+    if(ageInput && genderInput && isNumber(ageInput)) {
+      //send to backend and navigate
+      updateScanEntry({
+        variables: {
+          id: scanId,
+          input: {
+            realAge: parseInt(ageInput, 10),
+            realGender: parseInt(genderInput, 10),
+            confirmed: true,
+          },
         },
-      },
-    })
-      .then(() => {
-        navigate('/explanation');
       })
-      .catch((e) => console.error(e));
+        .then(() => {
+          navigate("/explanation");
+        })
+        .catch((e) => console.error(e));
+    } else {
+      //just navigate
+      navigate("/explanation");
+    }
   };
 
   return (
