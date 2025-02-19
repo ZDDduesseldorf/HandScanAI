@@ -42,6 +42,8 @@ def setup_scenario_structure(
     check_or_create_folder(path_to_model_folder)
     _, folder_path_region, _, _, folder_path_base = _path_manager(testing=False)
     start = time.time()
+
+    print(f"setup {model_name}")
     run_initial_data_pipeline(
         folder_path_base,
         folder_path_region,
@@ -50,7 +52,7 @@ def setup_scenario_structure(
         normalize=False,
         save_images=False,
         save_csvs=False,
-        save_milvus=False,
+        save_milvus=True,
         milvus_collection_name=model_name,
     )
     end = time.time()
@@ -82,13 +84,27 @@ def run_scenarios_embeddings(setup=False):
         "RESNET_50": load_model(CNNModel.RESNET_50),
     }
     k = 10
-    uuid_list = ["f32714b4-28a6-4e9b-9f72-2c33c3345636"]
+    uuid_list = [
+        "d8c07bec-a8e5-464d-9332-6d180bcb0e25",
+        "e8438076-49b2-49f2-b892-1a784c544ef6",
+        "5fb19ec5-65d0-43ae-9460-8dac1040dbf1",
+        "cb151d9a-f267-44fd-b8ad-e35a7ec6e43e",
+        "78c579f8-b88c-42ff-8f02-21453d10e4a2",
+        "976ad36d-0cc6-4c4e-b855-68db178da338",
+        "898d31b4-7549-4f9b-88d1-83d8fd958fdd",
+        "7c6c4cc9-7cc6-4cd8-9d79-05db814ee273",
+        "790f8655-a97a-47e0-8c54-5c6b030d1d6c",
+        "ca2b23a4-c9c2-46e4-b354-949326357ea0",
+        "6d03ac69-49f3-4666-8185-27966ec852d1",
+        "41564bb6-f474-4ddc-a95f-f1c4ff9815aa",
+    ]
     for model_name, model in models_dict.items():
         if setup:
             model_csv_path = path_to_result_csv / model_name
             setup_scenario_structure(model_csv_path, model, model_name)
         for uuid in uuid_list:
-            run_distance_pipeline(uuid, model_name, model, k)
+            print(model_name)
+            run_distance_pipeline(uuid, model_name, model, k, use_milvus=True)
 
     # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?
     # -> Was ist gutes Ergebnis? (ähnliche Bild einer Person sollte ähnliches Embedding liefern)
@@ -100,7 +116,7 @@ def run_scenarios_embeddings(setup=False):
 
 def run_distance_pipeline(uuid, model_name, model, k, save_results=True, use_milvus=False):
     # produktiv Daten aus Media Ordner
-    folder_path_query, _, _, metadata_csv_path, folder_path_base = _path_manager(testing=False)
+    _, _, _, metadata_csv_path, folder_path_base = _path_manager(testing=False)
     path_to_results_csv = scenario_path_manager()
 
     model_embedding_csv_path = path_to_results_csv / model_name

@@ -86,7 +86,9 @@ def run_initial_data_pipeline(
             # relevant für Test-Szenarien
             added_embedding = add_embedding_dict_to_csv(csv_folder_path, uuid, embeddings_regions_dict)
         if save_milvus:
-            added_embedding = add_embeddings_to_milvus(uuid, embeddings_regions_dict, milvus_collection_name)
+            added_embedding = add_embeddings_to_milvus(
+                uuid, embeddings_regions_dict, milvus_collection_name, model_name=milvus_collection_name
+            )
 
         # ab hier für Unit-Tests
         embeddings_dict = {
