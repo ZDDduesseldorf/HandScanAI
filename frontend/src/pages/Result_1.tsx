@@ -1,7 +1,11 @@
-import Slider from '@mui/material/Slider';
+//external imports
 import { useNavigate } from 'react-router-dom';
+import Slider from '@mui/material/Slider';
+
+//internal imports
 import { useAppStore } from '@/store/appStore';
 
+//component imports
 import WithMargins from '@/components/layout/WithMargins';
 import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
@@ -9,8 +13,22 @@ import Tertiary from '@/components/headings/Tertiary';
 import Justified from '@/components/text/Justified';
 import NarrowBottomSticky from '@/components/buttons/NarrowFixedBottomRight';
 
+/**
+ * The first results page shows the classified results. The data is displayed
+ * as text and also as a slider for visualization.
+ *
+ * @returns Page showing the classified results
+ */
 export default function Result_1() {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
   const navigate = useNavigate();
+
+  /**
+   * The personal result of the scan stored in the React app store.
+   */
   const scanResult = useAppStore((state) => state.scanResult);
 
   if (!scanResult) {
@@ -19,6 +37,10 @@ export default function Result_1() {
     );
   }
 
+  /**
+   * A list with the markers for the age that are below the slider. value is the
+   * value of the variable for the age and label is the corresponding label.
+   */
   const age_marks: { label: string; value: number }[] = [
     { value: 15, label: '<15' },
     { value: 25, label: '25' },
@@ -30,10 +52,30 @@ export default function Result_1() {
     { value: 85, label: '85+' },
   ];
 
+  /**
+   * The classified gender, which is retrieved from the React store.
+   */
   const genderGuess = scanResult.classifiedAge;
+
+  /**
+   * The classified age, which is retrieved from the React store.
+   */
   const ageGuess = scanResult.classifiedAge;
+
+  /**
+   * The minimum age that is retrieved from the React Store.
+   */
   const min_age = scanResult.minAge;
+
+  /**
+   * The maximum age that is retrieved from the React Store.
+   */
   const max_age = scanResult.maxAge;
+
+  /**
+   * The confidence (in percent) of the classifier, which indicates how likely the
+   * result is to be correct.
+   */
   const gender_confidence = scanResult.confidenceGender;
 
   return (
