@@ -34,7 +34,7 @@ const Processing: React.FC = () => {
     if (data?.getScanResult.nearestNeigbhourInfo) {
       setNearestNeighbours(data.getScanResult.nearestNeigbhourInfo);
     }
-  }, [data, setScanResult]);
+  }, [data, setScanResult, setNearestNeighbours]);
   if (error) return <p>Error: {error.message}</p>;
 
   return (

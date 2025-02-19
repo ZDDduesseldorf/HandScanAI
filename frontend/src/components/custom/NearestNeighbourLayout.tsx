@@ -5,13 +5,18 @@ import { NearestNeighbour } from '@/services/graphqlTypes';
 import Vertical from '../layout/Vertical';
 
 interface Props {
-  src:string | undefined;
-  genderGuess:number,
-  ageGuess:number,
-  nearestNeighbours:NearestNeighbour[] | null;
+  src: string | undefined;
+  genderGuess: number;
+  ageGuess: number;
+  nearestNeighbours: NearestNeighbour[] | null;
 }
 
-export default function NearestNeighbourLayout({ src, genderGuess, ageGuess, nearestNeighbours }: Props) {
+export default function NearestNeighbourLayout({
+  src,
+  genderGuess,
+  ageGuess,
+  nearestNeighbours,
+}: Props) {
   const HorizImageBox = styled(Box)`
     display: flex;
     flex-direction: row;
@@ -28,32 +33,41 @@ export default function NearestNeighbourLayout({ src, genderGuess, ageGuess, nea
     color: var(--primary);
   `;
 
-
-
   return (
     <HorizImageBox>
-        <Vertical>
+      <Vertical>
+        <img
+          src={src}
+          alt="Captured"
+          style={{ height: '200px', objectFit: 'contain' }}
+        />
+        <HandText>
+          Dein Bild: <br></br> {genderGuess == 0 ? 'weiblich' : 'männlich'},{' '}
+          {Math.round(ageGuess)}
+        </HandText>
+      </Vertical>
+      <img
+        src="/ArrowRight.png"
+        alt="Hand Scan AI Logo"
+        style={{ objectFit: 'contain', alignSelf: 'center' }}
+      />
+
+      {nearestNeighbours?.map((neighbour: NearestNeighbour, idx: number) => (
+        <Vertical key={idx}>
           <img
-            src={src}
-            alt="Captured"
-            style={{ height: '200px', objectFit: 'contain'}}
+            src={`http://localhost:8000/rest/image_nearest_neigbhours?image_id=${neighbour.id}`}
+            style={{ height: '200px', objectFit: 'contain' }}
           />
           <HandText>
-            Dein Bild: <br></br> {genderGuess == 0 ? "weiblich" : "männlich"}, {Math.round(ageGuess)}
+            {neighbour.gender == 0 ? 'weiblich' : 'männlich'}, {neighbour.age}
           </HandText>
+          <p>
+            Hier war der <b>{neighbour.region}</b> sehr ähnlich zu deinem, daher
+            hat HandScan mit Hilfe von diesem Bild dein Alter und Geschlecht
+            bestimmt.
+          </p>
         </Vertical>
-            <img src="/ArrowRight.png" alt="Hand Scan AI Logo" style={{ objectFit: 'contain', alignSelf: 'center'}}/>
-
-        { nearestNeighbours?.map((neighbour:NearestNeighbour, idx:number) => 
-            <Vertical key={idx}>
-                <img 
-                    src={`http://localhost:8000/rest/image_nearest_neigbhours?image_id=${neighbour.id}`}
-                    style={{ height: '200px', objectFit: 'contain'}}/>
-                <HandText>{neighbour.gender == 0 ? "weiblich" : "männlich"}, {neighbour.age}</HandText>
-                <p>Hier war der <b>{neighbour.region}</b> sehr ähnlich zu deinem, daher hat HandScan mit Hilfe 
-                    von diesem Bild dein Alter und Geschlecht bestimmt.</p>
-            </Vertical>
-        )}
-      </HorizImageBox>
+      ))}
+    </HorizImageBox>
   );
 }

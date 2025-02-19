@@ -33,9 +33,9 @@ export default function Result_2() {
   const scanId = useAppStore((state) => state.scanResult?.id);
 
   const [updateScanEntry] = useMutation(UPDATE_SCAN_ENTRY);
-  
+
   const scanResult = useAppStore((state) => state.scanResult);
-  
+
   if (!scanResult) {
     return (
       <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
@@ -49,12 +49,14 @@ export default function Result_2() {
         input: {
           realAge: parseInt(ageInput, 10),
           realGender: parseInt(genderInput, 10),
-          confirmed: true
+          confirmed: true,
         },
       },
-    }).then(() => {
-      navigate('/explanation')
-    });
+    })
+      .then(() => {
+        navigate('/explanation');
+      })
+      .catch((e) => console.error(e));
   };
 
   return (
@@ -62,16 +64,17 @@ export default function Result_2() {
       <Header title="Ergebnis" />
       <Secondary>KI kann Fehler machen</Secondary>
       <Justified>
-        Auch wenn die KI leistungsstark ist, können Fehler auftreten.
-        Überprüfe das Ergebnis, um sicherzugehen, dass es korrekt ist.
+        Auch wenn die KI leistungsstark ist, können Fehler auftreten. Überprüfe
+        das Ergebnis, um sicherzugehen, dass es korrekt ist.
       </Justified>
       <Grid2 container spacing={8}>
         <Grid2 size="grow">
           <WithText title="Dein Alter">
             <p>
-              Wahrscheinlich bist du {Math.round(scanResult.classifiedAge)} Jahre alt. <br />
-              Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben dir
-              geschmeichelt! <br />
+              Wahrscheinlich bist du {Math.round(scanResult.classifiedAge)}{' '}
+              Jahre alt. <br />
+              Na, haben wir dein Alter richtig erraten? Wir hoffen, wir haben
+              dir geschmeichelt! <br />
               Teile uns dein echtes Alter mit - das hilft uns, HandScan AI zu
               verbessern! <br />
             </p>
@@ -90,7 +93,9 @@ export default function Result_2() {
         <Grid2 size="grow">
           <WithText title="Dein Geschlecht">
             <p>
-              Wahrscheinlich bist du {scanResult.classifiedGender == 0 ? "weiblich" : "männlich"}. <br />
+              Wahrscheinlich bist du{' '}
+              {scanResult.classifiedGender == 0 ? 'weiblich' : 'männlich'}.{' '}
+              <br />
               Und was ist mit deinem Geschlecht? Stimmt die Vorhersage? <br />
               Teile uns dein Geschlecht mit - das hilft uns, HandScan AI zu
               verbessern! <br />

@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { StateCreator } from 'zustand';
-import { ScanResult, ScanEntry, NearestNeighbour } from '@/services/graphqlTypes';
+import {
+  ScanResult,
+  ScanEntry,
+  NearestNeighbour,
+} from '@/services/graphqlTypes';
 
 interface AppState {
   scanEntry: ScanEntry | null;
@@ -33,7 +37,7 @@ const storeCreator: StateCreator<AppState> = (set) => ({
   setNearestNeighbours: (data) =>
     set(() => ({
       nearestNeighbours: data,
-    }))
+    })),
 });
 
 export const useAppStore = create<AppState>(storeCreator);

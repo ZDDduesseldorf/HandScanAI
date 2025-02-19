@@ -26,5 +26,7 @@ export default function NarrowFixedBottomLeft({ onClick, children }: Props) {
     }
   `;
 
-  return <NarrowFixedBottomLeft onClick={onClick}>{children}</NarrowFixedBottomLeft>;
+  return (
+    <NarrowFixedBottomLeft onClick={onClick}>{children}</NarrowFixedBottomLeft>
+  );
 }

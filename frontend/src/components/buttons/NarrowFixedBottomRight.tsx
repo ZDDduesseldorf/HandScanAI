@@ -26,5 +26,9 @@ export default function NarrowFixedBottomRight({ onClick, children }: Props) {
     }
   `;
 
-  return <NarrowFixedBottomRight onClick={onClick}>{children}</NarrowFixedBottomRight>;
+  return (
+    <NarrowFixedBottomRight onClick={onClick}>
+      {children}
+    </NarrowFixedBottomRight>
+  );
 }

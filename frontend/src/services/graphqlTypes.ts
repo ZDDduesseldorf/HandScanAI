@@ -9,17 +9,17 @@ export interface ScanResult {
 }
 
 export interface NearestNeighbour {
-  id:string;
-  gender:number;
-  age:number;
-  region:string;
+  id: string;
+  gender: number;
+  age: number;
+  region: string;
 }
 
 export interface GetScanResultData {
   getScanResult: {
     resultClassifier: ScanResult;
     nearestNeigbhourInfo: NearestNeighbour[];
-  }
+  };
 }
 
 export interface ScanEntry {

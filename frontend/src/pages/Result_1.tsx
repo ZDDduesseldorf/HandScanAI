@@ -12,7 +12,7 @@ import NarrowBottomSticky from '@/components/buttons/NarrowFixedBottomRight';
 export default function Result_1() {
   const navigate = useNavigate();
   const scanResult = useAppStore((state) => state.scanResult);
-  
+
   if (!scanResult) {
     return (
       <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
@@ -40,13 +40,14 @@ export default function Result_1() {
     <WithMargins mx="2em" my="1.5em">
       <Header title="Ergebnis" />
       <Secondary>
-        Du bist {genderGuess == 1 ? 'männlich' : 'weiblich'} und {Math.round(ageGuess)} Jahre
-        alt
+        Du bist {genderGuess == 1 ? 'männlich' : 'weiblich'} und{' '}
+        {Math.round(ageGuess)} Jahre alt
       </Secondary>
       <Tertiary>Dein Alter</Tertiary>
       <Justified>
-        HandScan AI denkt, dass du wahrscheinlich {Math.round(ageGuess)} Jahre alt bist, 
-        denn 90% von ähnlichen Händen waren ebenfalls zwischen {Math.round(min_age)} und {Math.round(max_age)} Jahre alt.
+        HandScan AI denkt, dass du wahrscheinlich {Math.round(ageGuess)} Jahre
+        alt bist, denn 90% von ähnlichen Händen waren ebenfalls zwischen{' '}
+        {Math.round(min_age)} und {Math.round(max_age)} Jahre alt.
       </Justified>
       <Slider
         disabled
@@ -59,18 +60,18 @@ export default function Result_1() {
       />
       <Tertiary>Dein Geschlecht</Tertiary>
       <Justified>
-        HandScan AI ist sich zu {Math.round(gender_confidence*100)}% sicher, dass du{' '}
-        {genderGuess == 1 ? 'männlich' : 'weiblich'} bist
+        HandScan AI ist sich zu {Math.round(gender_confidence * 100)}% sicher,
+        dass du {genderGuess == 1 ? 'männlich' : 'weiblich'} bist
       </Justified>
       <Slider
         disabled
-        defaultValue={gender_confidence*100}
+        defaultValue={gender_confidence * 100}
         valueLabelDisplay="auto"
         aria-label="Gender guess"
         track={false}
         marks={[
           { value: 0, label: '0%' },
-          { value: 50, label: '50%'},
+          { value: 50, label: '50%' },
           { value: 100, label: '100%' },
         ]}
         min={0}
