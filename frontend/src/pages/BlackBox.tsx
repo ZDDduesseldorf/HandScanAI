@@ -1,8 +1,9 @@
 import React from 'react';
 import { Typography, Box, styled } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-import NavButton from '@/components/buttons/Navigation';
 import Header from '@/components/custom/Header';
+import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 
 const BottomMiddleLayout = styled(Box)`
   display: flex;
@@ -34,6 +35,12 @@ const SecondaryHeading = styled(Typography)`
 `;
 
 const BlackBox: React.FC = () => {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
+  const navigate = useNavigate();
+
   return (
     <Box>
       <Header title="Black-Box KI" />
@@ -85,7 +92,9 @@ const BlackBox: React.FC = () => {
           </div>
         </BottomMiddleLayout>
       </UpperMiddleLayout>
-      <NavButton RouteTo="/results-age">Zurück</NavButton>
+      <NarrowFixedBottomLeft onClick={() => navigate('/results-age')}>
+        Zurück
+      </NarrowFixedBottomLeft>
       <br></br>
     </Box>
   );
