@@ -9,9 +9,9 @@ import Centered from '@/components/layout/Centered';
 import WithMargins from '@/components/layout/WithMargins';
 
 /**
- * Shows the user a short text informing them about data privacy issues. 
+ * Shows the user a short text informing them about data privacy issues.
  * A button can be used to navigate to the next page.
- * 
+ *
  * @returns Page showing a simple informative text
  */
 export default function PrivacyNotice() {

@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
-import WithMargins from '@/components/layout/WithMargins';
 import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
 import Horizontal from '@/components/layout/Horizontal';
@@ -28,6 +27,7 @@ const Container = styled(Box)`
   padding: 1em;
   background-color: #f0f0f0;
   border-radius: 12px;
+  text-align: left;
 `;
 
 const VideoWrapper = styled(Box)`
@@ -201,7 +201,7 @@ export default function ImageCapture() {
   }, [scanEntry?.id, navigate, updateCapturedImage]);
 
   return (
-    <WithMargins mx="2em" my="1.5em">
+    <div style={{ margin: '2em 1.5em' }}>
       <Header title="Bildaufnahme" />
       <Container>
         <VideoWrapper>
@@ -247,6 +247,6 @@ export default function ImageCapture() {
           </InstructionBox>
         </InfoSection>
       </Container>
-    </WithMargins>
+    </div>
   );
 }

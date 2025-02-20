@@ -33,7 +33,7 @@ export default function Home() {
      * The scan entry can later be filled with the scan data
      * @see https://www.apollographql.com/docs/react/data/mutations
      */
-    createScanEntry
+    createScanEntry,
   ] = useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
 
   const setScanEntry = useAppStore((state) => state.setScanEntry);
