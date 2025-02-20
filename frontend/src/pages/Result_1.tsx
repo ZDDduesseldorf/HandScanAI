@@ -55,7 +55,7 @@ export default function Result_1() {
   /**
    * The classified gender, which is retrieved from the React store.
    */
-  const genderGuess = scanResult.classifiedAge;
+  const genderGuess = scanResult.classifiedGender;
 
   /**
    * The classified age, which is retrieved from the React store.

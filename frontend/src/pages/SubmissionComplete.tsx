@@ -27,7 +27,7 @@ export default function SubmissionComplete() {
       <Centered style="text-align:center;">
         <Secondary centered={true}>Wir hoffen du hattest Spaß!</Secondary>
         <p>
-          Du möchtest deine Ergbnisse dir zu Hause noch mal in Ruhe durchlesen
+          Du möchtest deine Ergebnisse dir zu Hause noch mal in Ruhe durchlesen
           und dein Wissen über Normalisierung, Embeddings und Vorhersagen
           auffrischen, kein Problem, HandScan AI hat einen eigenen Bericht für
           dich erstellt. Wende dich dazu bitte an den Betreuer von HandScan AI

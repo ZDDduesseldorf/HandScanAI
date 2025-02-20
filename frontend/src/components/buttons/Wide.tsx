@@ -16,6 +16,7 @@ export default function Wide({ onClick, children, variant = 'solid' }: Props) {
     height: 2.5em;
     transition: background-color 0.3s;
     border-radius: 0;
+    min-width: 360px;
     text-transform: none;
     &:hover {
       background-color: var(--primary-light);
@@ -32,6 +33,7 @@ export default function Wide({ onClick, children, variant = 'solid' }: Props) {
     transition: background-color 0.3s;
     border-radius: 0;
     text-transform: none;
+    min-width: 360px;
     background-color: transparent;
     &:hover {
       background-color: var(--primary-light);

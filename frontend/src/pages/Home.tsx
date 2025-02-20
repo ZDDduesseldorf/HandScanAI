@@ -45,7 +45,6 @@ export default function Home() {
 
       if (data?.createScanEntryModel) {
         setScanEntry(data.createScanEntryModel);
-        //console.log('Scan entry created:', data.createScanEntryModel);
         navigate('/privacy-notice');
       }
     } catch (error) {
