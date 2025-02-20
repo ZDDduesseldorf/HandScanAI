@@ -43,7 +43,7 @@ def _path_manager(testing):
 # TODO pydoc
 def run_inference_pipeline(
     uuid,
-    k=5,
+    k=10,
     testing=False,
     use_milvus=True,
     milvus_collection_name=milvus_collection_name,
@@ -89,7 +89,7 @@ def run_inference_pipeline(
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_similarities)
     ######## STEP 4: make a decision for prediction ######################
 
-    # TODO: für einfache Klassifizierung verwende simple_classifier
+    # TODO: for simple (unweighted) classification use simple_classifier
     ensemble_df, age_dict, gender_dict = weighted_classifier(dict_all_info_knn)
 
     knn_info_df = find_most_similar_nearest_neighbours(dict_all_info_knn)

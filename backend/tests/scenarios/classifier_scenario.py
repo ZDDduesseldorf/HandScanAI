@@ -9,16 +9,19 @@ from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
 from utils.csv_utils import check_file_exists, check_or_create_folder, create_csv_with_header, add_entry_to_csv
 from utils.key_enums import PipelineAPIKeys as APIKeys
-# from scenarios.embeddings_scenario import scenario_path_manager
+from utils.logging_utils import save_classification_info
+# from tests.scenarios.embeddings_scenario import scenario_path_manager
 
 
 # TODO: zum Ausführen der classifier_scenario verwenden
 """def test_scenario_classifier():
     path_to_result_csv = scenario_path_manager()
-    scenario_classifier(path_to_result_csv, testing=True)"""
+    scenario_classifier(path_to_result_csv, testing=False)"""
 
 
-def setup_scenario_classifier(path_to_classifier_csv, path_to_csv_age, path_to_csv_gender, header_csv):
+def setup_scenario_classifier(
+    path_to_classifier_csv, path_to_csv_age, path_to_csv_gender, header_csv, path_to_csv_ensemble, header_ensemble
+):
     check_or_create_folder(path_to_classifier_csv)
 
     if not check_file_exists(path_to_csv_age):
@@ -27,11 +30,15 @@ def setup_scenario_classifier(path_to_classifier_csv, path_to_csv_age, path_to_c
     if not check_file_exists(path_to_csv_gender):
         create_csv_with_header(path_to_csv_gender, header_csv)
 
+    if not check_file_exists(path_to_csv_ensemble):
+        create_csv_with_header(path_to_csv_ensemble, header_ensemble)
+
 
 def scenario_classifier(path_to_result_csv, testing=False):
     path_to_classifier_csv = path_to_result_csv / "classifier"
     path_to_csv_age = path_to_classifier_csv / "classification_data_age.csv"
     path_to_csv_gender = path_to_classifier_csv / "classification_data_gender.csv"
+    path_to_csv_ensemble = path_to_classifier_csv / "classification_data_ensemble.csv"
 
     header_csv = [
         Keys.UUID.value,
@@ -45,7 +52,20 @@ def scenario_classifier(path_to_result_csv, testing=False):
         "label",
     ]
 
-    setup_scenario_classifier(path_to_classifier_csv, path_to_csv_age, path_to_csv_gender, header_csv)
+    header_ensemble = [
+        APIKeys.UUID.value,
+        Keys.REGION.value,
+        APIKeys.CLASSIFIED_AGE.value,
+        APIKeys.MIN_AGE.value,
+        APIKeys.MAX_AGE.value,
+        APIKeys.CONFIDENCE_AGE.value,
+        APIKeys.CLASSIFIED_GENDER.value,
+        APIKeys.CONFIDENCE_GENDER.value,
+    ]
+
+    setup_scenario_classifier(
+        path_to_classifier_csv, path_to_csv_age, path_to_csv_gender, header_csv, path_to_csv_ensemble, header_ensemble
+    )
 
     _, _, _, _, folder_path_base = _path_manager(testing)
     dataset_base = ImagePathDataset(folder_path_base)
@@ -54,10 +74,14 @@ def scenario_classifier(path_to_result_csv, testing=False):
         uuid = path_dict[Keys.UUID.value]
         path = path_dict[Keys.IMAGE_PATH.value]
         k = 6
-        run_generate_classifier_result(uuid, path, k, path_to_csv_age, path_to_csv_gender, testing)
+        run_generate_classifier_result(
+            uuid, path, k, path_to_csv_age, path_to_csv_gender, path_to_csv_ensemble, testing
+        )
 
 
-def run_generate_classifier_result(uuid, image_path, k, path_to_csv_age, path_to_csv_gender, testing=False):
+def run_generate_classifier_result(
+    uuid, image_path, k, path_to_csv_age, path_to_csv_gender, path_to_csv_ensemble, testing=False
+):
     """
     pipeline to classify age and gender based on the hand image
 
@@ -90,7 +114,10 @@ def run_generate_classifier_result(uuid, image_path, k, path_to_csv_age, path_to
 
     ######## STEP 4: make a decision for prediction ######################
 
+    # TODO: for simple (unweighted) classification use simple_classifier
     ensemble_df, age_dict, gender_dict = weighted_classifier(dict_info_knn)
+
+    save_classification_info(uuid, age_dict, gender_dict, ensemble_df, path_to_csv_ensemble, add_region_logging=False)
 
     dict_age = {
         Keys.UUID.value: uuid,
@@ -149,17 +176,5 @@ def delete_same_uuid_from_nearest_neighbours(uuid, dict_all_info_knn):
     gender = row[Keys.GENDER.value].iloc[0]
     for _, region_df in dict_all_info_knn.items():
         region_df.reset_index(inplace=True)
-        print(f"vorher : {region_df}")
         region_df.drop(region_df.loc[region_df[Keys.UUID.value] == uuid].index, inplace=True)
-        print(f"nachher: {region_df}")
     return dict_all_info_knn, age, gender
-
-
-# def run_scenarios_classfiers():
-# uuids der QueryBilder (11k, eigene Bilder)
-# festgelegtes model
-# verschiedene ks (3,5,7,10)
-# verschiedene distanzmethoden ? (cosinus)
-# verschiedene Classfier pro Region (simple(mean, modus), gewichtung nach Distanz, Random Forest)
-# Ensemble Classifier (simple(mean, modus), Gewichtung nach Region)
-# Vergleich mit erwartetem Wert (Alter, Geschlecht)

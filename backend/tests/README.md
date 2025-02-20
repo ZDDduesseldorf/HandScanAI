@@ -1,24 +1,52 @@
 # Tests
 
-Die Tests wurden in pytest implementiert.
+- [Tests](#tests)
+  - [Create Tests](#create-tests)
+  - [Run Tests](#run-tests)
+    - [via Plugin](#via-plugin)
+    - [via Console](#via-console)
+  - [Test-Scenarios](#test-scenarios)
+    - [Embeddings-Scenario](#embeddings-scenario)
+    - [Classifier-Scenario](#classifier-scenario)
+    - [Random\_Forest-Scenario](#random_forest-scenario)
 
-## Erstellen von Tests
+The tests were implemented using pytest.
 
-- Pytest erkennt die Tests am besten, wenn die Datei *tests_dateiname* benannt ist.
-- Test-Funktionen erstellen, auf Import-Pfade für zu testende Module achten.
+All correctly named tests in the test module run via ci-pipeline in github on PR creation or merge into main.
 
-## Test-Ausführung
+## Create Tests
 
-- Mithilfe des Plugins: Tests auswählen und ausführen
-- In Konsole: Sicherstellen, dass man sich im Ordner `HandScanAI/backend` befindet.
-- Ausführen von `python manage.py test`
-- ODER `python -m pytest`. An diesen Command kann man noch zusätzliche commandline-flags anhängen. Beispiele:
-  - Hinzufügen von `-v` für verbose Ausgabe
-  - Hinzufügen von `-s`, damit print-Befehle während dem Test ebenfalls auf der Konsole ausgegeben werden
-  - Für weitere Anpassungen des pytest-commands, siehe [How to invoke pytest](https://docs.pytest.org/en/stable/how-to/usage.html).
+- Pytest recognizes test-files with *tests_* at the beginning of the name, e.g. *tests_name_of_the_module_to_test*.
+- The test-functions need to start with *test_* as well.
+- Make sure the file imports and file paths for the test-files are correct.
 
-## Anpassungen
+## Run Tests
 
-Wenn für eine Pipeline etc. die Ausführung der Tests von `HandScanAI` statt `HandScanAI/backend` aus durchgeführt werden soll, müssen die Importe der betroffenen Module um ein `backend.` erweitert werden, damit die PFade wieder gültig sind.
+### via Plugin
 
-Wird das gemacht, funktioniert die Testausführung nur noch von `HandScanAI` aus.
+e.g. via <https://marketplace.visualstudio.com/items?itemName=littlefoxteam.vscode-python-test-adapter>
+
+### via Console
+
+- make sure to open console in `HandScanAI/backend`
+- Run `python manage.py test`
+- OR run `python -m pytest`.
+Using pytest-command, commandline-flags can be added, such as:
+  - `-v` for verbose logging on console
+  - `-s` to print `print()`-statements in code during testing (which is otherwise prevented by pytest)
+  - path to specific test-file for only running those tests (relativ path after `/backend`)
+  - For further possibilities for pytest-commands, see [How to invoke pytest](https://docs.pytest.org/en/stable/how-to/usage.html).
+
+## Test-Scenarios
+
+### Embeddings-Scenario
+
+tbd
+
+### Classifier-Scenario
+
+tbd
+
+### Random_Forest-Scenario
+
+tbd
