@@ -7,6 +7,7 @@ interface Props {
   onClick: () => void;
   children: React.ReactNode;
   variant?: 'solid' | 'outlined';
+  sx?: object;
 }
 
 /**
@@ -17,7 +18,12 @@ interface Props {
  * @param variant Variation of the button, default: "solid"
  * @returns Button component
  */
-export default function Wide({ onClick, children, variant = 'solid' }: Props) {
+export default function Wide({
+  onClick,
+  children,
+  variant = 'solid',
+  sx,
+}: Props) {
   /**
    * Styling for a mui <button> component that adds a wide (min-width 360ox)
    * button and adds a hover effect. This is for the solid variant.
@@ -60,8 +66,12 @@ export default function Wide({ onClick, children, variant = 'solid' }: Props) {
   `;
 
   return variant == 'outlined' ? (
-    <WideOutlined onClick={onClick}>{children}</WideOutlined>
+    <WideOutlined onClick={onClick} sx={sx}>
+      {children}
+    </WideOutlined>
   ) : (
-    <Wide onClick={onClick}>{children}</Wide>
+    <Wide onClick={onClick} sx={sx}>
+      {children}
+    </Wide>
   );
 }
