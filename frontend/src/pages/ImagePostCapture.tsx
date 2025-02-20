@@ -42,6 +42,7 @@ export default function ImagePostCapture() {
     setDisplayImage,
   ] = useState<string | null>(null);
 
+  // Ensure that the image is fetched when the page is loaded to make sure that the image preview is not using a previous cached image
   useEffect(() => {
     let objectURL: string | undefined;
     if (capturedImage) {
@@ -105,10 +106,15 @@ export default function ImagePostCapture() {
         </p>
       </Horizontal>
       <Horizontal style="justify-content: center; margin-top: 1em;">
-        <Wide onClick={() => navigate('/image-capture')} variant="outlined">
+        <Wide
+          onClick={() => void navigate('/image-capture')}
+          variant="outlined"
+        >
           Neu aufnehmen
         </Wide>
-        <Wide onClick={() => navigate('/processing')}>Analyse starten</Wide>
+        <Wide onClick={() => void navigate('/processing')}>
+          Analyse starten
+        </Wide>
       </Horizontal>
     </WithMargins>
   );

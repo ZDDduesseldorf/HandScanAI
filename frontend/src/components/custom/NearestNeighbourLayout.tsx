@@ -4,6 +4,9 @@ import { NearestNeighbour } from '@/services/graphqlTypes';
 
 import Vertical from '../layout/Vertical';
 
+/**
+ * Defines the typescript types of the parameters
+ */
 interface Props {
   src: string | undefined;
   genderGuess: number;
@@ -11,12 +14,30 @@ interface Props {
   nearestNeighbours: NearestNeighbour[] | null;
 }
 
+/**
+ * Displays the scan result with its nearest neighbours as images and
+ * descriptive text on the explanation page.
+ *
+ * @param src Path to the captured image of the user
+ * @param genderGuess The classified gender
+ * @param ageGuess The classified age
+ * @param nearestNeighbours List with the nearest neighbours
+ * @returns Component to display the scan result with the nearest
+ * neighbours
+ */
 export default function NearestNeighbourLayout({
   src,
   genderGuess,
   ageGuess,
   nearestNeighbours,
 }: Props) {
+  /**
+   * Styling for a mui <div> component that provides a container for
+   * the content. This component adds a flexbox to place images and
+   * texts next to each other respectively.
+   * Corresponding images and text are displayed one below the other
+   * using a different component.
+   */
   const HorizImageBox = styled(Box)`
     display: flex;
     flex-direction: row;
@@ -25,6 +46,11 @@ export default function NearestNeighbourLayout({
     text-align: left;
   `;
 
+  /**
+   * Styling for a mui <div> component that contains the description of
+   * of the user's captured image. The description is in the applications
+   * primary color.
+   */
   const HandText = styled(Box)`
     font-family: 'Delius Unicase', cursive;
     margin-top: 1.5rem;

@@ -1,12 +1,27 @@
 import { Button, styled } from '@mui/material';
 
+/**
+ * Defines the typescript types of the parameters
+ */
 interface Props {
   onClick: () => void;
   children: React.ReactNode;
   variant?: 'solid' | 'outlined';
 }
 
+/**
+ * A wide button with two variations: solid (which is default) and outlined.
+ *
+ * @param onClick Action that is executed when the button is clicked
+ * @param children Content of the button
+ * @param variant Variation of the button, default: "solid"
+ * @returns Button component
+ */
 export default function Wide({ onClick, children, variant = 'solid' }: Props) {
+  /**
+   * Styling for a mui <button> component that adds a wide (min-width 360ox)
+   * button and adds a hover effect. This is for the solid variant.
+   */
   const Wide = styled(Button)`
     background-color: var(--primary);
     color: white;
@@ -23,6 +38,10 @@ export default function Wide({ onClick, children, variant = 'solid' }: Props) {
     }
   `;
 
+  /**
+   * Styling for a mui <button> component that adds a wide (min-width 360ox)
+   * button and adds a hover effect. This is for the outlined variant.
+   */
   const WideOutlined = styled(Button)`
     border: 2px solid var(--primary);
     color: var(--primary);

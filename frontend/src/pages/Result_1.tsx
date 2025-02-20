@@ -135,7 +135,7 @@ export default function Result_1() {
           }}
         />
       </div>
-      <NarrowBottomSticky onClick={() => navigate('/result-2')}>
+      <NarrowBottomSticky onClick={() => void navigate('/result-2')}>
         Weiter
       </NarrowBottomSticky>
     </WithMargins>

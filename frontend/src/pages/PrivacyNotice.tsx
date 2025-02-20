@@ -27,17 +27,17 @@ export default function PrivacyNotice() {
       <Centered>
         <TextCard
           title="Daten statt Gebühren"
-          text="Wie bei vielen digitalen Diensten gilt auch hier: Statt eines 
-          klassischen Preises zahlst du mit etwas anderem - deinen Daten. In 
-          unserer App sind es vor allem deine Interaktionen und die Bilder deiner 
-          Hand, die die KI verarbeitet und lernen lassen. Diese Daten sind der 
-          „Treibstoff“, der der KI hilft, intelligenter, präziser und 
-          anpassungsfähiger zu werden. Mit deinen Eingaben trägst du aktiv dazu 
-          bei, dass das System weiterentwickelt und optimiert wird, um dir und 
+          text="Wie bei vielen digitalen Diensten gilt auch hier: Statt eines
+          klassischen Preises zahlst du mit etwas anderem - deinen Daten. In
+          unserer App sind es vor allem deine Interaktionen und die Bilder deiner
+          Hand, die die KI verarbeitet und lernen lassen. Diese Daten sind der
+          „Treibstoff“, der der KI hilft, intelligenter, präziser und
+          anpassungsfähiger zu werden. Mit deinen Eingaben trägst du aktiv dazu
+          bei, dass das System weiterentwickelt und optimiert wird, um dir und
           anderen Nutzern zukünftig noch bessere Ergebnisse zu bieten. "
         />
       </Centered>
-      <NarrowBottomSticky onClick={() => navigate('/image-capture')}>
+      <NarrowBottomSticky onClick={() => void navigate('/image-capture')}>
         Weiter
       </NarrowBottomSticky>
     </WithMargins>

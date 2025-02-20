@@ -6,7 +6,7 @@ import Header from '@/components/custom/Header';
 import Secondary from '@/components/headings/Secondary';
 import Centered from '@/components/layout/Centered';
 import WithMargins from '@/components/layout/WithMargins';
-import NarrowFixedBottomMiddle from '@/components/buttons/NarrowFixedBottomMiddle';
+import FixedBottomMiddle from '@/components/buttons/FixedBottomMiddle';
 
 /**
  * Displays a simple thank you text and a button to return to the home page after
@@ -37,9 +37,9 @@ export default function SubmissionComplete() {
           Vielen Dank, dass du mit deiner Nutzung geholfen hast, HandScan AI zu
           verbessern. Bis bald!
         </p>
-        <NarrowFixedBottomMiddle onClick={() => navigate('/')}>
+        <FixedBottomMiddle onClick={() => void navigate('/')}>
           Beenden
-        </NarrowFixedBottomMiddle>
+        </FixedBottomMiddle>
       </Centered>
     </WithMargins>
   );
