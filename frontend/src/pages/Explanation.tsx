@@ -64,7 +64,7 @@ export default function Explanation() {
         <p style={{ textAlign: 'center' }}>
           „k-Nearest Neighbors (k-NN)“ ist eine Methode des maschinellen
           Lernens, die auf der Annahme basiert, dass ähnliche Bilder ähnliche
-          Ergebnisse liefern. Nachfolgend die wichtigsten Schritte:
+          Ergebnisse liefern. Nachfolgend die wichtigsten Schritte:
         </p>
         <Horizontal margin="2em 0 1em 0">
           <img

@@ -11,7 +11,7 @@ export default function Horizontal({ children, margin, style = '' }: Props) {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    margin: ${margin ? margin : '0'};
+    margin: ${margin ?? '0'};
     ${style};
   `;
 
