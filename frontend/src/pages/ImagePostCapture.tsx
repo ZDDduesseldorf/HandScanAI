@@ -106,10 +106,15 @@ export default function ImagePostCapture() {
         </p>
       </Horizontal>
       <Horizontal style="justify-content: center; margin-top: 1em;">
-        <Wide onClick={() => navigate('/image-capture')} variant="outlined">
+        <Wide
+          onClick={() => void navigate('/image-capture')}
+          variant="outlined"
+        >
           Neu aufnehmen
         </Wide>
-        <Wide onClick={() => navigate('/processing')}>Analyse starten</Wide>
+        <Wide onClick={() => void navigate('/processing')}>
+          Analyse starten
+        </Wide>
       </Horizontal>
     </WithMargins>
   );

@@ -37,7 +37,7 @@ export default function SubmissionComplete() {
           Vielen Dank, dass du mit deiner Nutzung geholfen hast, HandScan AI zu
           verbessern. Bis bald!
         </p>
-        <FixedBottomMiddle onClick={() => navigate('/')}>
+        <FixedBottomMiddle onClick={() => void navigate('/')}>
           Beenden
         </FixedBottomMiddle>
       </Centered>

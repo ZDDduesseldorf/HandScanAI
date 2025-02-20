@@ -54,7 +54,6 @@ export interface GetScanResultData {
   };
 }
 
-
 /**
  * Represents a scan entry in the system.
  *
@@ -127,7 +126,6 @@ export interface ScanEntryInput {
 export interface GetScanEntryModelsData {
   getScanEntryModels: ScanEntry[];
 }
-
 
 /**
  * Represents the data returned by a GraphQL query to retrieve a single scan entry.

@@ -5,7 +5,6 @@ import { gql } from '@apollo/client';
  * This file defines the GraphQL mutations used in the HandScanAI project.
  */
 
-
 /**
  * GraphQL mutation to create a new scan entry.
  *
