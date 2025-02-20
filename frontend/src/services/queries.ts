@@ -12,7 +12,7 @@ export const GET_SCAN_RESULT = gql`
         maxAge
         minAge
       }
-      nearestNeigbhourInfo {
+      nearestNeighbourInfo {
         id
         gender
         age
