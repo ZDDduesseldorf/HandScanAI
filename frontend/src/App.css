@@ -1,9 +1,9 @@
-/* Root Variables */
+/* Define global CSS variables */
 :root {
   --background-color: #ffffff;
 }
 
-/* Global Reset Styles */
+/* Reset default margin and padding, set full dimensions and background color */
 html,
 body {
   margin: 0;
@@ -14,6 +14,7 @@ body {
   overflow: hidden;
 }
 
+/* Main container for the app, using flex layout to center content */
 #root {
   width: 100%;
   height: 100%;
@@ -26,7 +27,7 @@ body {
   margin: 0;
 }
 
-/* Wrapper ensures proper positioning and dimensions */
+/* Container with relative positioning, full viewport height, and hidden overflow */
 .page-wrapper {
   position: relative;
   width: 100%;
@@ -34,7 +35,7 @@ body {
   overflow: hidden;
 }
 
-/* Page Styling */
+/* Position pages absolutely to cover the container completely */
 .page {
   position: absolute;
   top: 0;
