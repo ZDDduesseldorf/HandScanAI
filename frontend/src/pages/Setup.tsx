@@ -87,7 +87,9 @@ export default function Setup() {
         </div>
       </Centered>
 
-      <FixedButton onClick={() => void navigate('/', { state: { from: '/setup' } })}>
+      <FixedButton
+        onClick={() => void navigate('/', { state: { from: '/setup' } })}
+      >
         Zurück
       </FixedButton>
     </WithMargins>
