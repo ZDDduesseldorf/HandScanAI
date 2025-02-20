@@ -36,9 +36,29 @@ export default function Home() {
     createScanEntry,
   ] = useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
 
+  /**
+   * Save the scan entry in the React app store.
+   */
   const setScanEntry = useAppStore((state) => state.setScanEntry);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [
+    /**
+     * Error message that appears if no scan entry can be created. Saved
+     * in the React state.
+     */
+    errorMessage,
+    /**
+     * Updates the error message.
+     */
+    setErrorMessage,
+  ] = useState<string | null>(null);
+
+  /**
+   * Handles the action when the user wants to navigate to the next page.
+   * To start the process, a scan entry is created and the user is taken to
+   * the next page.
+   * If no scan entry can be created, an error will be shown.
+   */
   const handleStartClick = async () => {
     try {
       const { data } = await createScanEntry();
@@ -55,6 +75,10 @@ export default function Home() {
     }
   };
 
+  /**
+   * Closes the Snackbar which is shown when no scan entry can be created by
+   * removing the error message.
+   */
   const handleCloseSnackbar = () => {
     setErrorMessage(null);
   };

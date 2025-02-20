@@ -1,8 +1,11 @@
+//external imports
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+//internal imports
 import { useAppStore } from '@/store/appStore';
 
+//component imports
 import Header from '@/components/custom/Header';
 import WithMargins from '@/components/layout/WithMargins';
 import Horizontal from '@/components/layout/Horizontal';
@@ -12,13 +15,49 @@ import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight'
 import NarrowFixedBottomLeft from '@/components/buttons/NarrowFixedBottomLeft';
 import NearestNeighbourLayout from '@/components/custom/NearestNeighbourLayout';
 
+/**
+ * A page that presents the explanation for the classification. Three of the
+ * nearest neighbors are shown on the page and a small explanatory text is
+ * displayed that briefly explains the procedure.
+ *
+ * @returns Page with nearest neighbours and explanatory text
+ */
 export default function Explanation() {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
   const navigate = useNavigate();
+
+  /**
+   * The captured image of the user stored in the React app store.
+   */
   const capturedImage = useAppStore((state) => state.capturedImage);
-  const [displayImage, setDisplayImage] = useState<string>();
+
+  const [
+    /**
+     * The image that is displayed on the page
+     */
+    displayImage,
+    /**
+     * Saves the image to be displayed when the captured image is retrieved
+     * from the store.
+     */
+    setDisplayImage,
+  ] = useState<string>();
+
+  /**
+   * The nearest neighbours stored in the React app store
+   */
   const nearestNeighbours = useAppStore((state) => state.nearestNeighbours);
+
+  /**
+   * The scan result stored in the React app store
+   */
   const scanResult = useAppStore((state) => state.scanResult);
 
+  // Update the displayImage when the captured image is retrieved from the
+  // store. Log the error in the console if there is one.
   useEffect(() => {
     let objectURL: string;
     if (capturedImage) {
@@ -34,6 +73,8 @@ export default function Explanation() {
     }
   }, [capturedImage]);
 
+  // If there is no result, the explanation cannot be displayed. The user should
+  // then navigate to another page.
   if (!scanResult) {
     return (
       <p>Keine Daten vorhanden, Bitte gehen sie zur vorherigen Seite zurück</p>
