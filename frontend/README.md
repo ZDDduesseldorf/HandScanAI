@@ -122,7 +122,7 @@ A complete list of all available CLI commands can be found in `package.json`.
 
 ## Tech Stack
 
-HandScanAI's frontend is a web application built with modern web technologies. The application is developed using **React with TypeScript**, optimized with **Vite**, and styled with **Material UI** and **Emotion**. It interacts with a **GraphQL** backend and uses **Zustand** for state management.
+HandScanAI's frontend is a web application built with modern web technologies. The application is developed using **React with TypeScript**, optimized with **Vite**, and styled with **Material UI** and **Emotion**. It interacts with a GraphQL backend using **Apollo** and uses **Zustand** for state management.
 
 ### Core Technologies
 - **[React](https://react.dev/)**: A JavaScript framework for building user interfaces.
@@ -139,7 +139,7 @@ HandScanAI's frontend is a web application built with modern web technologies. T
 
 ### API Communication
 - **[Apollo Client](https://www.apollographql.com/docs/react/)**: A GraphQL client used for efficient data fetching and caching.
-- **[WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)**: A native WebSocket implementation used for real-time updates.
+- **[WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)**: WebSocket used for real-time server communication when capturing the hand images.
 
 ### Development & Tooling
 - **[pnpm](https://pnpm.io/)**: A fast, efficient package manager. Alternatively, npm or yarn are also supported.
