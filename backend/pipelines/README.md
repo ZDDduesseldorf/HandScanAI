@@ -1,12 +1,10 @@
 # Pipelines
 
-TODO: Add information on pipelines.
-Info: Pipelines will get updated once the vector database gets introduced. Until then, see Miro Board for current information.
-
 ## Table of contents
 
 - [Pipelines](#pipelines)
   - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
   - [Initial Dataset Filter Pipeline](#initial-dataset-filter-pipeline)
     - [Use the initial dataset filter pipeline](#use-the-initial-dataset-filter-pipeline)
   - [Initial Data Pipeline](#initial-data-pipeline)
@@ -19,6 +17,29 @@ Info: Pipelines will get updated once the vector database gets introduced. Until
     - [data\_utils](#data_utils)
     - [datasets](#datasets)
   - [Distance/ Similarity Caculation](#distance-similarity-caculation)
+
+## Overview
+
+The pipeline-modules described here string several functionalities of other modules together and form the main workflow of the backend.
+
+There are four different pipelines, used in different situations and called from different places in the app:
+
+- **Initial Dataset Filter Pipeline**: Filters the 11K-Dataset for usable pictures.
+  - Gets called only to prepare the dataset for the application.
+  - Gets called from the `manage.py` via `initial_dataset_filter`.
+  - For further information, see [Initial Dataset Filter Pipeline](#initial-dataset-filter-pipeline).
+- **Initial Data Pipeline**: Enables the normalization, calculation of embeddings and storing of the resulting images and information for large bulk of images (e.g. for the result of the Initial Dataset Filter Pipeline).
+  - Gets called to set up the necessary data for the application on a new device or to save additional data for many images at once.
+  - Gets called from the `manage.py` via `setup_new_project_data` or `bulk_import_calculations`, depending on the usecase.
+  - For further information, see [Initial Data Pipeline](#initial-data-pipeline) and the docstrings of `setup_new_project_data` and `bulk_import_calculations`.
+- **Inference Pipeline**: Produces the age- and gender-classifications of a given image.
+  - Uses the dataset that was set up via Initial Data Pipeline.
+  - Gets triggered via API in `graphql.get_scan_result`.
+  - For further information, see [Inference Pipeline](#inference-pipeline).
+- **Add new Embeddings Pipeline**: Entails all necessary steps to save an image in the base dataset, save its correct metadata with the already existing metadata for the base dataset, normalize the image and saves the results as well as calculate its embeddings and save them (similar to Initial Data Pipeline).
+  - Adds the data for a new image to the dataset that was setup via `initial_data_pipeline`.
+  - Gets triggered via API in `models.after_save`.
+  - For further information, see [Add new Embeddings Pipeline](#add-new-embeddings-pipeline).
 
 ## Initial Dataset Filter Pipeline
 
