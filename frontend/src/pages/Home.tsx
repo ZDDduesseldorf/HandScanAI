@@ -56,7 +56,7 @@ export default function Home() {
   /**
    * Handles the action when the user wants to navigate to the next page.
    * To start the process, a scan entry is created and the user is taken to
-   * the net page.
+   * the next page.
    * If no scan entry can be created, an error will be shown.
    */
   const handleStartClick = async () => {

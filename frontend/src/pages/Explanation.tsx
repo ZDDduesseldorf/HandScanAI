@@ -56,7 +56,7 @@ export default function Explanation() {
    */
   const scanResult = useAppStore((state) => state.scanResult);
 
-  // Update the displaImage when the captured image is retrieved from the
+  // Update the displayImage when the captured image is retrieved from the
   // store. Log the error in the console if there is one.
   useEffect(() => {
     let objectURL: string;

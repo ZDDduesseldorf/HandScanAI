@@ -42,7 +42,7 @@ export default function Processing() {
     {
       //get the data with the provided scan id
       variables: { id: scanEntry?.id },
-      //do not execurte the query if there is no scan id
+      //do not execute the query if there is no scan id
       skip: !scanEntry?.id,
     },
   );
