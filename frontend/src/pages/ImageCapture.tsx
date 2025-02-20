@@ -160,7 +160,7 @@ export default function ImageCapture() {
       alert(
         'Scan-Eintrags-ID fehlt oder ist ungültig. Bitte starte den Prozess neu.',
       );
-      navigate('/');
+      void navigate('/');
       return;
     }
 

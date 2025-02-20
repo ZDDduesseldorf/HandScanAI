@@ -112,10 +112,12 @@ export default function Explanation() {
           </div>
         </Horizontal>
       </Centered>
-      <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
+      <NarrowFixedBottomLeft onClick={() => void navigate(-1)}>
         Zurück
       </NarrowFixedBottomLeft>
-      <NarrowFixedBottomRight onClick={() => navigate('/submission-complete')}>
+      <NarrowFixedBottomRight
+        onClick={() => void navigate('/submission-complete')}
+      >
         Weiter
       </NarrowFixedBottomRight>
     </WithMargins>

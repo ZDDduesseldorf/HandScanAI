@@ -119,12 +119,12 @@ export default function Result_2() {
         },
       })
         .then(() => {
-          navigate('/explanation');
+          void navigate('/explanation');
         })
         .catch((e) => console.error(e));
     } else {
       //just navigate
-      navigate('/explanation');
+      void navigate('/explanation');
     }
   }
 
@@ -189,7 +189,7 @@ export default function Result_2() {
           </WithText>
         </Grid2>
       </Grid2>
-      <NarrowFixedBottomLeft onClick={() => navigate(-1)}>
+      <NarrowFixedBottomLeft onClick={() => void navigate(-1)}>
         Zurück
       </NarrowFixedBottomLeft>
       <NarrowFixedBottomRight onClick={handleSubmit}>

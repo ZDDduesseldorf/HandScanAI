@@ -55,7 +55,7 @@ export default function Processing() {
       </Centered>
       <br></br>
       {!loading && (
-        <NarrowFixedBottomRight onClick={() => navigate('/result-1')}>
+        <NarrowFixedBottomRight onClick={() => void navigate('/result-1')}>
           Weiter
         </NarrowFixedBottomRight>
       )}
