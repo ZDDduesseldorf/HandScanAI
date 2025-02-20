@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Box, styled } from '@mui/material';
 
 import NavButton from '@/components/buttons/Navigation';
-import StyledTitle from '@/styles/StyledTitle';
+import Header from '@/components/custom/Header';
 
 const BottomMiddleLayout = styled(Box)`
   display: flex;
@@ -36,7 +36,7 @@ const SecondaryHeading = styled(Typography)`
 const BlackBox: React.FC = () => {
   return (
     <Box>
-      <StyledTitle>Black-Box KI</StyledTitle>
+      <Header title="Black-Box KI" />
       <UpperMiddleLayout>
         <SecondaryHeading>K-nearest neighbor modell</SecondaryHeading>
         <BoxText>
