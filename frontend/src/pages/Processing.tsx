@@ -29,8 +29,8 @@ export default function Processing() {
     if (data?.getScanResult.resultClassifier) {
       setScanResult(data.getScanResult.resultClassifier);
     }
-    if (data?.getScanResult.nearestNeigbhourInfo) {
-      setNearestNeighbours(data.getScanResult.nearestNeigbhourInfo);
+    if (data?.getScanResult.nearestNeighbourInfo) {
+      setNearestNeighbours(data.getScanResult.nearestNeighbourInfo);
     }
   }, [data, setScanResult, setNearestNeighbours]);
 

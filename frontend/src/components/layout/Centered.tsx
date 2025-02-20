@@ -17,7 +17,7 @@ interface Props {
  * @param style Optional additional styles
  * @returns Component that adds a flex container that centers content
  */
-export default function Centered({ children, style }: Props) {
+export default function Centered({ children, style = '' }: Props) {
   /**
    * Styling for the mui <div> element that centers content on x- and
    * y-axis with a flex box and adds optional custom styles.
