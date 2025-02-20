@@ -82,21 +82,20 @@ def build_info_knn_from_milvus(metadata_csv_path, knn_results: dict):
         knn_results (Dict[str, List[Dict[str, Any]]]): Dictionary of k-NN results grouped by region.
 
     Returns:
-        Dict[str, pd.DataFrame]: A dictionary mapping each region to a DataFrame with 'uuid', 'distance', 'age', 'gender'.
+        Dict[str, pd.DataFrame]: A dictionary mapping each region to a DataFrame with 'uuid', 'similarity', 'age', 'gender'.
     """
     dict_all_info_knn = {}
 
-    # TODO: Abfrage aus MongoDB?
     metadata_df = pd.read_csv(metadata_csv_path, sep=",")
     metadata_df = map_gender_string_to_int(metadata_df)
 
     for region, knn_list in knn_results.items():
         region_df = pd.DataFrame(
-            columns=[DictKeys.UUID.value, DictKeys.DISTANCE.value, DictKeys.AGE.value, DictKeys.GENDER.value]
+            columns=[DictKeys.UUID.value, DictKeys.SIMILARITY.value, DictKeys.AGE.value, DictKeys.GENDER.value]
         )
         for hit in knn_list:
             uuid = hit.get(DictKeys.UUID.value)
-            distance = hit.get(DictKeys.DISTANCE.value)
+            similarity = hit.get(DictKeys.SIMILARITY.value)
 
             row = metadata_df.loc[metadata_df[DictKeys.UUID.value] == uuid]
             if not row.empty:
@@ -108,7 +107,7 @@ def build_info_knn_from_milvus(metadata_csv_path, knn_results: dict):
 
             new_row = {
                 DictKeys.UUID.value: uuid,
-                DictKeys.DISTANCE.value: distance,
+                DictKeys.SIMILARITY.value: similarity,
                 DictKeys.AGE.value: age,
                 DictKeys.GENDER.value: gender,
             }
@@ -130,7 +129,7 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
         dict_all_dist:  {'Hand' : {'uuid': [56465, 1454514], 'distance': [0.1, 0.2], 'distance_ids_sorted' : [0,5]}}
 
     Returns:
-        dict_all_info_knn: {regionkey(str): region_df(uuid, dist, age, gender)}
+        dict_all_info_knn: {regionkey(str): region_df(uuid, similarity, age, gender)}
 
     Example:
         build_info_knn("C:\\HandScanAI\\backend\\app\\media\\csv", dict = {'Hand' : {'uuid': [56465, 1454514], 'distance': [0.1, 0.2], 'distance_ids_sorted' : [0,5]}})
@@ -151,18 +150,19 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
 
     for regionkey, dist_dict in dict_all_dist.items():
         region_df = pd.DataFrame(
-            columns=[DictKeys.UUID.value, DictKeys.DISTANCE.value, DictKeys.AGE.value, DictKeys.GENDER.value]
+            columns=[DictKeys.UUID.value, DictKeys.SIMILARITY.value, DictKeys.AGE.value, DictKeys.GENDER.value]
         )
         for index in dist_dict[DictKeys.DISTANCE_IDS_SORTED.value]:
             uuid = dist_dict[DictKeys.UUID.value][index]
             dist = dist_dict[DictKeys.DISTANCE.value][index]
+            similarity = 1 - dist
             row = metadata_df.loc[metadata_df[DictKeys.UUID.value] == uuid]
             # .iloc[0] notwendig sonst wird eindimensionale column gespeichert, nur Wert aus Zelle wird benötigt
             age = row[DictKeys.AGE.value].iloc[0]
             gender = row[DictKeys.GENDER.value].iloc[0]
             new_row = {
                 DictKeys.UUID.value: uuid,
-                DictKeys.DISTANCE.value: dist,
+                DictKeys.SIMILARITY.value: similarity,
                 DictKeys.AGE.value: age,
                 DictKeys.GENDER.value: gender,
             }
@@ -175,11 +175,11 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
 
 def find_most_similar_nearest_neighbours(dict_all_info_knn):
     """
-    From all the nearest neighbours in each region, n are selected that have the shortest distance and differ in uuid.
+    From all the nearest neighbours in each region, n are selected that have the highest similarity and differ in uuid.
     Saving of region, uuid, age and gender in dataframe for transfer to frontend
 
     Args:
-        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, similarity, age, gender)}
 
     Returns:
         pd.Dataframe: (region, uuid, age, gender) with n rows
@@ -188,7 +188,7 @@ def find_most_similar_nearest_neighbours(dict_all_info_knn):
         columns=[
             DictKeys.REGION.value,
             DictKeys.UUID.value,
-            DictKeys.DISTANCE.value,
+            DictKeys.SIMILARITY.value,
             DictKeys.AGE.value,
             DictKeys.GENDER.value,
         ]
@@ -199,14 +199,14 @@ def find_most_similar_nearest_neighbours(dict_all_info_knn):
             new_row = {
                 DictKeys.REGION.value: regionkey,
                 DictKeys.UUID.value: row[DictKeys.UUID.value],
-                DictKeys.DISTANCE.value: row[DictKeys.DISTANCE.value],
+                DictKeys.SIMILARITY.value: row[DictKeys.SIMILARITY.value],
                 DictKeys.AGE.value: row[DictKeys.AGE.value],
                 DictKeys.GENDER.value: row[DictKeys.GENDER.value],
             }
             knn_info_df = pd.concat([knn_info_df, pd.DataFrame([new_row])])
 
-    knn_info_df = knn_info_df.sort_values(by=[DictKeys.DISTANCE.value])
+    knn_info_df = knn_info_df.sort_values(by=[DictKeys.SIMILARITY.value], ascending=False)
     knn_info_df = knn_info_df.drop_duplicates(subset=DictKeys.UUID.value)
     knn_info_df = knn_info_df.head(3)
-    knn_info_df = knn_info_df.drop(DictKeys.DISTANCE.value, axis=1)
+    knn_info_df = knn_info_df.drop(DictKeys.SIMILARITY.value, axis=1)
     return knn_info_df

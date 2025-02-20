@@ -7,7 +7,7 @@ from .data_utils import region_embeddings_from_csv
 
 
 # TODO: wird durch Vektordatenbank später ersetzt
-def calculate_distance(dict_embedding: dict, k, embedding_csv_path):
+def calculate_cosine_distance(dict_embedding: dict, k, embedding_csv_path):
     """
         Calculates cosine distances between the embedding of the new image and the embeddings of the data set and
         saves the results in a structured format.

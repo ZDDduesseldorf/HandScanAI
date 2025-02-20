@@ -49,6 +49,7 @@ class PipelineDictKeys(Enum):
     SAVED_EMBEDDINGS = "saved_embeddings"
     DISTANCE = "distance"
     DISTANCE_IDS_SORTED = "distance_ids_sorted"
+    SIMILARITY = "similarity"
     AGE = "age"
     GENDER = "gender"
     REGION = "region"

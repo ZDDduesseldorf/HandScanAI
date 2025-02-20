@@ -17,21 +17,32 @@
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
     - [Server starten](#server-starten)
   - [Setup](#setup)
-  - [Entwicklung in VSCode](#entwicklung-in-vscode)
+    - [setup media](#setup-media)
+    - [setup logging](#setup-logging)
+  - [Developing in VSCode](#developing-in-vscode)
     - [Extensions](#extensions)
     - [Python Interpreter einstellen](#python-interpreter-einstellen)
   - [Projektstruktur](#projektstruktur)
     - [app](#app)
+    - [classifier](#classifier)
     - [embeddings](#embeddings)
+    - [hand-normalization](#hand-normalization)
     - [lib](#lib)
+    - [logs](#logs)
+    - [pipelines](#pipelines)
     - [tests](#tests)
+    - [utils](#utils)
     - [validation](#validation)
+    - [vectordb](#vectordb)
     - [Weitere Module](#weitere-module)
-  - [Formatierung und Linter](#formatierung-und-linter)
+  - [Formatting and Linter](#formatting-and-linter)
     - [Code Checks](#code-checks)
-    - [Code formatieren](#code-formatieren)
-  - [Tests ausführen](#tests-ausführen)
-  - [Backups erstellen/wiederherstellen](#backups-erstellen-und-wiederherstellen)
+    - [Code formatting](#code-formatting)
+  - [Run tests](#run-tests)
+  - [Backups erstellen und wiederherstellen](#backups-erstellen-und-wiederherstellen)
+    - [Backup erstellen](#backup-erstellen)
+    - [Backup wiederherstellen](#backup-wiederherstellen)
+
 ## Installation mit Docker und Dev Container
 
 ### Schritte zur Installation
@@ -128,28 +139,34 @@ Der Server sollte nun unter `http://127.0.0.1:8000/` erreichbar sein.
 
 ## Setup
 
-Ordnerstruktur anlegen
+Setup necessary to use the application. Describes creation of folder structures and base data.
 
-backend/app/media
+### setup media
 
-- BaseImages: Alle Bilder des BaseDataset
-- csv: Metadata.csv und region_Embeddings.csv (erstellt durch initial_data_pipeline)
-- QueryImages: Bilder aus Frontend werden in diesem Ordner abgespeichert
-- RegionImages: Ergebnis Handnormalization
+Create `backend/app/media` and inside
 
-backend/logs
+- `BaseImages`: contains all images of BaseDataset
+- `csv`: contains Metadata.csv and {region}_Embeddings.csv (created via `manage.py setup_new_project_data`, see `manage.py` docstrings for further information. Important: Create embedding-csvs new on every new computer/ don't copy them between devices.)
+- `QueryImages`: place where images from frontend are saved
+- `RegionImages`: results of hand-normalization
+
+### setup logging
+
+The `logs-folder` in `backend` and its contents are automatically created when starting the docker container (via `startup()` in `lifetime.py`). The log-csvs lie in a folder named after the current date to make distinctions between sessions easier.
+
+To manually set up the correct logging file structure (in case of an error or development outside of docker), in the commandline use
 
 ```sh
-  python manage.py setup_csv_logging
+python manage.py setup_csv_logging
 ```
 
-## Entwicklung in VSCode
+## Developing in VSCode
 
 ### Extensions
 
-- Ruff: https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff
+- Ruff: <https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff>
 
-- Python: https://marketplace.visualstudio.com/items?itemName=ms-python.python
+- Python: <https://marketplace.visualstudio.com/items?itemName=ms-python.python>
 
 ### Python Interpreter einstellen
 
@@ -174,28 +191,51 @@ Das Verzeichnis `app` enthält die Hauptanwendung und die Routen für das FastAP
 - `lifetime.py`: Hier werden Funktionen definiert, die beim Starten und Beenden der Anwendung ausgeführt werden.
 - `api/`: Hier sind die Geschäftslogik und die Service-Funktionen implementiert, die von den Routern verwendet werden.
 - `static/`: Hier befinden sich statische Dateien, wie z.B. Bilder usw.
-- `utils/`: Hier sind Hilfsfunktionen der Anwendung zu finden.
 - `core/`: Dieses Verzeichnis enthält die Konfigurationsdateien.
 - `db/`: Dieses Verzeichnis ist für die Datenhaltung zuständig.
 - `media/`: Erstellte Medien durch die Anwendung, gehört nicht ins Repo.
 
 Diese Struktur hilft dabei, den Code sauber und modular zu halten, was die Wartung und Erweiterung der Anwendung erleichtert.
 
+### classifier
+
+TODO
+
 ### embeddings
 
-Das Verzeichnis `embeddings` enthält die Module, die zur Berechnung der Embeddings durch CNNs verwendet werden. Es enthält eine eigene Readme für weitere Informationen.
+The directory `embeddings` contains the modules that are used for embeddings calculation via CNNs. Those embeddings are later used to determine similarities between images. See the embeddings-Readme for further information.
+
+### hand-normalization
+
+TODO
 
 ### lib
 
 Das Verzeichnis `lib` enthält allgemeine Bibliotheksfunktionen und Hilfsprogramme, die in verschiedenen Teilen der Anwendung verwendet werden können. Diese Funktionen sind oft wiederverwendbar und abstrahieren komplexe Logik, um sie einfacher zugänglich zu machen.
 
+### logs
+
+The directory `logs` is not committed to the repo but is needed to store csv-files that are used to collect various data. It gets created automatically upon starting the backend docker container or has to be setup manually. For further information, see [Setup](#setup).
+
+### pipelines
+
+TODO
+
 ### tests
 
 Das Verzeichnis `tests` enthält die Unit- und Integrationstests des Backends, die mittels `pytest` implementiert wurden. Es enthält eine eigene Readme für weitere Informationen.
 
+### utils
+
+The directory `utils` contains several modules with helper functions that are useful all across the app (e.g. enums used as dict-keys or functions to save data in csv-files). See utils' Readme for further details.
+
 ### validation
 
 Das Verzeichnis `validation` enthält alle Validierungskomponenten der Anwendung.
+
+### vectordb
+
+TODO
 
 ### Weitere Module
 
@@ -205,7 +245,7 @@ Weitere Module können auf ähnliche Weise hinzugefügt werden, indem Sie neue V
 
 Durch das Hinzufügen neuer Module auf diese Weise bleibt die Codebasis organisiert und modular, was die Wartung und Erweiterung der Anwendung erleichtert.
 
-## Formatierung und Linter
+## Formatting and Linter
 
 ### Code Checks
 
@@ -213,18 +253,19 @@ Durch das Hinzufügen neuer Module auf diese Weise bleibt die Codebasis organisi
 python manage.py check
 ```
 
-### Code formatieren
+### Code formatting
 
 ```sh
 python manage.py format
 ```
 
-## Tests ausführen
+## Run tests
 
 ```sh
 python manage.py test
 ```
 
+See also Readme in `tests`-module.
 
 ## Backups erstellen und wiederherstellen
 
@@ -235,6 +276,7 @@ Um ein Backup der Ordner `volumes`, `logs` und `app/media` zu erstellen, führen
 ```sh
 python manage.py create_backup
 ```
+
 Das Backup wird im Ordner backup erstellt und der Dateiname enthält das aktuelle Datum und die Uhrzeit.
 
 ### Backup wiederherstellen

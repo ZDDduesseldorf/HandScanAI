@@ -12,7 +12,7 @@ from .models_utils import transforms_default, load_model
 ###############################################
 
 # Default-Model (Densenet121)
-_default_cnn_model_ = load_model()
+_default_cnn_model_, default_model_name = load_model(), "DENSENET_121"
 
 ###############################################
 

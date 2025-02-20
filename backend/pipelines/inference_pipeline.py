@@ -8,7 +8,7 @@ from .data_utils import (
     build_info_knn_from_csv,
     find_most_similar_nearest_neighbours,
 )
-from .distance_calculation import calculate_distance
+from .distance_calculation import calculate_cosine_distance
 from classifier.weighted_classification import weighted_classifier
 from utils.logging_utils import logging_nearest_neighbours, logging_classification
 from vectordb.milvus import (
@@ -78,13 +78,15 @@ def run_inference_pipeline(
     ######## STEP 3: search nearest neighbours ###########################
     if testing or not use_milvus:
         # for testing purposes/ if milvus is not available
-        dict_all_dist = calculate_distance(dict_embedding, k, embedding_csv_path)
+        dict_all_dist = calculate_cosine_distance(dict_embedding, k, embedding_csv_path)
 
         dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
     else:
-        dict_all_dist = search_embeddings_dict(dict_embedding, milvus_collection_name, milvus_default_search_params, k)
+        dict_all_similarities = search_embeddings_dict(
+            dict_embedding, milvus_collection_name, milvus_default_search_params, k
+        )
 
-        dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
+        dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_similarities)
     ######## STEP 4: make a decision for prediction ######################
 
     # TODO: für einfache Klassifizierung verwende simple_classifier

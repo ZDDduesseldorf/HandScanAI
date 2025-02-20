@@ -19,7 +19,7 @@
 - Embeddings-calculation in backend via CNNs
 - Models to choose from (implemented)
   - **DEFAULT: DenseNet (121, Acc@1 74, Acc@5 92, Params 8M (small))** -> Embeddings-Vector sized 1024
-  - DenseNet (169, Acc@1 76, Acc@5 93, Params 14M (medium)) -> Embeddings-Vector sized 1024
+  - DenseNet (169, Acc@1 76, Acc@5 93, Params 14M (medium)) -> Embeddings-Vector sized 1664
   - ResNet (50|V2, Acc@1 81, Acc@5 95, Params 25.6M (medium/large)) -> Embeddings-Vector sized 1000
 - Tests /tests/embeddings folder
 

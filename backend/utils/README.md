@@ -34,9 +34,11 @@ The key-enums module contains the following Enums:
 
 The logging-utils module contains functions to log information for later evaluation in csv-files:
 
-- **nearest_neighbours**: saves information about the current query-image and its nearest neighbours
-- **classification**: saves information about the current query-image, it's classification results, ranges and confidence of the model
-- **input_data**: saves information about the actual metadata of the current query-image after the user input
+- **nearest_neighbours**: saves information about the current query-image and its nearest neighbours (function `logging_nearest_neighbours`)
+- **classification**: saves information about the current query-image, it's classification results, ranges and confidence of the model (function `logging_classification`)
+- **input_data**: saves information about the actual metadata of the current query-image after the user input (function `logging_input_data`)
+
+See file and docstrings for further information.
 
 ## uuid-utils
 
