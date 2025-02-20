@@ -65,6 +65,7 @@ export default function Home() {
       <Title>Hand Scan AI</Title>
       <Subtitle>Scan it. Know it.</Subtitle>
       <WideButton onClick={() => void handleStartClick()}>Start</WideButton>
+      <WideButton variant="outlined" sx={{ mt: 2 }} onClick={() => void navigate("/setup")}>Setup</WideButton>
       {errorMessage && (
         <Snackbar
           open={!!errorMessage}
