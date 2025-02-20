@@ -14,10 +14,10 @@ def classify_age(dict_all_info_knn):
     simple classifier for age prediction. Calculates the mean of the age per region
 
     Args:
-        dict_all_info_knn: dict {regionkey(str): region_df(uuid, distance, age, gender)}
+        dict_all_info_knn: dict {regionkey(str): region_df(uuid, similarity, age, gender)}
 
     Returns:
-        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
     """
     dict_age = {}
     for regionkey, region_df in dict_all_info_knn.items():
@@ -25,9 +25,9 @@ def classify_age(dict_all_info_knn):
         age_list = region_df[Keys.AGE.value].to_list()
         age_mean = np.mean(age_list)
 
-        distance_list = region_df[Keys.DISTANCE.value].to_list()
-        distance_mean = np.mean(distance_list)
-        new_row = {APIKeys.CONFIDENCE_AGE.value: distance_mean, APIKeys.CLASSIFIED_AGE.value: age_mean}
+        similarity_list = region_df[Keys.SIMILARITY.value].to_list()
+        similarity_mean = np.mean(similarity_list)
+        new_row = {APIKeys.CONFIDENCE_AGE.value: similarity_mean, APIKeys.CLASSIFIED_AGE.value: age_mean}
         region_mean_df = pd.concat([region_mean_df, pd.DataFrame([new_row])])
         dict_age[regionkey] = region_mean_df
 
@@ -39,19 +39,19 @@ def classify_gender(dict_all_info_knn):
     simple classifier for gender prediction. Calculates the mode of the gender per region
 
     Args:
-        dict_all_info_knn: dict {regionkey(str): region_df(uuid, distance, age, gender)}
+        dict_all_info_knn: dict {regionkey(str): region_df(uuid, similarity, age, gender)}
 
     Returns:
-        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
     """
     dict_gender = {}
     for regionkey, region_df in dict_all_info_knn.items():
         region_mean_df = pd.DataFrame(columns=[APIKeys.CONFIDENCE_GENDER.value, APIKeys.CLASSIFIED_GENDER.value])
         gender_list = region_df[Keys.GENDER.value].to_list()
         gender_mode = statistics.mode(gender_list)
-        distance_list = region_df[Keys.DISTANCE.value].to_list()
-        distance_mean = np.mean(distance_list)
-        new_row = {APIKeys.CONFIDENCE_GENDER.value: distance_mean, APIKeys.CLASSIFIED_GENDER.value: gender_mode}
+        similarity_list = region_df[Keys.SIMILARITY.value].to_list()
+        similarity_mean = np.mean(similarity_list)
+        new_row = {APIKeys.CONFIDENCE_GENDER.value: similarity_mean, APIKeys.CLASSIFIED_GENDER.value: gender_mode}
         region_mean_df = pd.concat([region_mean_df, pd.DataFrame([new_row])])
         dict_gender[regionkey] = region_mean_df
 
@@ -64,7 +64,7 @@ def confidence_gender(dict_all_info_knn, predicted_gender):
     Calculates the sum of neighbours with the same gender by the number of neighbours
 
     Args:
-        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, distance, age, gender)}
+        dict_all_info_knn (dictionary): dict {regionkey(str): region_df(uuid, similarity, age, gender)}
         predicted_gender (int): classified gender from ensemble_gender (0: female, 1: male)
 
     Returns:
@@ -86,19 +86,19 @@ def ensemble_age(age_dict):
     Simple classifier for age prediction. Calculates the mean age from the age of the regions.
 
     Args:
-        age_dict (dict): dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
+        age_dict (dict): dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
 
     Returns:
-        mean_age(float), min_age(float), max_age(float), mean_distance(float)
+        mean_age(float), min_age(float), max_age(float), mean_similarity(float)
     """
     age_list = [df[APIKeys.CLASSIFIED_AGE.value].iloc[0] for df in age_dict.values()]
     mean_age = np.mean(age_list)
     min_age = np.min(age_list)
     max_age = np.max(age_list)
 
-    distance_list = [df[APIKeys.CONFIDENCE_AGE.value].iloc[0] for df in age_dict.values()]
-    mean_distance = np.mean(distance_list)
-    return mean_age, min_age, max_age, mean_distance
+    similarity_list = [df[APIKeys.CONFIDENCE_AGE.value].iloc[0] for df in age_dict.values()]
+    mean_similarity = np.mean(similarity_list)
+    return mean_age, min_age, max_age, mean_similarity
 
 
 def ensemble_gender(gender_dict):
@@ -106,7 +106,7 @@ def ensemble_gender(gender_dict):
     Simple classifier for gender prediction. Calculates the mode gender from the gender of the regions.
 
     Args:
-        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
 
     Returns:
         mode_gender(int): 0: female, 1: male
@@ -124,21 +124,21 @@ def simple_classifier(dict_all_info_knn):
     Returns dataframe for frontend
 
     Args:
-        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
-        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
 
     Returns:
         ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
         classified_gender(0,1), confidence_gender(float))
-        dict_age: dict{regionkey(str): region_mean_df(mean_distance, mean_age)}
-        dict_gender: dict{regionkey(str): region_mean_df(mean_distance, gender_mode(0,1))}
+        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
         0:female, 1:male
     """
 
     dict_age = classify_age(dict_all_info_knn)
     dict_gender = classify_gender(dict_all_info_knn)
 
-    mean_age, min_age, max_age, mean_distance_age = ensemble_age(dict_age)
+    mean_age, min_age, max_age, mean_similarity_age = ensemble_age(dict_age)
     mode_gender = ensemble_gender(dict_gender)
     gender_confidence = confidence_gender(dict_all_info_knn, mode_gender)
 
@@ -148,7 +148,7 @@ def simple_classifier(dict_all_info_knn):
                 APIKeys.CLASSIFIED_AGE.value: mean_age,
                 APIKeys.MIN_AGE.value: min_age,
                 APIKeys.MAX_AGE.value: max_age,
-                APIKeys.CONFIDENCE_AGE.value: mean_distance_age,
+                APIKeys.CONFIDENCE_AGE.value: mean_similarity_age,
                 APIKeys.CLASSIFIED_GENDER.value: mode_gender,
                 APIKeys.CONFIDENCE_GENDER.value: gender_confidence,
             }

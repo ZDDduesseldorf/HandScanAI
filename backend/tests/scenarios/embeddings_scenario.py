@@ -4,7 +4,7 @@ import time
 from embeddings.embeddings_utils import calculate_embeddings_from_tensor_dict
 import hand_normalization.src.main as normalization
 from pipelines.data_utils import build_info_knn_from_csv, build_info_knn_from_milvus
-from pipelines.distance_calculation import calculate_distance
+from pipelines.distance_calculation import calculate_cosine_distance
 from pipelines.inference_pipeline import _path_manager
 from utils.image_utils import get_image_path
 from utils.logging_utils import save_nearest_neighbours_info
@@ -68,7 +68,7 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file):
             Keys.UUID.value,
             Keys.REGION.value,
             Keys.NEIGHBOUR_UUID.value,
-            Keys.DISTANCE.value,
+            Keys.SIMILARITY.value,
             Keys.AGE.value,
             Keys.GENDER.value,
         ]
@@ -136,12 +136,12 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True, use_mil
     ######## STEP 3: search nearest neighbours ###########################
     if not use_milvus:
         # for testing purposes/ if milvus is not available
-        dict_all_dist = calculate_distance(dict_embedding, k, model_embedding_csv_path)
+        dict_all_dist = calculate_cosine_distance(dict_embedding, k, model_embedding_csv_path)
         dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
     else:
-        dict_all_dist = search_embeddings_dict(dict_embedding, model_name, milvus_default_search_params, k)
+        dict_all_similarities = search_embeddings_dict(dict_embedding, model_name, milvus_default_search_params, k)
 
-        dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_dist)
+        dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_similarities)
 
     if save_results:
         nearest_neighbour_csv_path = model_embedding_csv_path / "nearest_neighbours.csv"

@@ -7,7 +7,7 @@ from pymilvus import (
     Collection,
 )
 from typing import Dict, List, Any
-from utils.key_enums import HandRegions
+from utils.key_enums import HandRegions, PipelineDictKeys
 
 import torch
 
@@ -213,7 +213,7 @@ def search_embeddings_dict(
                 param=search_params,
                 limit=top_k,
                 partition_names=[region],
-                output_fields=["uuid"],
+                output_fields=[PipelineDictKeys.UUID.value],
             )
 
             results_by_region[region] = []
@@ -222,8 +222,9 @@ def search_embeddings_dict(
                     results_by_region[region].append(
                         {
                             "id": hit.id,
-                            "uuid": hit.entity.get("uuid"),
-                            "distance": hit.distance,
+                            PipelineDictKeys.UUID.value: hit.entity.get(PipelineDictKeys.UUID.value),
+                            # that's cosine SIMILARITY, even though they call it distance
+                            PipelineDictKeys.SIMILARITY.value: hit.distance,
                         }
                     )
         except Exception as e:

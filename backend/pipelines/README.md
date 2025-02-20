@@ -18,7 +18,7 @@ Info: Pipelines will get updated once the vector database gets introduced. Until
   - [Utils for Pipelines](#utils-for-pipelines)
     - [data\_utils](#data_utils)
     - [datasets](#datasets)
-  - [Distance Caculation](#distance-caculation)
+  - [Distance/ Similarity Caculation](#distance-similarity-caculation)
 
 ## Initial Dataset Filter Pipeline
 
@@ -121,4 +121,8 @@ After a check of the metadata (manually by a person or with a check-script), it 
 
 ### datasets
 
-## Distance Caculation
+## Distance/ Similarity Caculation
+
+TODO: articulate better
+
+Since our own calculations result in distance-values and milvus has similarity-scores as a result, we use the respective metric up until we fill the dict_all_info_knn, where we standardize the metric to similarity.
