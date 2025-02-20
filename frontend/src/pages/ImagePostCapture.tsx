@@ -42,6 +42,7 @@ export default function ImagePostCapture() {
     setDisplayImage,
   ] = useState<string | null>(null);
 
+  // Ensure that the image is fetched when the page is loaded to make sure that the image preview is not using a previous cached image
   useEffect(() => {
     let objectURL: string | undefined;
     if (capturedImage) {
