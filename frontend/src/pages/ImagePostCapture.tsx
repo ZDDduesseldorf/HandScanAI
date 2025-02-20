@@ -100,8 +100,8 @@ export default function ImagePostCapture() {
           }}
         />
         <p style={{ fontSize: '1.25em' }}>
-          Klicke auf "Analyse starten", um herauszufinden, was HandScan AI über
-          deine Hand verrät!
+          Klicke auf &quot;Analyse starten&quot;, um herauszufinden, was
+          HandScan AI über deine Hand verrät!
         </p>
       </Horizontal>
       <Horizontal style="justify-content: center; margin-top: 1em;">
