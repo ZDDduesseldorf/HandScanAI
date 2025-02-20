@@ -18,7 +18,7 @@ export interface NearestNeighbour {
 export interface GetScanResultData {
   getScanResult: {
     resultClassifier: ScanResult;
-    nearestNeigbhourInfo: NearestNeighbour[];
+    nearestNeighbourInfo: NearestNeighbour[];
   };
 }
 

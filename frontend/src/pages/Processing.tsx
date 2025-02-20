@@ -1,20 +1,18 @@
-import React, { useEffect } from 'react';
-import { Typography, styled, Box } from '@mui/material';
-import NavButton from '@/components/buttons/Navigation';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
+
 import { GET_SCAN_RESULT } from '@/services/queries';
 import { GetScanResultData } from '@/services/graphqlTypes';
 import { useAppStore } from '@/store/appStore';
 
-const CenteredInformationText = styled(Typography)`
-  font-family: 'Delius Unicase', cursive;
-  color: #1a3ab8;
-  text-align: center;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  margin-bottom: 20px;
-`;
+import WithMargins from '@/components/layout/WithMargins';
+import Header from '@/components/custom/Header';
+import NarrowFixedBottomRight from '@/components/buttons/NarrowFixedBottomRight';
+import Centered from '@/components/layout/Centered';
 
-const Processing: React.FC = () => {
+export default function Processing() {
+  const navigate = useNavigate();
   const scanEntry = useAppStore((state) => state.scanEntry);
 
   const { data, loading, error } = useQuery<GetScanResultData>(
@@ -31,26 +29,36 @@ const Processing: React.FC = () => {
     if (data?.getScanResult.resultClassifier) {
       setScanResult(data.getScanResult.resultClassifier);
     }
-    if (data?.getScanResult.nearestNeigbhourInfo) {
-      setNearestNeighbours(data.getScanResult.nearestNeigbhourInfo);
+    if (data?.getScanResult.nearestNeighbourInfo) {
+      setNearestNeighbours(data.getScanResult.nearestNeighbourInfo);
     }
   }, [data, setScanResult, setNearestNeighbours]);
+
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <Box>
-      <CenteredInformationText>
-        Ungefähr 90% der Menschen sind Rechtshänder,
-        <br />
-        wobei die Handdominanz oft in der frühen Kindheit <br />
-        festgelegt wird und teilweise genetisch beeinflusst
-        <br /> ist.
-      </CenteredInformationText>
+    <WithMargins mx="2em" my="1.5em">
+      <Header title="Berechnung" />
+      <Centered
+        style="
+          color: var(--primary);
+          font-family: 'Delius Unicase', cursive;
+          text-align: center;
+          font-size: 1.5em;
+          padding-top: 5em;
+        "
+      >
+        Das k-Nearest Neighbors (k-NN) Modell hinter HandScan AI analysiert die
+        Merkmale eines Bildes und vergleicht sie mit denen der nächsten k
+        Nachbarn, also Bildern, in seiner Datenbank, um die Vorhersage zu
+        treffen.
+      </Centered>
       <br></br>
-      {/* {loading && <CircularProgress></CircularProgress>} */}
-      {!loading && <NavButton RouteTo="/result-1">Weiter</NavButton>}
-    </Box>
+      {!loading && (
+        <NarrowFixedBottomRight onClick={() => navigate('/result-1')}>
+          Weiter
+        </NarrowFixedBottomRight>
+      )}
+    </WithMargins>
   );
-};
-
-export default Processing;
+}
