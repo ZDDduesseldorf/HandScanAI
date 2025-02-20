@@ -114,6 +114,7 @@ def run_generate_classifier_result(
 
     ######## STEP 4: make a decision for prediction ######################
 
+    # TODO: for simple (unweighted) classification use simple_classifier
     ensemble_df, age_dict, gender_dict = weighted_classifier(dict_info_knn)
 
     save_classification_info(uuid, age_dict, gender_dict, ensemble_df, path_to_csv_ensemble, add_region_logging=False)
