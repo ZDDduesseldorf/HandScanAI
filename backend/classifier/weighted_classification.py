@@ -5,7 +5,27 @@ from utils.key_enums import PipelineAPIKeys as APIKeys
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import HandRegions
 
-# TODO: was ist gutes gewicht?
+
+# weights per region for the ensemble classifier
+ensemble_weight_dict_age = {
+    HandRegions.HAND_0.value: 1,
+    HandRegions.HANDBODY_1.value: 0.75,
+    HandRegions.THUMB_2.value: 0.25,
+    HandRegions.INDEXFINGER_3.value: 0.25,
+    HandRegions.MIDDLEFINGER_4.value: 1,
+    HandRegions.RINGFINGER_5.value: 0.5,
+    HandRegions.LITTLEFINGER_6.value: 0.25,
+}
+
+ensemble_weight_dict_gender = {
+    HandRegions.HAND_0.value: 1,
+    HandRegions.HANDBODY_1.value: 1,
+    HandRegions.THUMB_2.value: 1,
+    HandRegions.INDEXFINGER_3.value: 1,
+    HandRegions.MIDDLEFINGER_4.value: 1,
+    HandRegions.RINGFINGER_5.value: 1,
+    HandRegions.LITTLEFINGER_6.value: 1,
+}
 
 
 # TODO: docstring updaten
@@ -190,7 +210,11 @@ def weighted_ensemble_gender(dict_gender, weight_dict):
     return weighted_mode_gender
 
 
-def weighted_classifier(dict_all_info_knn):
+def weighted_classifier(
+    dict_all_info_knn: dict[str, pd.DataFrame],
+    ensemble_weight_dict_age: dict[str, float] = ensemble_weight_dict_age,
+    ensemble_weight_dict_gender: dict[str, float] = ensemble_weight_dict_gender,
+):
     """
     Weighted classifier for predicting age and gender from the data of the nearest neighbours with weights.
     First calculating age and gender per region and than calcuate the final result.
@@ -208,26 +232,15 @@ def weighted_classifier(dict_all_info_knn):
         0:female, 1:male
     """
 
-    # weights per region for the ensemble classifier
-    weight_dict = {
-        HandRegions.HAND_0.value: 1,
-        HandRegions.HANDBODY_1.value: 1,
-        HandRegions.THUMB_2.value: 1,
-        HandRegions.INDEXFINGER_3.value: 1,
-        HandRegions.MIDDLEFINGER_4.value: 1,
-        HandRegions.RINGFINGER_5.value: 1,
-        HandRegions.LITTLEFINGER_6.value: 1,
-    }
-
     # calculate weighted age and gender per region
     dict_age = weighted_classify_age(dict_all_info_knn)
     dict_gender = weighted_classify_gender(dict_all_info_knn)
 
     # calcuate predicted age, gender an their confidence
-    weighted_mean_age = weighted_ensemble_age(dict_age, weight_dict)
+    weighted_mean_age = weighted_ensemble_age(dict_age, ensemble_weight_dict_age)
     lower_interval_age, upper_interval_age = confidence_intervall_age(dict_all_info_knn)
     confidence_age = 0  # aktuell nicht berechnet
-    weighted_mode_gender = weighted_ensemble_gender(dict_gender, weight_dict)
+    weighted_mode_gender = weighted_ensemble_gender(dict_gender, ensemble_weight_dict_gender)
     weighted_confidence_gender = caculate_weighted_confidence_gender(dict_all_info_knn, weighted_mode_gender)
 
     # create dataframe for Frontend

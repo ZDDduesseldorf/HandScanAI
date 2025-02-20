@@ -90,9 +90,6 @@ def random_forest_regressor(X_train: pd.DataFrame, y_train: pd.DataFrame) -> Ran
     Returns:
         forest (RandomForestRegressor): best randomforestregressor for the given training data
     """
-    # defaults
-    # forest = RandomForestRegressor(n_estimators=50, random_state=0, max_depth=4)
-    # forest.fit(X_train, y_train)
 
     forest = RandomForestRegressor()
     parameters = {
@@ -117,9 +114,6 @@ def random_forest_classifier(X_train: pd.DataFrame, y_train: pd.DataFrame) -> Ra
     Returns:
         forest (RandomForestRegressor): best randomforestregressor for the given training data
     """
-    # defaults
-    # forest = RandomForestClassifier(n_estimators=50, random_state=0, max_depth=4)
-    # forest.fit(X_train, y_train)
 
     forest = RandomForestClassifier()
     parameters = {

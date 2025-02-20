@@ -69,7 +69,20 @@ def dict_all_info_knn():
     }
 
 
-def test_weighted_classifier(dict_all_info_knn):
+@pytest.fixture()
+def default_weights_dict():
+    yield {
+        HandRegions.HAND_0.value: 1,
+        HandRegions.HANDBODY_1.value: 1,
+        HandRegions.THUMB_2.value: 1,
+        HandRegions.INDEXFINGER_3.value: 1,
+        HandRegions.MIDDLEFINGER_4.value: 1,
+        HandRegions.RINGFINGER_5.value: 1,
+        HandRegions.LITTLEFINGER_6.value: 1,
+    }
+
+
+def test_weighted_classifier(dict_all_info_knn, default_weights_dict):
     ensemble_df = pd.DataFrame(
         [
             {
@@ -82,6 +95,6 @@ def test_weighted_classifier(dict_all_info_knn):
             }
         ]
     )
-    result_df, _, _ = weighted_classifier(dict_all_info_knn)
+    result_df, _, _ = weighted_classifier(dict_all_info_knn, default_weights_dict, default_weights_dict)
 
     assert_frame_equal(ensemble_df, result_df)

@@ -126,14 +126,21 @@ def logging_classification(uuid: str, age_dict: dict, gender_dict: dict, ensembl
         ensemble_df (pd.DataFrame): contains the information for the ensemble classification per datapoint
     """
     _, _, path_to_classification, _ = logging_manager()
-    save_classifiaction_info(uuid, age_dict, gender_dict, ensemble_df, path_to_classification)
+    save_classification_info(uuid, age_dict, gender_dict, ensemble_df, path_to_classification)
 
 
-def save_classifiaction_info(
-    uuid: str, age_dict: dict, gender_dict: dict, ensemble_df: pd.DataFrame, path_to_classification: (Path | str)
+def save_classification_info(
+    uuid: str,
+    age_dict: dict,
+    gender_dict: dict,
+    ensemble_df: pd.DataFrame,
+    path_to_classification: (Path | str),
+    add_region_logging: bool = True,
 ):
     """
     Saves information about the classification steps per region and ensemble to the log-csv for classification at the specified path.
+
+    If only the ensemble classification is to be logged and the classification per region is not relevant, it can be skipped using a flag.
 
     Args:
         uuid (str): identifier of the datapoint
@@ -141,20 +148,23 @@ def save_classifiaction_info(
         gender_dict (dict): contains the information for the gender classifications per region for the datapoint
         ensemble_df (pd.DataFrame): contains the information for the ensemble classification per datapoint
         path_to_classification (Path | str): absolute path to the log-csv-file for classification
+        add_region_logging (bool): flag for logging classification per region, default = true -> logging
     """
-    for regionkey, region_age_df in age_dict.items():
-        region_gender_df = gender_dict[regionkey]
-        dict_row = {
-            APIKeys.UUID.value: uuid,
-            Keys.REGION.value: regionkey,
-            APIKeys.CLASSIFIED_AGE.value: region_age_df.loc[0, APIKeys.CLASSIFIED_AGE.value],
-            APIKeys.MIN_AGE.value: "N/A",
-            APIKeys.MAX_AGE.value: "N/A",
-            APIKeys.CONFIDENCE_AGE.value: region_age_df.loc[0, APIKeys.CONFIDENCE_AGE.value],
-            APIKeys.CLASSIFIED_GENDER.value: region_gender_df.loc[0, APIKeys.CLASSIFIED_GENDER.value],
-            APIKeys.CONFIDENCE_GENDER.value: region_gender_df.loc[0, APIKeys.CONFIDENCE_GENDER.value],
-        }
-        add_entry_to_csv(path_to_classification, dict_row)
+
+    if add_region_logging:
+        for regionkey, region_age_df in age_dict.items():
+            region_gender_df = gender_dict[regionkey]
+            dict_row = {
+                APIKeys.UUID.value: uuid,
+                Keys.REGION.value: regionkey,
+                APIKeys.CLASSIFIED_AGE.value: region_age_df.loc[0, APIKeys.CLASSIFIED_AGE.value],
+                APIKeys.MIN_AGE.value: "N/A",
+                APIKeys.MAX_AGE.value: "N/A",
+                APIKeys.CONFIDENCE_AGE.value: region_age_df.loc[0, APIKeys.CONFIDENCE_AGE.value],
+                APIKeys.CLASSIFIED_GENDER.value: region_gender_df.loc[0, APIKeys.CLASSIFIED_GENDER.value],
+                APIKeys.CONFIDENCE_GENDER.value: region_gender_df.loc[0, APIKeys.CONFIDENCE_GENDER.value],
+            }
+            add_entry_to_csv(path_to_classification, dict_row)
 
     dict_row = {
         APIKeys.UUID.value: uuid,
