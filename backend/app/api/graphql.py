@@ -54,7 +54,7 @@ class ScanResultNearestNeighboursType:
 @strawberry.type
 class ScanResultsWrapper:
     result_classifier: ScanResultType
-    nearest_neigbhour_info: List[ScanResultNearestNeighboursType]
+    nearest_neighbour_info: List[ScanResultNearestNeighboursType]
 
 
 @strawberry.type
@@ -99,7 +99,7 @@ class Query:
                 classified_gender=result_dict["classified_gender"],
                 confidence_gender=result_dict["confidence_gender"],
             ),
-            nearest_neigbhour_info=[
+            nearest_neighbour_info=[
                 ScanResultNearestNeighboursType(
                     id=row["uuid"],
                     age=row["age"],
