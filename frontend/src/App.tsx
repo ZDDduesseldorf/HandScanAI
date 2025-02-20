@@ -1,5 +1,12 @@
+//external imports
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+
+//internal imports
+import '@/assets/fonts.css';
+import '@/App.css';
+
+//page imports
 import Home from '@/pages/Home';
 import PrivacyNotice from '@/pages/PrivacyNotice';
 import ImageCapture from '@/pages/ImageCapture';
@@ -7,17 +14,36 @@ import ImagePostCapture from '@/pages/ImagePostCapture';
 import Processing from '@/pages/Processing';
 import SubmissionComplete from '@/pages/SubmissionComplete';
 import Explanation from '@/pages/Explanation';
-import Layout from '@/Layout';
 import Result_1 from '@/pages/Result_1';
 import Result_2 from '@/pages/Result_2';
+import Layout from '@/Layout';
 
-import '@/assets/fonts.css';
-import '@/App.css';
-
+/**
+ * The App component sets up the routing structure and page transition animations for HandScanAI.
+ *
+ * It leverages React Router to define application routes and Framer Motion's AnimatePresence and motion components
+ * to animate the entry and exit transitions between pages.
+ *
+ */
 const App: React.FC = () => {
+  /**
+   * Retrieves the current location object from React Router
+   * @see https://reactrouter.com/v6/hooks/use-location
+   */
   const location = useLocation();
 
-  const getPageVariants = (pathname: string) => {
+  /**
+   * Returns animation variants based on the current pathname.
+   *
+   * This function provides specific animation configurations for defined routes:
+   * - For the home route ('/'): fades in the page and slides it out to the left on exit.
+   * - For the privacy notice route ('/privacy-notice'): slides the page in from the right.
+   * - For all other routes: no specific animation variants are applied.
+   *
+   * @param {string} pathname - The current path from the location object.
+   * @returns A Variants object containing `initial`, `animate`, and `exit` properties for motion animations.
+   */
+  const getPageVariants = (pathname: string): Variants => {
     switch (pathname) {
       case '/':
         return {
