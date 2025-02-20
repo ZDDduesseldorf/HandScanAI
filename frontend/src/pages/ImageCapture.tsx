@@ -41,9 +41,9 @@ const VideoWrapper = styled(Box)`
 const Video = styled('video')`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  transform: rotate(-90deg);
   border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 `;
 
 const InfoSection = styled(Box)`
