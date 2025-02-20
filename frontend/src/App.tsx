@@ -7,8 +7,6 @@ import ImagePostCapture from '@/pages/ImagePostCapture';
 import Processing from '@/pages/Processing';
 import SubmissionComplete from '@/pages/SubmissionComplete';
 import Explanation from '@/pages/Explanation';
-import Sandbox from '@/pages/Sandbox';
-import BlackBox from '@/pages/BlackBox';
 import Layout from '@/Layout';
 import Result_1 from '@/pages/Result_1';
 import Result_2 from '@/pages/Result_2';
@@ -59,7 +57,6 @@ const App: React.FC = () => {
                 element={<ImagePostCapture />}
               />
               <Route path="/processing" element={<Processing />} />
-              <Route path="/blackbox" element={<BlackBox />} />
               <Route path="/explanation" element={<Explanation />} />
               <Route path="/result-1" element={<Result_1 />} />
               <Route path="/result-2" element={<Result_2 />} />
@@ -68,7 +65,6 @@ const App: React.FC = () => {
                 element={<SubmissionComplete />}
               />
             </Route>
-            <Route path="/sandbox" element={<Sandbox />} />
           </Routes>
         </motion.div>
       </AnimatePresence>
