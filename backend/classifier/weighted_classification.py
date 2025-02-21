@@ -28,6 +28,57 @@ ensemble_weight_dict_gender = {
 }
 
 
+def weighted_classifier(
+    dict_all_info_knn: dict[str, pd.DataFrame],
+    ensemble_weight_dict_age: dict[str, float] = ensemble_weight_dict_age,
+    ensemble_weight_dict_gender: dict[str, float] = ensemble_weight_dict_gender,
+):
+    """
+    Weighted classifier for predicting age and gender from the data of the nearest neighbours with weights.
+    First calculating age and gender per region and than calcuate the final result.
+    Returns dataframe for Frontend.
+
+    Args:
+        dict_all_info_knn (dict[str, pd.DataFrame]): dict {regionkey(str): region_df(uuid, similarity, age, gender)}
+        ensemble_weight_dict_age (dict[str, float], optional): dictionary with weights for each region for age classification. Defaults to ensemble_weight_dict_age.
+        ensemble_weight_dict_gender (dict[str, float], optional): dictionary with weights for each region for gender classification. Defaults to ensemble_weight_dict_gender.
+
+    Returns:
+        ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
+        classified_gender(0,1), confidence_gender(float))
+        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
+        0:female, 1:male
+    """
+
+    # calculate weighted age and gender per region
+    dict_age = weighted_classify_age(dict_all_info_knn)
+    dict_gender = weighted_classify_gender(dict_all_info_knn)
+
+    # calcuate predicted age, gender an their confidence
+    weighted_mean_age = weighted_ensemble_age(dict_age, ensemble_weight_dict_age)
+    lower_interval_age, upper_interval_age = confidence_intervall_age(dict_all_info_knn)
+    confidence_age = 0  # currently not calculated
+    weighted_mode_gender = weighted_ensemble_gender(dict_gender, ensemble_weight_dict_gender)
+    weighted_confidence_gender = caculate_weighted_confidence_gender(dict_all_info_knn, weighted_mode_gender)
+
+    # create dataframe for Frontend
+    ensemble_df = pd.DataFrame(
+        [
+            {
+                APIKeys.CLASSIFIED_AGE.value: weighted_mean_age,
+                APIKeys.MIN_AGE.value: lower_interval_age,
+                APIKeys.MAX_AGE.value: upper_interval_age,
+                APIKeys.CONFIDENCE_AGE.value: confidence_age,
+                APIKeys.CLASSIFIED_GENDER.value: weighted_mode_gender,
+                APIKeys.CONFIDENCE_GENDER.value: weighted_confidence_gender,
+            }
+        ]
+    )
+
+    return ensemble_df, dict_age, dict_gender
+
+
 def weighted_classify_age(dict_all_info_knn: dict):
     """
     weighted classifier for age prediction. Calculates the weighted mean of the age per region based on the similarity.
@@ -207,54 +258,3 @@ def weighted_ensemble_gender(dict_gender: dict, weight_dict: dict):
         ensemble_gender_df = pd.concat([ensemble_gender_df, pd.DataFrame([new_row])])
     weighted_mode_gender = weighted_mode(ensemble_gender_df, APIKeys.CLASSIFIED_GENDER.value, "calculated_weight")
     return weighted_mode_gender
-
-
-def weighted_classifier(
-    dict_all_info_knn: dict[str, pd.DataFrame],
-    ensemble_weight_dict_age: dict[str, float] = ensemble_weight_dict_age,
-    ensemble_weight_dict_gender: dict[str, float] = ensemble_weight_dict_gender,
-):
-    """
-    Weighted classifier for predicting age and gender from the data of the nearest neighbours with weights.
-    First calculating age and gender per region and than calcuate the final result.
-    Returns dataframe for Frontend.
-
-    Args:
-        dict_all_info_knn (dict[str, pd.DataFrame]): dict {regionkey(str): region_df(uuid, similarity, age, gender)}
-        ensemble_weight_dict_age (dict[str, float], optional): dictionary with weights for each region for age classification. Defaults to ensemble_weight_dict_age.
-        ensemble_weight_dict_gender (dict[str, float], optional): dictionary with weights for each region for gender classification. Defaults to ensemble_weight_dict_gender.
-
-    Returns:
-        ensemble_df: pandasdataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
-        classified_gender(0,1), confidence_gender(float))
-        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
-        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
-        0:female, 1:male
-    """
-
-    # calculate weighted age and gender per region
-    dict_age = weighted_classify_age(dict_all_info_knn)
-    dict_gender = weighted_classify_gender(dict_all_info_knn)
-
-    # calcuate predicted age, gender an their confidence
-    weighted_mean_age = weighted_ensemble_age(dict_age, ensemble_weight_dict_age)
-    lower_interval_age, upper_interval_age = confidence_intervall_age(dict_all_info_knn)
-    confidence_age = 0  # currently not calculated
-    weighted_mode_gender = weighted_ensemble_gender(dict_gender, ensemble_weight_dict_gender)
-    weighted_confidence_gender = caculate_weighted_confidence_gender(dict_all_info_knn, weighted_mode_gender)
-
-    # create dataframe for Frontend
-    ensemble_df = pd.DataFrame(
-        [
-            {
-                APIKeys.CLASSIFIED_AGE.value: weighted_mean_age,
-                APIKeys.MIN_AGE.value: lower_interval_age,
-                APIKeys.MAX_AGE.value: upper_interval_age,
-                APIKeys.CONFIDENCE_AGE.value: confidence_age,
-                APIKeys.CLASSIFIED_GENDER.value: weighted_mode_gender,
-                APIKeys.CONFIDENCE_GENDER.value: weighted_confidence_gender,
-            }
-        ]
-    )
-
-    return ensemble_df, dict_age, dict_gender

@@ -7,6 +7,46 @@ from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import PipelineAPIKeys as APIKeys
 
 
+def simple_classifier(dict_all_info_knn: dict):
+    """
+    Simple classifier for predicting age and gender from the data of the nearest neighbours.
+    First calculating age and gender per region and than calcuate the final result.
+    Returns dataframe for frontend and dictionaries of the age and gender classification per region for logging.
+
+    Args:
+        dict_all_info_knn (dict): dict {regionkey(str): region_df(uuid, similarity, age, gender)}
+
+    Returns:
+        ensemble_df: pd.dataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
+        classified_gender(0,1), confidence_gender(float))
+        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
+        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
+        0:female, 1:male
+    """
+
+    dict_age = classify_age(dict_all_info_knn)
+    dict_gender = classify_gender(dict_all_info_knn)
+
+    mean_age, min_age, max_age, mean_similarity_age = ensemble_age(dict_age)
+    mode_gender = ensemble_gender(dict_gender)
+    gender_confidence = confidence_gender(dict_all_info_knn, mode_gender)
+
+    ensemble_df = pd.DataFrame(
+        [
+            {
+                APIKeys.CLASSIFIED_AGE.value: mean_age,
+                APIKeys.MIN_AGE.value: min_age,
+                APIKeys.MAX_AGE.value: max_age,
+                APIKeys.CONFIDENCE_AGE.value: mean_similarity_age,
+                APIKeys.CLASSIFIED_GENDER.value: mode_gender,
+                APIKeys.CONFIDENCE_GENDER.value: gender_confidence,
+            }
+        ]
+    )
+
+    return ensemble_df, dict_age, dict_gender
+
+
 def classify_age(dict_all_info_knn: dict):
     """
     simple classifier for age prediction. Calculates the mean of the age per region
@@ -116,43 +156,3 @@ def ensemble_gender(gender_dict: dict):
     mode_gender = statistics.mode(gender_list)
 
     return mode_gender
-
-
-def simple_classifier(dict_all_info_knn: dict):
-    """
-    Simple classifier for predicting age and gender from the data of the nearest neighbours.
-    First calculating age and gender per region and than calcuate the final result.
-    Returns dataframe for frontend and dictionaries of the age and gender classification per region for logging.
-
-    Args:
-        dict_all_info_knn (dict): dict {regionkey(str): region_df(uuid, similarity, age, gender)}
-
-    Returns:
-        ensemble_df: pd.dataframe(classified_age(float),min_age(float),max_age(float), confidence_age(float),
-        classified_gender(0,1), confidence_gender(float))
-        dict_age: dict{regionkey(str): region_mean_df(mean_similarity, mean_age)}
-        dict_gender: dict{regionkey(str): region_mean_df(mean_similarity, gender_mode(0,1))}
-        0:female, 1:male
-    """
-
-    dict_age = classify_age(dict_all_info_knn)
-    dict_gender = classify_gender(dict_all_info_knn)
-
-    mean_age, min_age, max_age, mean_similarity_age = ensemble_age(dict_age)
-    mode_gender = ensemble_gender(dict_gender)
-    gender_confidence = confidence_gender(dict_all_info_knn, mode_gender)
-
-    ensemble_df = pd.DataFrame(
-        [
-            {
-                APIKeys.CLASSIFIED_AGE.value: mean_age,
-                APIKeys.MIN_AGE.value: min_age,
-                APIKeys.MAX_AGE.value: max_age,
-                APIKeys.CONFIDENCE_AGE.value: mean_similarity_age,
-                APIKeys.CLASSIFIED_GENDER.value: mode_gender,
-                APIKeys.CONFIDENCE_GENDER.value: gender_confidence,
-            }
-        ]
-    )
-
-    return ensemble_df, dict_age, dict_gender
