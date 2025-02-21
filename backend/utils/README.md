@@ -19,7 +19,7 @@ The csv-utils module contains
 The image-utils module contains
 
 - functions to construct an image path
-- function to copy images from one folder to another
+- functions to rename images and  to copy images from one folder to another
 - functions to load an image via opencv
 
 ## key-enums
@@ -28,7 +28,7 @@ The key-enums module contains the following Enums:
 
 - **HandRegions**: Enum that is used as keys to standardize region-dictionaries across different modules of the backend (e.g. hand-normalization, pipelines)
 - **PipelineAPIKeys**: Enum that is used as keys for dictionaries and dataframes directly related to the API
-- **PipelineDictKeys**: Enum that is used as keys for dictionaries and dataframes used in different steps in the backend-pipelines (see pipelines-module)
+- **PipelineDictKeys**: Enum that is used as keys for dictionaries and dataframes used in different steps in the backend-pipelines (for examples, see pipelines-module)
 
 ## logging-utils
 

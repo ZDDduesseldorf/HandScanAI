@@ -1,3 +1,10 @@
+"""
+This module contains functions for logging via csv-files to make evaluation easier.
+The logging used in the pipelines uses default paths. The respective functions start with *logging_* and contain notes in the docstrings.
+
+The functions not containing the default path are needed in test scenarios to not overwrite the production-logs.
+"""
+
 from pathlib import Path
 from datetime import datetime
 import pandas as pd
@@ -5,9 +12,6 @@ import pandas as pd
 from utils.key_enums import PipelineDictKeys as Keys
 from utils.key_enums import PipelineAPIKeys as APIKeys
 from utils.csv_utils import create_csv_with_header, add_entry_to_csv, check_or_create_folder, check_file_exists
-
-# This module contains functions for logging. The logging used in the pipelines uses default paths. The respective functions start with "logging_" and contain notes in the docstrings.
-# The functions not containing the default path are needed in test scenarios to not overwrite the production-logs.
 
 
 def logging_manager() -> tuple[Path, Path, Path, Path]:
@@ -17,7 +21,7 @@ def logging_manager() -> tuple[Path, Path, Path, Path]:
 
     Returns:
         paths (tuple[Path, Path, Path, Path]): contains in this order:
-        path_to_logs (str) (logs-folder),
+        path_to_logs (str) (folder),
         path_to_nearest_neighbour (str) (csv-file),
         path_to_classification (str) (csv-file),
         path_to_input_data (str) (csv-file)
