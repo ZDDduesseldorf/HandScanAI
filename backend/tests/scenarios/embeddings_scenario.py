@@ -19,11 +19,11 @@ from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_defa
 """def test_scenario_embeddings():"""
 """
 Prerequisites:
-    - original images in folder: app/media/BaseImages
-    - region images in folder: app/media/RegionImages
-    - if region images doesn't exists set normalize=True, save_images=True (for more information check docstring initial_data_pipeline)
-"""
-"""cleanup_tests()
+        - original images in folder: app/media/BaseImages
+        - region images in folder: app/media/RegionImages
+        - if region images doesn't exists set normalize=True, save_images=True (for more information check docstring initial_data_pipeline)
+    """
+""" cleanup_tests()
 run_scenarios_embeddings(setup=True)"""
 
 
@@ -85,7 +85,6 @@ def setup_scenario_structure(
     print("Dauer Initial:" + str((end - start) * 10**3) + "model: " + str(path_to_model_folder))
 
 
-# TODO: return true sinnvoll
 def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
     """
     Check if file for saving the results of the nearest neighbour search already exists. If not creates them with correct header
@@ -93,12 +92,8 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
     Args:
         path_to_csv_file (str  |  Path): path to file for saving the results of the nearest neighbour search.
 
-    Returns:
-        _type_: _description_
     """
-    if check_file_exists(path_to_csv_file):
-        return True
-    else:
+    if not check_file_exists(path_to_csv_file):
         header_nearest_neigbour = [
             Keys.UUID.value,
             Keys.REGION.value,
