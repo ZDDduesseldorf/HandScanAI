@@ -28,7 +28,7 @@ LANDMARK_NAMES = [
 ]
 
 
-def extract_landmarks(image):
+def extract_landmarks(image, extract_handedness = True):
     """Extracts landmarks from an image"""
 
     with mp_hands.Hands(
@@ -44,5 +44,8 @@ def extract_landmarks(image):
                 (int(landmark.x * image_width), int(landmark.y * image_height))
                 for landmark in results.multi_hand_landmarks[0].landmark
             ]
+            if extract_handedness:
+                handedness = results.multi_handedness[0].classification[0].label
+                return landmarks, handedness
             return landmarks
     return None
