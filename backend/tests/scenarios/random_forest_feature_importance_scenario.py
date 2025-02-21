@@ -18,7 +18,7 @@ They are created by running the classifier_scenario beforehand. The data from th
 To run this scenario, comment in the function test_calculate_feature_importances below
 and run it on the console from the /backend-folder via 'pytest -s tests/scenarios/random_forest_feature_importance_scenario.py'.
 
-The results are printed to the commandline and you can copy them from there to analyze them.
+The results are printed to the console and you can copy them from there to analyze them.
 """
 # TODO: comment in to run the feature importance calculation
 """def test_calculate_feature_importances():
