@@ -42,11 +42,13 @@ e.g. via <https://marketplace.visualstudio.com/items?itemName=littlefoxteam.vsco
 
 ## Test-Scenarios
 
-The test scenarios are used to generate data for the analysis and optimisation of individual components of the application, such as embeddings, distance calculation or classification
+The test scenarios in the `tests/scenarios`-folder are used to generate data for the analysis and optimisation of individual components of the application, such as embeddings, distance calculation or classification.
+
+They are typically triggered via pytest and the function to use them can be found commented out at the start of the respective script. It should be commented out again after use to avoid running the test-scenario with the ci-pipeline.
 
 ### Embeddings-Scenario
 
-Scenario for the differnt models for calcualting the embeddings. Models that are available: Densenet_121, Densenet_169, Resenet_50
+Scenario for the different models for calcualting the embeddings. Models that are available: Densenet_121, Densenet_169, Resenet_50
 The aim is to generate data for subsequent analysis of which model is most suitable. The duration for the calculation of the embeddings and the distance/similarity between an image of a person and the other images of the same person in the data set are analysed.
 
 Images of the same person should provide the most similar embeddings compared to other people despite different hand positions or sides. Also the same picture should have a distance of 0/ similarity of 1
