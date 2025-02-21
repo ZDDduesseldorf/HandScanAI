@@ -1,14 +1,32 @@
-import os
-from torch.utils.data import Dataset
+"""
+This module contains datasets that handle the loading and iterating of large quantities of images,
+as is the case with any image folder used in the context of this application.
 
-import pandas as pd
+They are used in the initial_dataset_filter_pipeline, the initial_data_pipeline as well as test-scenarios that similarly handle whole datasets.
+"""
 
 from collections import defaultdict
-
+import os
+import pandas as pd
+from torch.utils.data import Dataset
 from utils.key_enums import PipelineDictKeys
 
 
 class ImagePathDataset(Dataset):
+    """
+    This dataset takes a path to a folder containing original images (images with the filename-scheme {UUID}.[ext}]).
+
+    It is typically used to load the paths to the images contained in BaseImages (e.g. in initial_data_pipeline).
+
+    Its return value per list-item is a dict:
+    ```
+    {
+        'image_path': # absolute path to an image in the folder,
+        'uuid': # unique identifier of the image extracted from its filename
+    }
+    ```
+    """
+
     def __init__(self, folder_path):
         self.folder_path = folder_path
         # Get all file paths in the folder that have image file extensions
@@ -29,6 +47,28 @@ class ImagePathDataset(Dataset):
 
 
 class ImagePathWithCSVDataset(Dataset):
+    """
+    This dataset takes a path to a folder containing images and a path to a csv containing metadata corresponding to the images.
+
+    It is typically used to load the paths and metadata of the images contained in an external dataset (like 11K) to filter them for useful entries (e.g. in initial_dataset_filter_pipeline).
+
+    Its return value per list-item is a Tuple (str, dict); an image path and its corresponding CSV row entry
+
+    Example for use/ test:
+        ```
+        folder_path = 'TestImages'
+        csv_path = 'HandInfo.csv'
+        dataset = ImagePathWithCSVDataset(folder_path, csv_path)
+        ```
+
+        Iterate over the Dataset
+        ```
+        for image_path, csv_entry in dataset:
+            print("Image Path:", image_path)
+            print("CSV Entry:", csv_entry)
+        ```
+    """
+
     def __init__(self, folder_path, csv_path):
         """
         Args:
@@ -67,31 +107,36 @@ class ImagePathWithCSVDataset(Dataset):
         return image_path, csv_entry
 
 
-# ----- Usage -----------
-# folder_path = 'TestImages'
-# csv_path = 'HandInfo.csv'
-
-# dataset = ImagePathWithCSVDataset(folder_path, csv_path)
-
-# # Iterate over the Dataset
-# for image_path, csv_entry in dataset:
-#     print("Image Path:", image_path)
-#     print("CSV Entry:", csv_entry)
-
-
-# TODO: IN UTILS AUFNEHMEN FALLS MAN DIE SONST WO BRAUCHT
-def extract_uuid_from_filename(filename: str) -> str:
-    uuid, ending = filename.split(".", 1)  # Split on the first underscore to get UUID and region
-    return uuid
-
-
-def extract_uuid_and_region_from_filename(filename: str) -> tuple[str, str]:
-    uuid, region = filename.split("_", 1)  # Split on the first underscore to get UUID and region
-    region, ending = region.split(".", 1)
-    return uuid, region
-
-
 class DatasetRegionClusters(Dataset):
+    """
+    This dataset takes a path to a folder containing region images (images with the filename-scheme {UUID}_{region}.[ext}]).
+
+    It is typically used to load the paths to the images contained in RegionImages (e.g. in initial_data_pipeline).
+
+    Its return value per list-item is a is a dict:
+    ```
+        {
+            'uuid': str,
+            'image_paths': dict {
+                region_key (str): image_path (str)
+            }
+        }
+    ```
+
+    Example for use/ test:
+        ```
+        folder_path = 'TestRegionDataset'
+        dataset = DatasetRegionClusters(folder_path)
+        ```
+
+        Iterate over the Dataset
+        ```
+        for image_paths in dataset:
+            # prints an array of all imagepaths with the same uuid each iteration
+            print("Image Path:", image_path)
+        ```
+    """
+
     def __init__(self, folder_path: str):
         """
         Args:
@@ -131,10 +176,10 @@ class DatasetRegionClusters(Dataset):
         Returns:
         ```
         dict {
-          'uuid': str,
-          'image_paths': dict {
-             region_key (str): image_path (str)
-          }
+            'uuid': str,
+            'image_paths': dict {
+                region_key (str): image_path (str)
+            }
         }
         ```
         """
@@ -142,11 +187,30 @@ class DatasetRegionClusters(Dataset):
         return self.image_clusters[idx]
 
 
-# # ----- Usage -----------
-# folder_path = 'TestRegionDataset'
+def extract_uuid_from_filename(filename: str) -> str:
+    """
+    This function extracts the uuid from a filename of the format {UUID}.{ext}.
 
-# dataset = DatasetRegionClusters(folder_path, clustered_data=True)
+    Args:
+        filename (str): filename of an image of the format {UUID}.{ext}
 
-# # Iterate over the Dataset
-# for image_paths in dataset:
-#     print("Image Path:", image_path) # -> prints an array of all imagepaths with the same uuid each iteration
+    Returns:
+        uuid (str): uuid of the image, used to identify the image and link it to its corresponding region images and metadata
+    """
+    uuid, _ = filename.split(".", 1)  # Split on the first underscore to get UUID and region
+    return uuid
+
+
+def extract_uuid_and_region_from_filename(filename: str) -> tuple[str, str]:
+    """
+    This function extracts the uuid and the region from a filename of the format {UUID}_{region}.{ext}.
+
+    Args:
+        filename (str): filename of an image of the format {UUID}_{region}.{ext}
+
+    Returns:
+        (uuid, region) (tuple[str, str]): uuid and region of the image
+    """
+    uuid, region = filename.split("_", 1)  # Split on the first underscore to get UUID and region
+    region, _ = region.split(".", 1)
+    return uuid, region

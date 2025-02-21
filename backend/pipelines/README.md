@@ -140,6 +140,20 @@ For testing purposes, the pipeline can be triggered
 
 ### datasets
 
+This module contains datasets that handle the loading and iterating of images from a folder. There are three datasets that handle different usecases:
+
+- **ImagePathWithCSVDataset**:
+  - Is responsible for loading the image-paths and the corresponding csv-data from a dataset like 11K into a list to iterate over.
+  - Only gets used in the `initial_dataset_filter_pipeline`.
+- **ImagePathDataset**:
+  - Is responsible for loading the image-paths of the BaseImages-folder into a list to iterate over.
+  - Expects filenames in the format `{UUID}.{ext}` where extensions could be jpg, png or bmp.
+  - Gets used e.g. in `initial_data_pipeline` or test-scenarios (see `tests`-Readme).
+- **DatasetRegionClusters**:
+  - Is responsible for loading the image-paths of the RegionImages-folder and clustering them per uuid. Holds those clusters in a list to iterate over.
+  - Expects filenames in the format `{UUID}_{region}.{ext}` where extensions could be jpg, png or bmp.
+  - Gets used e.g. in `initial_data_pipeline` or test-scenarios (see `tests`-Readme).
+
 ## Distance/ Similarity Caculation
 
 TODO: articulate better
