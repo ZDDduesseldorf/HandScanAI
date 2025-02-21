@@ -56,7 +56,7 @@ def weighted_classify_age(dict_all_info_knn: dict):
     return dict_age
 
 
-def weighted_mean(weights: (list | np.array | pd.Series), values: (list | np.array | pd.Series)):
+def weighted_mean(weights: list | np.ndarray | pd.Series, values: list | np.ndarray | pd.Series):
     """
     calcualtes the weighted mean
     weighted_mean = sum(values[i] * weights[i]) / sum(weights)
