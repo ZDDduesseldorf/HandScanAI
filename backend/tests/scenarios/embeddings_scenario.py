@@ -16,18 +16,33 @@ from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_defa
 
 
 # TODO: zum Ausführen der distance_pipeline verwenden
-"""def test_scenario_embeddings():
-    cleanup_tests()
-    run_scenarios_embeddings(setup=True)"""
+"""def test_scenario_embeddings():"""
+"""
+Prerequisites:
+    - original images in folder: app/media/BaseImages
+    - region images in folder: app/media/RegionImages
+    - if region images doesn't exists set normalize=True, save_images=True (for more information check docstring initial_data_pipeline)
+"""
+"""cleanup_tests()
+run_scenarios_embeddings(setup=True)"""
 
 
 def cleanup_tests():
+    """
+    Deletes the existing collections of models in Milvus
+    """
     model_names = ["DENSENET_121", "DENSENET_169", "RESNET_50"]
     for name in model_names:
         drop_collection(name)
 
 
 def scenario_path_manager():
+    """
+    creates the path to the folder for saving the result_csvs
+
+    Returns:
+        (str | Path): path to folder for saving the result_csvs
+    """
     scenario_embeddings_path = Path(__file__).resolve().parent
     path_to_result_csv = scenario_embeddings_path / "result_csvs"
 
@@ -35,10 +50,20 @@ def scenario_path_manager():
 
 
 def setup_scenario_structure(
-    path_to_model_folder,
+    path_to_model_folder: (str | Path),
     model,
-    model_name,
+    model_name: str,
 ):
+    """
+    Initialisation of the setup for the scenario for each model. Creates a folder to save csvs if it does not already exist.
+    Starts the initial_data_pipeline to calculate the embeddings for each region of each image in the dataset.
+    Stops the time for calculating the embeddings for all images.
+
+    Args:
+        path_to_model_folder (str  |  Path): path to folder of the corresponding model in result_csv folder
+        model (DenseNet | ResNet): CNN-model that generates the embeddings, uses default-Model
+        model_name (str): name of the model used as key for milvus collection.
+    """
     check_or_create_folder(path_to_model_folder)
     _, folder_path_region, _, _, folder_path_base = _path_manager(testing=False)
     start = time.time()
@@ -60,7 +85,17 @@ def setup_scenario_structure(
     print("Dauer Initial:" + str((end - start) * 10**3) + "model: " + str(path_to_model_folder))
 
 
-def check_or_create_nearest_neighbours_csv(path_to_csv_file):
+# TODO: return true sinnvoll
+def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
+    """
+    Check if file for saving the results of the nearest neighbour search already exists. If not creates them with correct header
+
+    Args:
+        path_to_csv_file (str  |  Path): path to file for saving the results of the nearest neighbour search.
+
+    Returns:
+        _type_: _description_
+    """
     if check_file_exists(path_to_csv_file):
         return True
     else:
@@ -76,7 +111,15 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file):
 
 
 # Erstellt Embeddings und Distanzberechnung pro Modell
-def run_scenarios_embeddings(setup=False):
+def run_scenarios_embeddings(setup: bool = False):
+    """
+    Defines models for embeddings calcuation, the number of nearest neighbours and the uuids for running the scenario.
+    If setup is true, it creats for each model, the folders and files for saving the results and calculates the embedding for each region of each image.
+    Then starts the distance_pipeline to find the nearest neighbours for each uuid and logs the result in csvs.
+
+    Args:
+        setup (bool, optional): flag for starting setup: creating folder, files and embeddings for each modell. Defaults to False.
+    """
     path_to_result_csv = scenario_path_manager()
     models_dict = {
         "DENSENET_121": load_model(CNNModel.DENSENET_121),
@@ -105,16 +148,28 @@ def run_scenarios_embeddings(setup=False):
         for uuid in uuid_list:
             run_distance_pipeline(uuid, model_name, model, k, use_milvus=True)
 
-    # wie vergleicht man die Ergebnisse am besten? niedrige Distanz nicht zwangsläufig gutes Ergebnis?
-    # -> Was ist gutes Ergebnis? (ähnliche Bild einer Person sollte ähnliches Embedding liefern)
-    # von machen Personen viele Bilder drin von anderen weniger
-    # These 1: nur 2 Bilder einer Person -> 1. Distanz 0, 2. anderes Bild
-    # These 2: Augmentated Bilder -> Bilder der selben person am nächsten
-    # alle Variablen hängen voneinander ab? Gridsearch?
 
+def run_distance_pipeline(
+    uuid: str, model_name: str, model, k: int, save_results: bool = True, use_milvus: bool = False
+):
+    """
+    This function searches for the nearest neighbours of a search image by calculating the cosine distance/similarity.
+    First, the image is loaded from the productive data and normalised.
+    Then the embeddings are calculated with the specific model.
+    Then the nearest neighbours can be searched using the embeddings of the base set stored in the csv or the vector database (Milvus).
+    The csv is used to calculate the cosine distance and in the next step the similarity is calculated based on the distance.
+    The cosine similarity is calculated using Milvus.
+    The results of the similarity calculation can be saved and analysed in a csv file.
 
-def run_distance_pipeline(uuid, model_name, model, k, save_results=True, use_milvus=False):
-    # produktiv Daten aus Media Ordner
+    Args:
+        uuid (str):  Unique identifier for the image
+        model_name (str): name of the model used as key for milvus collection.
+        model (DenseNet | ResNet): CNN-model that generates the embeddings, uses default-Model
+        k (int): number of nearest neighbours
+        save_results (bool, optional): flag for writing the results in csvs. Defaults to True.
+        use_milvus (bool, optional): Flag whether or not using milvus for nearest neighbour search . Defaults to False.
+    """
+    # productive data from app/media-folder
     _, _, _, metadata_csv_path, folder_path_base = _path_manager(testing=False)
     path_to_results_csv = scenario_path_manager()
 
@@ -137,12 +192,14 @@ def run_distance_pipeline(uuid, model_name, model, k, save_results=True, use_mil
     if not use_milvus:
         # for testing purposes/ if milvus is not available
         dict_all_dist = calculate_cosine_distance(dict_embedding, k, model_embedding_csv_path)
+
         dict_all_info_knn = build_info_knn_from_csv(metadata_csv_path, dict_all_dist)
     else:
         dict_all_similarities = search_embeddings_dict(dict_embedding, model_name, milvus_default_search_params, k)
 
         dict_all_info_knn = build_info_knn_from_milvus(metadata_csv_path, dict_all_similarities)
 
+    # saving results in csvs
     if save_results:
         nearest_neighbour_csv_path = model_embedding_csv_path / "nearest_neighbours.csv"
         check_or_create_nearest_neighbours_csv(nearest_neighbour_csv_path)
