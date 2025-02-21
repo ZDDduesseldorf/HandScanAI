@@ -11,12 +11,13 @@
     - [via Console](#via-console)
   - [Test-Scenarios](#test-scenarios)
     - [Embeddings-Scenario](#embeddings-scenario)
-      - [Entrypoint](#entrypoint)
+      - [Entry point embeddings scenario](#entry-point-embeddings-scenario)
       - [Steps of Embeddings-Scenario](#steps-of-embeddings-scenario)
       - [Criteria for the selection of images](#criteria-for-the-selection-of-images)
     - [Classifier-Scenario](#classifier-scenario)
+      - [Entry point classifier scenario](#entry-point-classifier-scenario)
     - [Random\_Forest-Scenario](#random_forest-scenario)
-      - [Entry point](#entry-point)
+      - [Entry point random forest scenario](#entry-point-random-forest-scenario)
       - [Analysis and Interpretation of results](#analysis-and-interpretation-of-results)
 
 ## Overview
@@ -56,7 +57,7 @@ They are typically triggered via pytest and the function to use them can be foun
 
 ### Embeddings-Scenario
 
-Scenario for the different models for calcualting the embeddings. Models that are available: Densenet_121, Densenet_169, Resenet_50
+Scenario for the different models for calculating the embeddings. Models that are available: Densenet_121, Densenet_169, Resenet_50
 The aim is to generate data for subsequent analysis of which model is most suitable. For the evaluation, the duration for the calculation of all embeddings is measured. In addition, the distance/similarity between an image of a person and the other images of the same person in the data set is determined.
 
 Images of the same person should provide the most similar embeddings compared to other people despite different hand positions or sides. Also the same picture should have a distance of 0/ similarity of 1
@@ -66,7 +67,7 @@ Images of the same person should provide the most similar embeddings compared to
 distance (csv)/ similarity (milvus) calculation with cosine
 k = 10
 
-#### Entrypoint
+#### Entry point embeddings scenario
 
 Run the scenario by using the test-function `pytest test_scenario_embeddings()`.
 Make sure to comment them in. The setup is executed with the default settings
@@ -104,7 +105,24 @@ distance_pipeline:
 
 ### Classifier-Scenario
 
-tbd
+Scenario to test and evaluate implemented classifiers by classifying all images from the BaseImages-folder and saving the results. Saves results of region-classifiers as well as ensemble classifiers.
+
+#### Entry point classifier scenario
+
+Use the scenario by running the test-function `test_scenario_classifier` via pytest.
+Read the prerequisites-comment above the function in `classifier_scenario.py` for further instructions on what to prepare and how to run the scenario.
+
+Results of region classifications with labels can be used for random_forest_feature_importance_scenario.
+Results of ensemble classifications can be used for evaluation of overall performance and hyperparameter-tests (e.g. weights, k).
+
+**Default settings:**
+
+- uses prod data (all images from BaseImages and its metadata)
+- uses csv-embeddings and distance calculation (use of milvus not implemented because they are nearly interchangeable)
+- k = 6
+- filters same image from nearest neighbours before classification to not scew results
+
+Be sure to isolate results from different test runs by moving or renaming the result csvs. If in doubt, check the number of entries in csvs against the number of base images.
 
 ### Random_Forest-Scenario
 
@@ -115,7 +133,7 @@ Uses the classification results per region as well as the correct labels to firs
 Those feature importances are then used to determine possible weights for the ensemble classifiers.
 To test those weights, please see [Classifier-Scenario](#classifier-scenario).
 
-#### Entry point
+#### Entry point random forest scenario
 
 Run the scenario by running the test-function `test_calculate_feature_importances` via pytest.
 Read the prerequisites-comment above the function in `random_forest_feature_importance_scenario.py` for further instructions on what to prepare and how to run the scenario.
