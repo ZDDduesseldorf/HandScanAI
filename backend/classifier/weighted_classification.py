@@ -101,7 +101,7 @@ def weighted_classify_gender(dict_all_info_knn: dict):
 
 
 def weighted_mode(dataframe: pd.DataFrame, value: str, weight: str):
-    """_summary_
+    """
     Calculates the weighted mode (most common value based on weights)
     Args:
         dataframe (pd.DataFrame): a pandas dataframe with the data to be analysed
