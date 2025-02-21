@@ -77,9 +77,9 @@ The following diagram show the concept of the pipeline with the main steps of no
 
 ### Use the initial data pipeline
 
-Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data are updated/ correct. For an extensive explanation for the respective usecases and the possible flags, see the docstrings of `setup_new_project_data` or `bulk_import_calculations` in `manage.py`.
+Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data are updated/ correct. For an extensive explanation for the respective usecases and the possible flags, see the docstrings of `setup_new_project_data` or `bulk_import_calculations` in `manage.py`. Make sure the necessary docker-containers are up as well.
 
-The pipeline can be run from the `/backend`-folder via console:
+The pipeline can then be run from the `/backend`-folder via console:
 e.g. `python manage.py setup_new_project_data`.
 (Windows. For other ways to use `manage.py` by running python from the console, see `README` under `/backend`).
 
