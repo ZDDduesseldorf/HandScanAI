@@ -120,6 +120,11 @@ export default function Explanation() {
               unterteilt, um eine präzisere Analyse, unabhängig von der
               Handstellung, zu ermöglichen.
             </p>
+            <img
+              src="/explanation/explanation_1.jpeg"
+              alt="explanatory image"
+              style={{ objectFit: 'contain', maxWidth: '80vw', width: '95%' }}
+            />
           </div>
         </Horizontal>
         <Horizontal margin="1em 0">
@@ -135,6 +140,11 @@ export default function Explanation() {
               Ähnlichkeit wird durch die Berechnung der euklidischen Distanz
               zwischen den Bildmerkmalen bestimmt.
             </p>
+            <img
+              src="/explanation/explanation_2.jpeg"
+              alt="explanatory image"
+              style={{ objectFit: 'contain', maxWidth: '80vw', width: '95%' }}
+            />
           </div>
         </Horizontal>
         <Horizontal margin="1em 0">
@@ -150,6 +160,11 @@ export default function Explanation() {
               daraus eine Vorhersage ab, basierend auf der Mehrheit der nächsten
               Nachbarn.
             </p>
+            <img
+              src="/explanation/explanation_3.jpeg"
+              alt="explanatory image"
+              style={{ objectFit: 'contain', maxWidth: '80vw', width: '95%' }}
+            />
           </div>
         </Horizontal>
       </Centered>
