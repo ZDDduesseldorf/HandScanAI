@@ -3,9 +3,9 @@
 - [Classifier](#Classifier)
   - [Contains](#contains)
   - [Entry points](#entry-points)
-    - [simple_classification.py](#simple_classification)
-    - [weighted_classification.py](#weighted_classification)
-  - [Conceptual explanation](#conceptual-explanation)
+    - [simple_classification](#simple_classification)
+    - [weighted_classification](#weighted_classification)
+  - [Conceptual explanation](#conceptual-explanation) -[simple classifier](#simple-classifier) -[weighted classifier](#weighted-classifier)
 
 ## Contains
 
