@@ -19,7 +19,7 @@ class HandRegions(Enum):
 
 class PipelineAPIKeys(Enum):
     """
-    Used as keys for dataframe, which is output to frontend.
+    Used as keys for dataframe that is output to frontend.
     """
 
     CLASSIFIED_AGE = "classified_age"

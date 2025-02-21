@@ -133,7 +133,7 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
         uuid (str): identifier for image and corresponding data and metadata
         embeddings_dict (dict): A dictionary with the following structure:
             dict {
-                region (str): embedding (torch.Tensor)
+                region (str): embedding (ndarray)
             }
     Raises:
         FileNotFoundError: Error raised if file to save embeddings in could not be found.
@@ -163,7 +163,10 @@ def add_embedding_dict_to_csv(embedding_csvs_folder_path, uuid: str, embeddings_
 def create_region_csvs(csv_folder_path):
     """
     Creates a csv-file for every hand_region to save the embeddings-values in.
-    Uses header: UUID, Embedding  Hand_Embeddings.csv
+
+    Uses header: UUID, Embedding
+
+    Example filename: Hand_Embeddings.csv
 
     Args:
         csv_folder_path (str | Path): path to folder where the csvs should be created
