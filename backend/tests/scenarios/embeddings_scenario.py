@@ -87,7 +87,7 @@ def setup_scenario_structure(
 
 def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
     """
-    Check if file for saving the results of the nearest neighbour search already exists. If not creates them with correct header
+    Check if file for saving the results of the nearest neighbour search already exists. If not, creates them with correct header
 
     Args:
         path_to_csv_file (str  |  Path): path to file for saving the results of the nearest neighbour search.
@@ -107,12 +107,14 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
 
 def run_scenarios_embeddings(setup: bool = False):
     """
-    Defines models for embeddings calcuation, the number of nearest neighbours and the uuids for running the scenario.
-    If setup is true, it creats for each model, the folders and files for saving the results and calculates the embedding for each region of each image.
+    Defines models for embeddings calculation, the number of nearest neighbours and the uuids for running the scenario.
+
+    If setup is true, it creates for each model: the folders and files for saving the results and calculates the embedding for each region of each image.
+
     Then starts the distance_pipeline to find the nearest neighbours for each uuid and logs the result in csvs.
 
     Args:
-        setup (bool, optional): flag for starting setup: creating folder, files and embeddings for each modell. Defaults to False.
+        setup (bool, optional): flag for starting setup: creating folder, files and embeddings for each model. Defaults to False.
     """
     path_to_result_csv = scenario_path_manager()
     models_dict = {
@@ -157,11 +159,11 @@ def run_distance_pipeline(
 
     Args:
         uuid (str):  Unique identifier for the image
-        model_name (str): name of the model used as key for milvus collection.
+        model_name (str): name of the model used as folder name for csvs and as key for milvus collection.
         model (DenseNet | ResNet): CNN-model that generates the embeddings, uses default-Model
         k (int): number of nearest neighbours
         save_results (bool, optional): flag for writing the results in csvs. Defaults to True.
-        use_milvus (bool, optional): Flag whether or not using milvus for nearest neighbour search . Defaults to False.
+        use_milvus (bool, optional): Flag whether or not to use milvus for nearest neighbour search . Defaults to False.
     """
     # productive data from app/media-folder
     _, _, _, metadata_csv_path, folder_path_base = _path_manager(testing=False)
