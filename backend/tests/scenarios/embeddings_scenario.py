@@ -15,7 +15,7 @@ from utils.key_enums import PipelineDictKeys as Keys
 from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_default_search_params
 
 
-# TODO: zum Ausführen der distance_pipeline verwenden
+# TODO: to execute the scenario_embeddings
 """def test_scenario_embeddings():"""
 """
 Prerequisites:
@@ -105,7 +105,6 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
         create_csv_with_header(path_to_csv_file, header_nearest_neigbour)
 
 
-# Erstellt Embeddings und Distanzberechnung pro Modell
 def run_scenarios_embeddings(setup: bool = False):
     """
     Defines models for embeddings calcuation, the number of nearest neighbours and the uuids for running the scenario.
