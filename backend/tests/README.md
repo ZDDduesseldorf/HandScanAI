@@ -1,6 +1,10 @@
 # Tests
 
+## Table of contents
+
 - [Tests](#tests)
+  - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
   - [Create Tests](#create-tests)
   - [Run Tests](#run-tests)
     - [via Plugin](#via-plugin)
@@ -15,14 +19,16 @@
       - [Entry point](#entry-point)
       - [Analysis and Interpretation of results](#analysis-and-interpretation-of-results)
 
+## Overview
+
 The tests were implemented using pytest.
 
 All correctly named tests in the test module run via ci-pipeline in github on PR creation or merge into main.
 
 ## Create Tests
 
-- Pytest recognizes test-files with _tests\__ at the beginning of the name, e.g. _tests_name_of_the_module_to_test_.
-- The test-functions need to start with _test\__ as well.
+- Pytest recognizes test-files with "tests_" at the beginning of the name, e.g. "tests_name_of_the_module_to_test".
+- The test-functions need to start with "test_" as well.
 - Make sure the file imports and file paths for the test-files are correct.
 
 ## Run Tests
@@ -51,13 +57,13 @@ They are typically triggered via pytest and the function to use them can be foun
 ### Embeddings-Scenario
 
 Scenario for the different models for calcualting the embeddings. Models that are available: Densenet_121, Densenet_169, Resenet_50
-The aim is to generate data for subsequent analysis of which model is most suitable. The duration for the calculation of the embeddings and the distance/similarity between an image of a person and the other images of the same person in the data set are analysed.
+The aim is to generate data for subsequent analysis of which model is most suitable. For the evaluation, the duration for the calculation of all embeddings is measured. In addition, the distance/similarity between an image of a person and the other images of the same person in the data set is determined.
 
 Images of the same person should provide the most similar embeddings compared to other people despite different hand positions or sides. Also the same picture should have a distance of 0/ similarity of 1
 
-Default settings:
+**Default settings:**
 
-distance (csv)/ similarity (milvus) calcualtion with cosine
+distance (csv)/ similarity (milvus) calculation with cosine
 k = 10
 
 #### Entrypoint
@@ -77,7 +83,7 @@ Before:
 optional create setup:
 
 - folder and files for saving results of each model
-- calculating embeddings with each model
+- embeddings calculation with each model
   Duration of calcualting Embeddings is logged in the console
 
 distance_pipeline:
