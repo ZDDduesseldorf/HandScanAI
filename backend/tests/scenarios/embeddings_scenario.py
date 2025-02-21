@@ -14,16 +14,17 @@ from pipelines.initial_data_pipeline import run_initial_data_pipeline
 from utils.key_enums import PipelineDictKeys as Keys
 from vectordb.milvus import drop_collection, search_embeddings_dict, milvus_default_search_params
 
-
-# TODO: to execute the scenario_embeddings
-"""def test_scenario_embeddings():"""
 """
 Prerequisites:
         - original images in folder: app/media/BaseImages
         - region images in folder: app/media/RegionImages
         - if region images doesn't exists set normalize=True, save_images=True (for more information check docstring initial_data_pipeline)
-    """
-""" cleanup_tests()
+"""
+
+# TODO: to execute the scenario_embeddings
+"""def test_scenario_embeddings()
+
+cleanup_tests()
 run_scenarios_embeddings(setup=True)"""
 
 
@@ -57,7 +58,7 @@ def setup_scenario_structure(
     """
     Initialisation of the setup for the scenario for each model. Creates a folder to save csvs if it does not already exist.
     Starts the initial_data_pipeline to calculate the embeddings for each region of each image in the dataset.
-    Stops the time for calculating the embeddings for all images.
+    Times the calculation of the embeddings for all images
 
     Args:
         path_to_model_folder (str  |  Path): path to folder of the corresponding model in result_csv folder
