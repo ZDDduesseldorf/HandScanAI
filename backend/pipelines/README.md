@@ -111,28 +111,28 @@ pytest -s tests/pipelines/test_inference_pipeline.py
 
 ## Add new Embeddings Pipeline
 
-This pipeline (add_new_embeddings_pipeline.py) is used after checking the metadata for age and gender to add the embeddings of a new image to the vectortrees. It also saves the images of each region.
+This pipeline (`add_new_embeddings_pipeline.py`) is used to process a single image and its metadata and add it to the base dataset. Therefore it saves the results of every intermediate processing step. It is called from the API once the frontend provides the correct age and gender associated with the image (that is stored in the QueryImages-folder).
 
-The following diagram shows the flow of the pipeline:
+As displayed in the diagram below, the pipeline takes an image and its metadata, normalizes the image and saves the normalized region images, calculates the embeddings and saves them in the respective csvs as well as the vector database, saves the image metadata in the Metadata.csv and saves the image in the Base Dataset folder to add it to the base dataset of the application.
 
-![A diagram showing the pipeline steps of validation (provides image and metadata), hand normalisation (which provides a region dataset and saves images), calculation of embeddings and adding to the vector tree.](readme_data/add_new_embeddings_pipeline_concept.png)
+![A diagram showing the pipeline steps of hand normalisation (which provides a region dataset and saves images), calculation of embeddings, and adding them to the vector tree and the embeddings csv-files as well as saving the metadata in the Metadata.csv.](readme_data/add_new_embeddings_pipeline_concept.jpg)
 
-The following diagram shows the inputs and outputs of the individual steps:
+The following diagram shows the inputs and outputs of the individual steps as a rough overview:
 
-![A diagram describing the input and output data types of the pipeline shown above. First part until normalization ](readme_data/add_new_embeddings_pipeline_datatypes_1.png)
-![Shows the second part of the datatyp diagram ](readme_data/add_new_embeddings_pipeline_datatypes_2.png)
-
-TODO: Add integration of embeddings to vektortree
+![A diagram describing the input and output data types of the pipeline-steps of the add_new_embeddings_pipeline](readme_data/add_new_embeddings_pipeline_datatypes.jpg)
 
 ### Use the add new Embeddings pipeline
 
-Make sure in the method get_image_path() is the correct path to the image_folder and the 'output_folder_path_base' is correct.
+Make sure that the folders, files and milvus were created and filled correctly. Since the pipeline is similar to the Initial Data Pipeline, you can use the setup instructions described in [Use the initial data pipeline](#use-the-initial-data-pipeline) and ["Setup"](../README.md#setup).
 
-The pipeline can be executed via the test_add_new_embeddings_pipeline.py from the `/backend` folder via the console:
-pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py
+The pipeline is typically triggered via frontend-request to the API (`app/db/models.py after_event`). There is currently no explicit validation for the ground_truth_data available in the backend. Manual checking is required before the pipeline is used and the information saved.
 
-later:
-After a check of the metadata (manually by a person or with a check-script), it is triggert by the fronted and the uuid is transferred.
+For testing purposes, the pipeline can be triggered
+
+- via frontend (if both frontend and backend container have been started locally in docker)
+- directly in the browser via `/graphql`-query. Note that a ScanResultID is needed since the graphql-API is linked to a mongodb.
+- with the `test_add_new_embeddings_pipeline.py` from the `/backend` folder via the console:
+`pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py`
 
 ## Utils for Pipelines
 
