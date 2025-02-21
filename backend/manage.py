@@ -8,6 +8,7 @@ from utils.logging_utils import setup_csv_logging
 from hand_normalization.src import main as normalize
 import cv2
 from pathlib import Path
+from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
 
 cli = typer.Typer()
 
@@ -127,7 +128,7 @@ def initial_setup_csv_logging():
 def normalisation_visual_test():
     """Run the a visual test of the normalize_hand_image() function"""
     # TODO: Set correct paths before using the function
-    image_path = r"path/to/image/folder"
+    image_path = r"J:\Dokumente\MMI\HandScanAI\GestureTest\77021a7c-6454-480d-bcf1-278934e6ef02.jpg"
     region_dict = normalize.normalize_hand_image(image_path)
     image_list = list(region_dict.values())
     grid_image = normalize.draw_images_in_grid(image_list, rows=1, cols=7, image_size=(244, 244), bg_color=(23, 17, 13))
@@ -136,6 +137,15 @@ def normalisation_visual_test():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+@cli.command("check_validation")
+def check_validation():
+    """check_validation."""
+    # TODO: Set correct paths and flags before running the pipeline
+    image_path = r"J:\Dokumente\MMI\HandScanAI\GestureTest\77021a7c-6454-480d-bcf1-278934e6ef02.jpg"
+    image = normalize.load_image(image_path)
+    result = validation_pipeline(image)
+    print(result)
+    print(is_validation_pipeline_valid(result))
 
 if __name__ == "__main__":
     cli()
