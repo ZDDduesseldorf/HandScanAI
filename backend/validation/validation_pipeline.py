@@ -8,7 +8,7 @@ def validation_pipeline(image):
     """Runs the validation pipeline for the given image and returns the result for each validation"""
 
     # Extract landmarks from the image
-    landmarks, handedness = extract_landmarks(image, extract_handedness= True)
+    landmarks, handedness = extract_landmarks(image)
 
     # Get the image dimensions
     image_dimensions = image.shape
@@ -19,10 +19,9 @@ def validation_pipeline(image):
     # Check if the hand is spread
     is_hand_spread = hand_is_spread(landmarks)
 
-    if is_hand_visible:
-        is_hand_dorsal = hand_is_dorsal(landmarks,handedness)
-    else:
-        is_hand_dorsal = False
+    # Check if the hand is dorsal
+    is_hand_dorsal = hand_is_dorsal(landmarks,handedness)
+    
     return {
         "hand_is_spread": is_hand_spread,
         "landmarks_detected": landmarks is not None,

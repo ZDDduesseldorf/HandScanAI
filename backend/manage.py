@@ -8,7 +8,6 @@ from utils.logging_utils import setup_csv_logging
 from hand_normalization.src import main as normalize
 import cv2
 from pathlib import Path
-from validation.validation_pipeline import validation_pipeline, is_validation_pipeline_valid
 
 cli = typer.Typer()
 
@@ -137,15 +136,6 @@ def normalisation_visual_test():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-@cli.command("check_validation")
-def check_validation():
-    """check_validation."""
-    # TODO: Set correct paths and flags before running the pipeline
-    image_path = r"path/to/image/folder"
-    image = normalize.load_image(image_path)
-    result = validation_pipeline(image)
-    print(result)
-    print(is_validation_pipeline_valid(result))
 
 if __name__ == "__main__":
     cli()
