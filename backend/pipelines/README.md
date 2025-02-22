@@ -14,7 +14,7 @@
   - [Add new Embeddings Pipeline](#add-new-embeddings-pipeline)
     - [Use the add new Embeddings pipeline](#use-the-add-new-embeddings-pipeline)
   - [Utils for Pipelines](#utils-for-pipelines)
-    - [data\_utils](#data_utils)
+    - [data_utils](#data_utils)
     - [datasets](#datasets)
   - [Distance/ Similarity Caculation](#distance-similarity-caculation)
 
@@ -52,7 +52,7 @@ This pipeline-step is optional and can be used to
 - save the corresponding metadata into a csv
   - takes metadata in csv-format (implemented for filtering 11k-dataset, will need adjustments for other datasets or formats)
   - csv-header of result-csv:
-  `["uuid", "old_id", "age", "gender", "skinColor", "accessories", "aspectOfHand", "imageName", "irregularities"]`
+    `["uuid", "old_id", "age", "gender", "skinColor", "accessories", "aspectOfHand", "imageName", "irregularities"]`
 
 ### Use the initial dataset filter pipeline
 
@@ -85,7 +85,8 @@ e.g. `python manage.py setup_new_project_data`.
 
 ## Inference Pipeline
 
-This pipeline (inference_pipeline.py) is used to predict the age and gender of an image. It normalises the image, calculates the embedding, performs a knn-search and determines the age and size of the nearest neighbours via metadata classification
+This pipeline (inference_pipeline.py) is used to predict the age and gender of an image.  
+It normalises the image, calculates the embedding, performs a knn search and determines the age and gender by classification based on the nearest neighbour metadata
 
 The following diagram shows the flow of the pipeline:
 
@@ -95,19 +96,18 @@ The following diagram shows the inputs and outputs of the individual steps:
 
 ![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.png)
 
-TODO: Add knn-search and classification to diagram
-
 ### Use the inference pipeline
 
-make sure that the folders are created as described here ["Setup"](../README.md#setup)
+make sure that the folders are created as described here ["Setup"](../README.md#setup) and the image to be analysed lies in QueryImages.  
+In addition, the embeddings must be calculated and saved beforehand, see [Initial Data Pipeline](#initial-data-pipeline)
 
-with connection backend and frontend:
+with connection backend and frontend:  
 the pipeline is called up by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
-graphql function get_scan_result()
+graphql function `get_scan_result()`
 
-For Testing:
+For Testing:  
 The pipeline can be executed via the test_inference_pipeline.py from the `/backend` folder via the console:
-pytest -s tests/pipelines/test_inference_pipeline.py
+`pytest -s tests/pipelines/test_inference_pipeline.py`
 
 ## Add new Embeddings Pipeline
 
@@ -132,11 +132,23 @@ For testing purposes, the pipeline can be triggered
 - via frontend (if both frontend and backend container have been started locally in docker)
 - directly in the browser via `/graphql`-query. Note that a ScanResultID is needed since the graphql-API is linked to a mongodb.
 - with the `test_add_new_embeddings_pipeline.py` from the `/backend` folder via the console:
-`pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py`
+  `pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py`
 
 ## Utils for Pipelines
 
 ### data_utils
+
+This module contains functions that link data from Csv files with dictonaries/data frames and process data.
+
+- **region-embeddings-from-csv**:
+  - reads data from Embeddings.csv and prepares it as a list for the next steps
+- **map-gender**:
+  - Two functions to map the gender as string ("female", "male") to int (0,1) and vice versa.
+- **build-info-knn**:
+  - Combine the results from knn-search with the metadata of the nearest neighbours.
+  - Different functions for results from csv (cosine distance) and milvus (cosine similarity), due to difference in distance and similarity and difference in incoming data types
+- **find-most-similar**:
+  - filters the n most similar neighbors from all nearest neighbors for display in the frontend
 
 ### datasets
 
@@ -156,6 +168,7 @@ This module contains datasets that handle the loading and iterating of images fr
 
 ## Distance/ Similarity Caculation
 
-TODO: articulate better
+This module contains a function to calculate the cosine distance between an embedding and the embeddings from the region_Embedding.csvs.
 
-Since our own calculations result in distance-values and milvus has similarity-scores as a result, we use the respective metric up until we fill the dict_all_info_knn, where we standardize the metric to similarity.
+The calculations from the **Csv** files provide the **cosine distance**, but **Milvus** calculates the **cosine similarity**.
+A uniform result is required for the classifier, which is why the cosine distance is converted into the similarity in the subsequent step, the link to the metadata, see `build_info_knn_from_csv()` (data-utils.py)
