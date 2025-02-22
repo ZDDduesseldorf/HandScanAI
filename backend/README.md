@@ -1,8 +1,9 @@
 # HandScanAI Backend
 
-# Table of Contents
+## Table of Contents
 
 - [HandScanAI Backend](#handscanai-backend)
+  - [Table of Contents](#table-of-contents)
   - [Project Structure](#project-structure)
     - [app](#app)
     - [classifier](#classifier)
@@ -16,21 +17,17 @@
     - [validation](#validation)
     - [vectordb](#vectordb)
     - [Additional Modules](#additional-modules)
-  - [Setup](#setup)
-    - [setup media](#setup-media)
-    - [setup logs](#setup-logs)
+    - [Setup](#setup)
   - [Development](#development)
-    - [Install Docker Desktop](#install-docker-desktop)
-    - [Install Dev Container VSCode Extension](#install-dev-container-vscode-extension)
-    - [Development inside Container](#development-inside-container)
-    - [Access the Server](#access-the-server)
     - [Code Checks](#code-checks)
     - [Code formatting](#code-formatting)
     - [Run tests](#run-tests)
   - [Create and Restore Backups](#create-and-restore-backups)
     - [Create Backup](#create-backup)
     - [Restore Backup](#restore-backup)
-  - [Usage](#usage-from-the-frontend)
+  - [Usage from the frontend](#usage-from-the-frontend)
+    - [1. Backend Server](#1-backend-server)
+    - [2. Use The API](#2-use-the-api)
 
 ## Project Structure
 
@@ -43,7 +40,7 @@ The `app` directory contains the main application and the routes for the FastAPI
 - `main.py`: The entry point of the application. This is where the FastAPI instance is created and the routes are registered.
 - `routes.py`: This is where the various router modules are registered, defining the API endpoints.
 - `lifetime.py`: This is where functions are defined that are executed when the application starts and stops.
-- `api/`: This is where the the different router modules are implemented, such as graphql, rest and websockets. Check out the readme there for further informations.
+- `api/`: This is where the the different router modules are implemented, such as graphql, rest and websockets. Check out the readme there for further information.
 - `static/`: This is where static files, such as images, etc., are located.
 - `core/`: This directory contains the configuration files of the fastapi server.
 - `db/`: This directory is responsible for data storage in the backend and includes the defintion of the models and triggers.
@@ -73,7 +70,7 @@ The directory `logs` is not committed to the repo but is needed to store csv-fil
 
 ### pipelines
 
-The `pipelines` module includes various data processing pipelines for tasks such as filtering datasets, initializing data, performing inference, and adding new embeddings. These pipelines ensure efficient data handling and processing for the HandScanAI backend. Those pipelines are then used by the API-Endpoints. See the pipelines-Readme for further information.
+The `pipelines` module includes various data processing pipelines that string together several functionalities of other modules  and form the main workflow of the backend. They can be used for tasks such as filtering datasets, initializing data, performing inference, and adding new embeddings and ensure efficient data handling and processing for the HandScanAI backend. Some of the pipelines are also used by the API-Endpoints. See the pipelines-Readme for further information.
 
 ### tests
 
@@ -85,7 +82,7 @@ The `utils` directory contains several modules with helper functions that are us
 
 ### validation
 
-The `validation` directory contains all validation components of the application, that are used in the business logic, such as validating input stream in a form of a pipeline.
+The `validation` directory contains all validation components of the application, that are used in the business logic, such as validating input stream in the form of a pipeline.
 
 ### vectordb
 
@@ -93,7 +90,7 @@ The `vectordb` module provides a script for managing embeddings in the Milvus ve
 
 ### Additional Modules
 
-Additional modules can be added in a similar way by creating new directories and files that encapsulate specific functions and logic. 
+Additional modules can be added in a similar way by creating new directories and files that encapsulate specific functions and logic.
 
 By adding new modules in this way, the codebase remains organized and modular, making it easier to maintain and extend the application.
 
@@ -102,7 +99,6 @@ By adding new modules in this way, the codebase remains organized and modular, m
 Setup necessary to use the application. Describes creation of folder structures and base data.
 
 **1. setup media**
-
 Create `backend/app/media` and inside
 
 - `BaseImages`: contains all images of BaseDataset
@@ -110,8 +106,7 @@ Create `backend/app/media` and inside
 - `QueryImages`: place where images from frontend are saved
 - `RegionImages`: results of hand-normalization
 
-**2. setup media**
-
+**2. setup logging**
 The `logs-folder` in `backend` and its contents are automatically created when starting the docker container (via `startup()` in `lifetime.py`). The log-csvs lie in a folder named after the current date to make distinctions between sessions easier.
 
 To manually set up the correct logging file structure (in case of an error or development outside of docker), in the commandline use
@@ -121,6 +116,7 @@ python manage.py setup_csv_logging
 ```
 
 ## Development
+
 before you start with the development, make sure you did all the steps in the [setup](#setup)
 
 **1. Install Docker Desktop**: Please follow the instructions and install Docker Desktop from the [Official Website](https://www.docker.com/products/docker-desktop). Also make sure docker compose is available after installation on your machine.
@@ -132,6 +128,7 @@ before you start with the development, make sure you did all the steps in the [s
 **4. Development inside Container**: To develop inside the container, open the backend folder as a separate window. You will see a popup "Reopen in Container". If not, use `CTRL + SHIFT + P` and select `Dev Container: Reopen in container`. The container will be built, and VSCode will automatically configure with settings and extensions according to `devcontainer.json`.
 
 Alternatively, you can start the project with the following command in the backend directory:
+
 ```sh
 docker-compose up
 ```
@@ -147,6 +144,7 @@ docker exec -it backend /bin/bash
 ### Code Checks
 
 For checking code styles please run the following command:
+
 ```sh
 python manage.py check
 ```
@@ -154,6 +152,7 @@ python manage.py check
 ### Code formatting
 
 To format the code please run the following command:
+
 ```sh
 python manage.py format
 ```
@@ -161,17 +160,19 @@ python manage.py format
 ### Run tests
 
 To run all pytest in the application please run the following command:
+
 ```sh
 python manage.py test
 ```
 
-Check out the Readme in `tests`-module for further instructions.
+Check out the Readme in `tests`-module for further instructions on running tests.
 
 ## Create and Restore Backups
 
 ### Create Backup
 
 To create a backup of the `volumes`, `logs`, and `app/media` folders, run the following command:
+
 ```sh
 python manage.py create_backup
 ```
@@ -186,10 +187,10 @@ To restore a backup, the file must be in the `backup` folder. Then run the follo
 python manage.py restore_backup <backup_file>
 ```
 
-**!!IMPORTANT!!**: 
- - All existing data will be deleted and overwritten to avoid conflicts with existing data! Also created backu
- - Only create and restore backups on the same device, because calculated embeddings deffers from one device to the other. So to restore one backup from one device to another, please recalculate all embeddings on the new device!
+**!!IMPORTANT!!**:
 
+- All existing data will be deleted and overwritten to avoid conflicts with existing data! Also created backu
+- Only create and restore backups on the same device, because calculated embeddings differ from one device to the other. So to restore one backup from one device to another, please recalculate all embeddings on the new device!
 
 ## Usage from the frontend
 
