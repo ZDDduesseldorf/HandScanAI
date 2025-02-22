@@ -146,7 +146,7 @@ Setup necessary to use the application. Describes creation of folder structures 
 Create `backend/app/media` and inside
 
 - `BaseImages`: contains all images of BaseDataset
-- `csv`: contains Metadata.csv and {region}_Embeddings.csv (created via `manage.py setup_new_project_data`, see `manage.py` docstrings for further information. Important: Create embedding-csvs new on every new computer/ don't copy them between devices.)
+- `csv`: contains Metadata.csv and {region}\_Embeddings.csv (created via `manage.py setup_new_project_data`, see `manage.py` docstrings for further information. Important: Create embedding-csvs new on every new computer/ don't copy them between devices.)
 - `QueryImages`: place where images from frontend are saved
 - `RegionImages`: results of hand-normalization
 
@@ -199,7 +199,7 @@ Diese Struktur hilft dabei, den Code sauber und modular zu halten, was die Wartu
 
 ### classifier
 
-TODO
+The ‘classifier’ directory contains the modules that are used to classify the age and gender of the results of the nearest neighbours. There are weighted and unweighted classifications. See the classifier-Readme for further information.
 
 ### embeddings
 
