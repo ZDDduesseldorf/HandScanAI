@@ -2,14 +2,16 @@ import cv2
 import numpy as np
 
 
-def calculate_image_metrics(image_path):
-    """
-    calculates brightness (mean), contrast (standard_devitaion) and sharpness (variance_of_laplacian) of the image
+def calculate_image_metrics(image_path: str):
+    """calculates brightness (mean), contrast (standard_devitaion) and sharpness (variance_of_laplacian) of the image
 
-    :param image_path: name of the image
+    Args:
+        image_path (str): path to image
 
-    return: mean, standard_devitatiion, variance_of_laplacian
+    Returns:
+        mean(float), standard_devitatiion(float), variance_of_laplacian(float): values for brightness, contrast, sharpness
     """
+
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     mean = np.mean(gray)
