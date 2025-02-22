@@ -14,7 +14,7 @@
   - [Add new Embeddings Pipeline](#add-new-embeddings-pipeline)
     - [Use the add new Embeddings pipeline](#use-the-add-new-embeddings-pipeline)
   - [Utils for Pipelines](#utils-for-pipelines)
-    - [data_utils](#data_utils)
+    - [data\_utils](#data_utils)
     - [datasets](#datasets)
   - [Distance/ Similarity Caculation](#distance-similarity-caculation)
 
@@ -85,8 +85,8 @@ e.g. `python manage.py setup_new_project_data`.
 
 ## Inference Pipeline
 
-This pipeline (inference_pipeline.py) is used to predict the age and gender of an image.  
-It normalises the image, calculates the embedding, performs a knn search and determines the age and gender by classification based on the nearest neighbour metadata
+This pipeline (`inference_pipeline.py`) is used to predict the age and gender of an image.
+It normalises the image, calculates the embedding, performs a knn search and determines the age and gender by classification based on the nearest neighbour metadata.
 
 The following diagram shows the flow of the pipeline:
 
@@ -94,19 +94,19 @@ The following diagram shows the flow of the pipeline:
 
 The following diagram shows the inputs and outputs of the individual steps:
 
-![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.png)
+![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.jpg)
 
 ### Use the inference pipeline
 
-make sure that the folders are created as described here ["Setup"](../README.md#setup) and the image to be analysed lies in QueryImages.  
+Make sure that the folders have been created as described here ["Setup"](../README.md#setup) and the image to be analysed lies in QueryImages.
 In addition, the embeddings must be calculated and saved beforehand, see [Initial Data Pipeline](#initial-data-pipeline)
 
-with connection backend and frontend:  
-the pipeline is called up by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
+With connection backend and frontend:
+the pipeline is called by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
 graphql function `get_scan_result()`
 
-For Testing:  
-The pipeline can be executed via the test_inference_pipeline.py from the `/backend` folder via the console:
+For Testing:
+The pipeline can be executed via the `test_inference_pipeline.py` from the `/backend` folder via the console:
 `pytest -s tests/pipelines/test_inference_pipeline.py`
 
 ## Add new Embeddings Pipeline
