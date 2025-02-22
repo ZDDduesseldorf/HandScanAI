@@ -1,75 +1,112 @@
-import React from 'react';
+//external imports
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { useMutation } from '@apollo/client';
+import { Alert, Snackbar } from '@mui/material';
 
-const Container = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: #ffffff;
-`;
+//internal imports
+import { CREATE_SCAN_ENTRY } from '@/services/mutations';
+import { CreateScanEntryModelData } from '@/services/graphqlTypes';
+import { useAppStore } from '@/store/appStore';
 
-export const Logo = styled('img')`
-  width: clamp(200px, 35%, 450px);
-  margin-bottom: 1rem;
-`;
+//component imports
+import Centered from '@/components/layout/CenteredFullWidth';
+import LogoXL from '@/components/custom/LogoXL';
+import Title from '@/components/headings/Title';
+import Subtitle from '@/components/headings/Subtitle';
+import WideButton from '@/components/buttons/Wide';
 
-export const Title = styled(Typography)`
-  font-family: 'Delius Unicase', cursive;
-  font-weight: 400;
-  color: #1a3ab8;
-  margin: 0 0 0.625rem;
-  text-align: center;
-  font-size: clamp(1.75rem, 4vw, 3.25rem);
-`;
-
-const Subtitle = styled(Typography)`
-  font-family: 'Poppins', sans-serif;
-  color: #1a3ab8;
-  margin: 0 0 1.875rem;
-  text-align: center;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-`;
-
-const StartButton = styled(Button)`
-  background-color: #1a3ab8;
-  color: #ffffff;
-  font-family: 'Delius Unicase', cursive;
-  text-transform: none;
-  font-weight: bold;
-  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1.5rem, 4vw, 2.5rem);
-  border-radius: 1rem;
-  font-size: clamp(0.875rem, 1.75vw, 1.25rem);
-  width: clamp(10rem, 20vw, 18rem);
-  border: none;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #516fe6;
-  }
-`;
-
-const Home: React.FC = () => {
+/**
+ * Landing page showing the logo and a start button
+ * @returns Page with logo and a start button
+ */
+export default function Home() {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
   const navigate = useNavigate();
 
-  const handleStartClick = () => {
-    navigate('/privacy-notice');
+  const [
+    /**
+     * Mutation to create a scan entry
+     * The scan entry can later be filled with the scan data
+     * @see https://www.apollographql.com/docs/react/data/mutations
+     */
+    createScanEntry,
+  ] = useMutation<CreateScanEntryModelData>(CREATE_SCAN_ENTRY);
+
+  /**
+   * Save the scan entry in the React app store.
+   */
+  const setScanEntry = useAppStore((state) => state.setScanEntry);
+
+  const [
+    /**
+     * Error message that appears if no scan entry can be created. Saved
+     * in the React state.
+     */
+    errorMessage,
+    /**
+     * Updates the error message.
+     */
+    setErrorMessage,
+  ] = useState<string | null>(null);
+
+  /**
+   * Handles the action when the user wants to navigate to the next page.
+   * To start the process, a scan entry is created and the user is taken to
+   * the next page.
+   * If no scan entry can be created, an error will be shown.
+   */
+  const handleStartClick = async () => {
+    try {
+      const { data } = await createScanEntry();
+
+      if (data?.createScanEntryModel) {
+        setScanEntry(data.createScanEntryModel);
+        void navigate('/privacy-notice');
+      }
+    } catch (error) {
+      console.error('Error creating scan entry:', error);
+      setErrorMessage(
+        'Unable to open a session. The backend might be unavailable.',
+      );
+    }
+  };
+
+  /**
+   * Closes the Snackbar which is shown when no scan entry can be created by
+   * removing the error message.
+   */
+  const handleCloseSnackbar = () => {
+    setErrorMessage(null);
   };
 
   return (
-    <Container>
-      <Logo src="/logo.png" alt="Hand Scan AI Logo" />
-      <Title variant="h1">Hand Scan AI</Title>
-      <Subtitle variant="h2">Scan it. Know it.</Subtitle>
-      <StartButton onClick={handleStartClick}>Start</StartButton>
-    </Container>
+    <Centered>
+      <LogoXL src="/logos/logo.png" alt="Hand Scan AI Logo" />
+      <Title>Hand Scan AI</Title>
+      <Subtitle>Scan it. Know it.</Subtitle>
+      <WideButton onClick={() => void handleStartClick()}>Start</WideButton>
+      <WideButton
+        variant="outlined"
+        sx={{ mt: 2 }}
+        onClick={() => void navigate('/setup')}
+      >
+        Setup
+      </WideButton>
+      {errorMessage && (
+        <Snackbar
+          open={!!errorMessage}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="error" onClose={handleCloseSnackbar}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      )}
+    </Centered>
   );
-};
-
-export default Home;
+}

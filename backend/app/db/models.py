@@ -1,12 +1,12 @@
 import os
 from beanie import Delete, Document, Save, before_event, after_event
-from pydantic import Field, field_validator
+from pydantic import Field
 from datetime import datetime, timezone
 from typing import Optional
 from app.core.config import settings
-from pipelines.regions_utils import PipelineAPIKeys
+from utils.key_enums import PipelineAPIKeys
 from pipelines.add_new_embeddings_pipeline import run_add_new_embeddings_pipeline
-from utils.uuid import generate_uuid
+from utils.uuid_utils import generate_uuid
 
 
 class ScanEntry(Document):
@@ -34,7 +34,7 @@ class ScanEntry(Document):
     async def before_delete(self):
         """before delete action"""
         if self.confirmed:
-            raise ValueError(f"ScanEntry is already confirmed and cannot be removed.")
+            raise ValueError("ScanEntry is already confirmed and cannot be removed.")
 
         photo_path = os.path.join(settings.PATHS.MEDIA_DIR, "QueryImages", f"{self.id}.jpg")
         if os.path.exists(photo_path):

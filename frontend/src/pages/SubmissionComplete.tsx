@@ -1,39 +1,46 @@
-import React from 'react';
-import { Box, Typography, styled } from '@mui/material';
-import StyledTitle from '@/styles/StyledTitle';
-import NavButton from '@/components/NavButton';
+//external imports
+import { useNavigate } from 'react-router-dom';
 
-const SecondaryHeading = styled(Typography)`
-  display: flex;
-  font-family: 'Delius Unicase', cursive;
-  margin: 0 0 2rem;
-  left-padding: 2rem;
-  text-align: left;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  color: #1a3ab8;
-`;
-const BoxText = styled(Typography)`
-  font-family: 'Poppins', sans-serif;
-  margin: 0 0 1 rem;
-  text-align: justify;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  color: #1a3ab8;
-`;
+//component imports
+import Header from '@/components/custom/Header';
+import Secondary from '@/components/headings/Secondary';
+import Centered from '@/components/layout/Centered';
+import WithMargins from '@/components/layout/WithMargins';
+import FixedBottomMiddle from '@/components/buttons/FixedBottomMiddle';
 
-const SubmissionComplete: React.FC = () => {
+/**
+ * Displays a simple thank you text and a button to return to the home page after
+ * using the application.
+ *
+ * @returns Page showing a thank you text for using the application
+ */
+export default function SubmissionComplete() {
+  /**
+   * Method for changing the location
+   * @see https://reactrouter.com/6.29.0/hooks/use-navigate
+   */
+  const navigate = useNavigate();
+
   return (
-    <Box>
-      <StyledTitle>Danke</StyledTitle>
-      <SecondaryHeading>Wir hoffen du hattest Spaß</SecondaryHeading>
-      <BoxText>
-        Über den untenstehenden QR kannst du dir deine Ergebnisse der
-        Handanalyse und weiteres Wissen zum Thema KI downloaden. HandScan AI hat
-        einen eigenen Bericht für dich erstellt. Vielen Dank, dass du mit deiner
-        Nutzung geholfen hast, HandScan AI zu verbessern. Bis bald!
-      </BoxText>
-      <NavButton RouteTo="/">Beenden</NavButton>
-    </Box>
+    <WithMargins mx="2em" my="1.5em">
+      <Header title="Danke" />
+      <Centered style="text-align:center;">
+        <Secondary centered={true}>Wir hoffen du hattest Spaß!</Secondary>
+        <p>
+          Du möchtest deine Ergebnisse dir zu Hause noch mal in Ruhe durchlesen
+          und dein Wissen über Normalisierung, Embeddings und Vorhersagen
+          auffrischen, kein Problem, HandScan AI hat einen eigenen Bericht für
+          dich erstellt. Wende dich dazu bitte an den Betreuer von HandScan AI
+          und du kannst den Bericht per E-Mail erhalten.
+        </p>
+        <p>
+          Vielen Dank, dass du mit deiner Nutzung geholfen hast, HandScan AI zu
+          verbessern. Bis bald!
+        </p>
+        <FixedBottomMiddle onClick={() => void navigate('/')}>
+          Beenden
+        </FixedBottomMiddle>
+      </Centered>
+    </WithMargins>
   );
-};
-
-export default SubmissionComplete;
+}

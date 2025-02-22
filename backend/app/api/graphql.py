@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List
 
 import strawberry
 from fastapi import APIRouter
@@ -44,6 +44,20 @@ class ScanResultType:
 
 
 @strawberry.type
+class ScanResultNearestNeighboursType:
+    id: strawberry.ID
+    age: float
+    gender: float
+    region: str
+
+
+@strawberry.type
+class ScanResultsWrapper:
+    result_classifier: ScanResultType
+    nearest_neighbour_info: List[ScanResultNearestNeighboursType]
+
+
+@strawberry.type
 class Query:
     @strawberry.field
     async def get_scan_entry_models(self) -> list[ScanEntryType]:
@@ -58,7 +72,7 @@ class Query:
         return ScanEntryType(**scan_entry_model.model_dump())
 
     @strawberry.field
-    async def get_scan_result(self, id: strawberry.ID) -> ScanResultType:
+    async def get_scan_result(self, id: strawberry.ID) -> ScanResultsWrapper:
         scan_entry_model = await ScanEntry.get(id)
 
         if scan_entry_model is None:
@@ -67,20 +81,33 @@ class Query:
         if not scan_entry_model.image_exists:
             raise ValueError("ScanEntry doesn't have a query image")
 
-        result = run_inference_pipeline(id, testing=False)
+        result, result_knn_info = run_inference_pipeline(id, testing=False, use_milvus=False)
 
-        if result.empty:
+        if result.empty or result_knn_info.empty:
             raise ValueError("No result from inference pipeline")
 
         result_dict = result.to_dict(orient="records")[0]
-        return ScanResultType(
-            id=id,
-            confidence_age=result_dict["confidence_age"],
-            classified_age=result_dict["classified_age"],
-            min_age=result_dict["min_age"],
-            max_age=result_dict["max_age"],
-            classified_gender=result_dict["classified_gender"],
-            confidence_gender=result_dict["confidence_gender"],
+        result_knn_info_dict = result_knn_info.to_dict(orient="records")
+
+        return ScanResultsWrapper(
+            result_classifier=ScanResultType(
+                id=id,
+                confidence_age=result_dict["confidence_age"],
+                classified_age=result_dict["classified_age"],
+                min_age=result_dict["min_age"],
+                max_age=result_dict["max_age"],
+                classified_gender=result_dict["classified_gender"],
+                confidence_gender=result_dict["confidence_gender"],
+            ),
+            nearest_neighbour_info=[
+                ScanResultNearestNeighboursType(
+                    id=row["uuid"],
+                    age=row["age"],
+                    gender=row["gender"],
+                    region=row["region"],
+                )
+                for row in result_knn_info_dict
+            ],
         )
 
 
