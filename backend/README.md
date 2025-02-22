@@ -219,11 +219,11 @@ The directory `logs` is not committed to the repo but is needed to store csv-fil
 
 ### pipelines
 
-TODO
+This directory contains the modules (called pipelines) that string several functionalities of other modules together and form the main workflow of the backend. See pipelines' Readme for further details.
 
 ### tests
 
-Das Verzeichnis `tests` enthält die Unit- und Integrationstests des Backends, die mittels `pytest` implementiert wurden. Es enthält eine eigene Readme für weitere Informationen.
+The directory `tests` contains the unit- and integration tests for the backend that are implemented in `pytest`. It also contains test scenarios for evaluation of the embeddings models and the classifiers. See tests' Readme for further details.
 
 ### utils
 
