@@ -4,14 +4,15 @@ This document provides an overview of the API endpoints and functionalities impl
 
 ## Table of Contents
 
-- [GraphQL API](#graphql-api)
-  - [Schema](#schema)
-  - [Queries](#queries)
-  - [Mutations](#mutations)
-- [REST API](#rest-api)
-  - [Endpoints](#endpoints)
-- [WebSocket API](#websocket-api)
-  - [WebSocket Endpoint](#websocket-endpoint)
+- [API Documentation](#api-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [GraphQL API](#graphql-api)
+    - [Schema](#schema)
+    - [Queries](#queries)
+    - [Mutations](#mutations)
+  - [REST API](#rest-api)
+    - [Endpoints](#endpoints)
+  - [WebSocket API](#websocket-api)
 
 ## GraphQL API
 
