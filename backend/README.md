@@ -1,28 +1,9 @@
 # HandScanAI Backend
 
-## Inhaltsverzeichnis
+# Table of Contents
 
 - [HandScanAI Backend](#handscanai-backend)
-  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
-  - [Installation mit Docker und Dev Container](#installation-mit-docker-und-dev-container)
-    - [Schritte zur Installation](#schritte-zur-installation)
-  - [Installation Ohne Docker](#installation-ohne-docker)
-    - [MongoDB installieren](#mongodb-installieren)
-      - [MongoDB mit Docker Compose starten](#mongodb-mit-docker-compose-starten)
-      - [MongoDB manuell installieren](#mongodb-manuell-installieren)
-    - [Python installieren](#python-installieren)
-    - [Enviroment Datei erstellen](#enviroment-datei-erstellen)
-    - [Virtuelle Umgebung erstellen](#virtuelle-umgebung-erstellen)
-    - [Virtuelle Umgebung aktivieren](#virtuelle-umgebung-aktivieren)
-    - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
-    - [Server starten](#server-starten)
-  - [Setup](#setup)
-    - [setup media](#setup-media)
-    - [setup logging](#setup-logging)
-  - [Developing in VSCode](#developing-in-vscode)
-    - [Extensions](#extensions)
-    - [Python Interpreter einstellen](#python-interpreter-einstellen)
-  - [Projektstruktur](#projektstruktur)
+  - [Project Structure](#project-structure)
     - [app](#app)
     - [classifier](#classifier)
     - [embeddings](#embeddings)
@@ -34,114 +15,93 @@
     - [utils](#utils)
     - [validation](#validation)
     - [vectordb](#vectordb)
-    - [Weitere Module](#weitere-module)
-  - [Formatting and Linter](#formatting-and-linter)
+    - [Additional Modules](#additional-modules)
+  - [Setup](#setup)
+    - [setup media](#setup-media)
+    - [setup logs](#setup-logs)
+  - [Development](#development)
+    - [Install Docker Desktop](#install-docker-desktop)
+    - [Install Dev Container VSCode Extension](#install-dev-container-vscode-extension)
+    - [Development inside Container](#development-inside-container)
+    - [Access the Server](#access-the-server)
     - [Code Checks](#code-checks)
     - [Code formatting](#code-formatting)
-  - [Run tests](#run-tests)
-  - [Backups erstellen und wiederherstellen](#backups-erstellen-und-wiederherstellen)
-    - [Backup erstellen](#backup-erstellen)
-    - [Backup wiederherstellen](#backup-wiederherstellen)
+    - [Run tests](#run-tests)
+  - [Create and Restore Backups](#create-and-restore-backups)
+    - [Create Backup](#create-backup)
+    - [Restore Backup](#restore-backup)
+  - [Usage](#usage-from-the-frontend)
 
-## Installation mit Docker und Dev Container
+## Project Structure
 
-### Schritte zur Installation
+An overview of the project directory structure and a brief description of the most important folders and files.
 
-**1. Docker Desktop installieren**: Laden Sie Docker Desktop von der [offiziellen Website](https://www.docker.com/products/docker-desktop) herunter und installieren Sie es.
+### app
 
-**2. Dev Container VSCode Extension installieren**: Installieren Sie die Dev Container Extension in Visual Studio Code. Diese Erweiterung ermöglicht es Ihnen, Entwicklungscontainer zu verwenden.
+The `app` directory contains the main application and the routes for the FastAPI project. Here are the most important components and their functions:
 
-**3. Im Container entwickeln**: Um im Container entwickeln zu können, öffnen Sie den Backend-Ordner als eigenes Fenster, dann bekommen Sie einen Popup "Reopen in Container", falls nicht dann mit `STRG + UMSCHALT + P` `Dev Container: Reopen in container`. Der Container wird gebaut und VSCode wird automatisch mit Einstellungen und Extensions entprechend der `devcontainer.json` konfiguriert.
+- `main.py`: The entry point of the application. This is where the FastAPI instance is created and the routes are registered.
+- `routes.py`: This is where the various router modules are registered, defining the API endpoints.
+- `lifetime.py`: This is where functions are defined that are executed when the application starts and stops.
+- `api/`: This is where the the different router modules are implemented, such as graphql, rest and websockets. Check out the readme there for further informations.
+- `static/`: This is where static files, such as images, etc., are located.
+- `core/`: This directory contains the configuration files of the fastapi server.
+- `db/`: This directory is responsible for data storage in the backend and includes the defintion of the models and triggers.
+- `media/`: This directory contains files, that are created and used dynamically by the application. The directory is created by the application, should not be in the repo.
 
-Alternativ können Sie mit dem folgenden Befehl das Projekt starten:
+This structure helps keep the code clean and modular, making it easier to maintain and extend the application.
 
-```sh
-docker-compose up
-```
+### classifier
 
-Falls ein Zugriff auf das Terminal des Containers gewünscht ist, dann führen Sie folgenden Befehl in einem Terminal aus:
+The `classifier` directory contains the modules that are used to classify the age and gender of the results of the nearest neighbours. There are weighted and unweighted classifications. See the classifier-Readme for further information.
 
-```sh
-docker exec -it backend /bin/bash
-```
+### embeddings
 
-**4. Zugriff auf den Server**: Der Server sollte nun automatisch unter `http://127.0.0.1:8000` erreichbar sein.
+The directory `embeddings` contains the modules that are used for embeddings calculation via CNNs. Those embeddings are later used to determine similarities between images. See the embeddings-Readme for further information.
 
-## Installation Ohne Docker
+### hand-normalization
 
-### MongoDB installieren
+The `hand-normalization` module processes hand images to prepare them for embedding calculations. It includes functions for segmenting, resizing, and saving hand region images. This ensures consistent input for further analysis and classification. See the hand-normalization-Readme for further information.
 
-#### MongoDB mit Docker Compose starten
+### lib
 
-Um MongoDB mit Docker zu starten, verwenden Sie den folgenden Befehl:
+The `lib` directory contains general library customized functions and utilities that can be used in various parts of the application. These functions are often reusable and abstract complex logic to make it more accessible.
 
-```sh
-docker-compose up mongodb
-```
+### logs
 
-Dieser Befehl startet den MongoDB-Dienst, wie er in der docker-compose.yml-Datei definiert ist.
+The directory `logs` is not committed to the repo but is needed to store csv-files that are used to collect various data. It gets created automatically upon starting the backend docker container or has to be set up manually. For further information, see [Setup](#setup).
 
-#### MongoDB manuell installieren
+### pipelines
 
-Alternativ können Sie die offizielle Anleitung zur Installation der MongoDB-Community-Edition befolgen. Die Anleitung finden Sie hier:
-[MongoDB Community Edition installieren](https://www.mongodb.com/docs/manual/administration/install-community/)
+The `pipelines` module includes various data processing pipelines for tasks such as filtering datasets, initializing data, performing inference, and adding new embeddings. These pipelines ensure efficient data handling and processing for the HandScanAI backend. Those pipelines are then used by the API-Endpoints. See the pipelines-Readme for further information.
 
-### Python installieren
+### tests
 
-Stellen Sie sicher, dass Python auf Ihrem System installiert ist. Sie können die neueste Version von [python.org](https://www.python.org/downloads/) herunterladen und installieren.
+The `tests` directory contains the unit and integration tests of the backend, implemented using `pytest`. Check out the tests-Readme for further instructions.
 
-### Enviroment Datei erstellen
+### utils
 
-Die Datei `.env.sample` duplizieren und umbenennen in `.env`
-Falls nötig, die Attribute in der Datei entsprechend der Konfiguration anpassen.
+The `utils` directory contains several modules with helper functions that are useful all across the app (e.g. enums used as dict-keys or functions to save data in csv-files). See utils' Readme for further details.
 
-### Virtuelle Umgebung erstellen
+### validation
 
-Erstellen Sie eine virtuelle Umgebung mit `venv`:
+The `validation` directory contains all validation components of the application, that are used in the business logic, such as validating input stream in a form of a pipeline.
 
-```sh
-python -m venv venv
-```
+### vectordb
 
-### Virtuelle Umgebung aktivieren
+The `vectordb` module provides a script for managing embeddings in the Milvus vector database. It includes functions for creating collections, inserting and searching embeddings, and querying or deleting records by UUID. Check out the README there for further information.
 
-Aktivieren Sie die virtuelle Umgebung:
+### Additional Modules
 
-- Auf Windows:
+Additional modules can be added in a similar way by creating new directories and files that encapsulate specific functions and logic. 
 
-```sh
-venv\Scripts\activate
-```
+By adding new modules in this way, the codebase remains organized and modular, making it easier to maintain and extend the application.
 
-- Auf Unix oder MacOS:
-
-```sh
-source venv/bin/activate
-```
-
-### Abhängigkeiten installieren
-
-Installieren Sie die Abhängigkeiten aus der `requirements.txt`:
-
-```sh
-pip install -r requirements.txt
-```
-
-### Server starten
-
-Starten Sie den Entwicklungsserver:
-
-```sh
-python manage.py runserver
-```
-
-Der Server sollte nun unter `http://127.0.0.1:8000/` erreichbar sein.
-
-## Setup
+### Setup
 
 Setup necessary to use the application. Describes creation of folder structures and base data.
 
-### setup media
+**1. setup media**
 
 Create `backend/app/media` and inside
 
@@ -150,7 +110,7 @@ Create `backend/app/media` and inside
 - `QueryImages`: place where images from frontend are saved
 - `RegionImages`: results of hand-normalization
 
-### setup logging
+**2. setup media**
 
 The `logs-folder` in `backend` and its contents are automatically created when starting the docker container (via `startup()` in `lifetime.py`). The log-csvs lie in a folder named after the current date to make distinctions between sessions easier.
 
@@ -160,131 +120,97 @@ To manually set up the correct logging file structure (in case of an error or de
 python manage.py setup_csv_logging
 ```
 
-## Developing in VSCode
+## Development
+before you start with the development, make sure you did all the steps in the [setup](#setup)
 
-### Extensions
+**1. Install Docker Desktop**: Please follow the instructions and install Docker Desktop from the [Official Website](https://www.docker.com/products/docker-desktop). Also make sure docker compose is available after installation on your machine.
 
-- Ruff: <https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff>
+**2. Install Dev Container VSCode Extension**: Please install the following VSCode extension [Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers). This extension makes it possible to write and edit code inside of a docker container.
 
-- Python: <https://marketplace.visualstudio.com/items?itemName=ms-python.python>
+**3. create .env file**: duplicate the `.env.sample` file and rename it to `.env`
 
-### Python Interpreter einstellen
+**4. Development inside Container**: To develop inside the container, open the backend folder as a separate window. You will see a popup "Reopen in Container". If not, use `CTRL + SHIFT + P` and select `Dev Container: Reopen in container`. The container will be built, and VSCode will automatically configure with settings and extensions according to `devcontainer.json`.
 
-Um den Python-Interpreter in VSCode einzustellen, folgen Sie diesen Schritten:
+Alternatively, you can start the project with the following command in the backend directory:
+```sh
+docker-compose up
+```
 
-1. Öffnen Sie die Kommando-Palette mit `Ctrl+Shift+P` (Windows) oder `Cmd+Shift+P` (Mac).
-2. Geben Sie `Python: Select Interpreter` ein und wählen Sie diese Option aus.
-3. Wählen Sie den Interpreter aus, der sich in Ihrer virtuellen Umgebung befindet (`venv`).
+If you wish to access the bash terminal of the container from a different terminal on your machine, please run the following command:
 
-Dies stellt sicher, dass VSCode die richtige Python-Version und die installierten Pakete in Ihrer virtuellen Umgebung verwendet.
+```sh
+docker exec -it backend /bin/bash
+```
 
-## Projektstruktur
-
-Eine Übersicht über die Projektverzeichnisstruktur und eine kurze Beschreibung der wichtigsten Ordner und Dateien.
-
-### app
-
-Das Verzeichnis `app` enthält die Hauptanwendung und die Routen für das FastAPI-Projekt. Hier sind die wichtigsten Komponenten und deren Funktionen:
-
-- `main.py`: Der Einstiegspunkt der Anwendung. Hier wird die FastAPI-Instanz erstellt und die Routen werden registriert.
-- `routes.py`: Hier sind die verschiedenen Router-Module registriert, die die Endpunkte der API definieren.
-- `lifetime.py`: Hier werden Funktionen definiert, die beim Starten und Beenden der Anwendung ausgeführt werden.
-- `api/`: Hier sind die Geschäftslogik und die Service-Funktionen implementiert, die von den Routern verwendet werden.
-- `static/`: Hier befinden sich statische Dateien, wie z.B. Bilder usw.
-- `core/`: Dieses Verzeichnis enthält die Konfigurationsdateien.
-- `db/`: Dieses Verzeichnis ist für die Datenhaltung zuständig.
-- `media/`: Erstellte Medien durch die Anwendung, gehört nicht ins Repo.
-
-Diese Struktur hilft dabei, den Code sauber und modular zu halten, was die Wartung und Erweiterung der Anwendung erleichtert.
-
-### classifier
-
-The ‘classifier’ directory contains the modules that are used to classify the age and gender of the results of the nearest neighbours. There are weighted and unweighted classifications. See the classifier-Readme for further information.
-
-### embeddings
-
-The directory `embeddings` contains the modules that are used for embeddings calculation via CNNs. Those embeddings are later used to determine similarities between images. See the embeddings-Readme for further information.
-
-### hand-normalization
-
-TODO
-
-### lib
-
-Das Verzeichnis `lib` enthält allgemeine Bibliotheksfunktionen und Hilfsprogramme, die in verschiedenen Teilen der Anwendung verwendet werden können. Diese Funktionen sind oft wiederverwendbar und abstrahieren komplexe Logik, um sie einfacher zugänglich zu machen.
-
-### logs
-
-The directory `logs` is not committed to the repo but is needed to store csv-files that are used to collect various data. It gets created automatically upon starting the backend docker container or has to be setup manually. For further information, see [Setup](#setup).
-
-### pipelines
-
-This directory contains the modules (called pipelines) that string several functionalities of other modules together and form the main workflow of the backend. See pipelines' Readme for further details.
-
-### tests
-
-The directory `tests` contains the unit- and integration tests for the backend that are implemented in `pytest`. It also contains test scenarios for evaluation of the embeddings models and the classifiers. See tests' Readme for further details.
-
-### utils
-
-The directory `utils` contains several modules with helper functions that are useful all across the app (e.g. enums used as dict-keys or functions to save data in csv-files). See utils' Readme for further details.
-
-### validation
-
-Das Verzeichnis `validation` enthält alle Validierungskomponenten der Anwendung.
-
-### vectordb
-
-TODO
-
-### Weitere Module
-
-Weitere Module können auf ähnliche Weise hinzugefügt werden, indem Sie neue Verzeichnisse und Dateien erstellen, die spezifische Funktionen und Logik kapseln. Hier ist ein Beispiel, wie Sie neue Module strukturieren können:
-
-- `db/`: Hier könnten Datenbankverbindungen und ORM-Modelle definiert werden, um den Datenbankzugriff zu verwalten.
-
-Durch das Hinzufügen neuer Module auf diese Weise bleibt die Codebasis organisiert und modular, was die Wartung und Erweiterung der Anwendung erleichtert.
-
-## Formatting and Linter
+**5. Access the Server**: The server is now accessible under `http://127.0.0.1:8000`.
 
 ### Code Checks
 
+For checking code styles please run the following command:
 ```sh
 python manage.py check
 ```
 
 ### Code formatting
 
+To format the code please run the following command:
 ```sh
 python manage.py format
 ```
 
-## Run tests
+### Run tests
 
+To run all pytest in the application please run the following command:
 ```sh
 python manage.py test
 ```
 
-See also Readme in `tests`-module.
+Check out the Readme in `tests`-module for further instructions.
 
-## Backups erstellen und wiederherstellen
+## Create and Restore Backups
 
-### Backup erstellen
+### Create Backup
 
-Um ein Backup der Ordner `volumes`, `logs` und `app/media` zu erstellen, führen Sie den folgenden Befehl aus:
-
+To create a backup of the `volumes`, `logs`, and `app/media` folders, run the following command:
 ```sh
 python manage.py create_backup
 ```
 
-Das Backup wird im Ordner backup erstellt und der Dateiname enthält das aktuelle Datum und die Uhrzeit.
+The backup will be created in the backup folder and the filename will contain the current date and time.
 
-### Backup wiederherstellen
+### Restore Backup
 
-Um ein Backup wiederherzustellen, muss die Datei unter dem Ordner `backup` stehen. Danach führen Sie den folgenden Befehl aus und geben Sie den Namen der Backup-Datei an:
+To restore a backup, the file must be in the `backup` folder. Then run the following command and specify the name of the backup file:
 
 ```sh
-python manage.py restore_backup <backup_datei>
+python manage.py restore_backup <backup_file>
 ```
 
-**!!Hinweis!!**: Alle vorhandene Daten werden gelöscht und überschrieben, damit keinen Konflikt zwischen Vorhandenen Daten entsteht!
+**!!IMPORTANT!!**: 
+ - All existing data will be deleted and overwritten to avoid conflicts with existing data! Also created backu
+ - Only create and restore backups on the same device, because calculated embeddings deffers from one device to the other. So to restore one backup from one device to another, please recalculate all embeddings on the new device!
+
+
+## Usage from the frontend
+
+### 1. Backend Server
+
+Make sure the backend server is running.
+
+### 2. Use The API
+
+1. **Create Scan Entry**:
+   - Call the `create_scan_entry_model` mutation in GraphQL and save the returned ID.
+
+2. **Take an Image**:
+   - Use the `webcam_flow` WebSocket endpoint to take an image using the same ID.
+
+3. **Get Scan Results**:
+   - After successfully taking an image, call the `get_scan_result` query with the same ID in GraphQL to get the results of the inference pipeline.
+
+4. **Input Real Data**:
+   - To input real data of a hand, call the `update_scan_entry_model` mutation with the same ID to add the real age and real gender of the person.
+
+5. **Confirm Entry**:
+   - To confirm an entry and add its embedding to the vector database, set the `confirmed` field while updating the values in the mutation.
+   - **Note**: The confirmed value can only be set to true once all necessary data is provided. Once it is set to true, you cannot edit or delete the entry anymore.
