@@ -1,12 +1,10 @@
 # Pipelines
 
-TODO: Add information on pipelines.
-Info: Pipelines will get updated once the vector database gets introduced. Until then, see Miro Board for current information.
-
 ## Table of contents
 
 - [Pipelines](#pipelines)
   - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
   - [Initial Dataset Filter Pipeline](#initial-dataset-filter-pipeline)
     - [Use the initial dataset filter pipeline](#use-the-initial-dataset-filter-pipeline)
   - [Initial Data Pipeline](#initial-data-pipeline)
@@ -20,6 +18,29 @@ Info: Pipelines will get updated once the vector database gets introduced. Until
     - [datasets](#datasets)
   - [Distance/ Similarity Caculation](#distance-similarity-caculation)
 
+## Overview
+
+The pipeline-modules described here string several functionalities of other modules together and form the main workflow of the backend.
+
+There are four different pipelines, used in different situations and called from different places in the app:
+
+- **Initial Dataset Filter Pipeline**: Filters the 11K-Dataset for usable pictures.
+  - Gets called only to prepare the dataset for the application.
+  - Gets called from the `manage.py` via `initial_dataset_filter`.
+  - For further information, see [Initial Dataset Filter Pipeline](#initial-dataset-filter-pipeline).
+- **Initial Data Pipeline**: Enables the normalization, calculation of embeddings and storing of the resulting images and information for large bulk of images (e.g. for the result of the Initial Dataset Filter Pipeline).
+  - Gets called to set up the necessary data for the application on a new device or to save additional data for many images at once.
+  - Gets called from the `manage.py` via `setup_new_project_data` or `bulk_import_calculations`, depending on the usecase.
+  - For further information, see [Initial Data Pipeline](#initial-data-pipeline) and the docstrings of `setup_new_project_data` and `bulk_import_calculations`.
+- **Inference Pipeline**: Produces the age- and gender-classifications of a given image.
+  - Uses the dataset that was set up via Initial Data Pipeline.
+  - Gets triggered via API in `graphql.get_scan_result`.
+  - For further information, see [Inference Pipeline](#inference-pipeline).
+- **Add new Embeddings Pipeline**: Entails all necessary steps to save an image in the base dataset, save its correct metadata with the already existing metadata for the base dataset, normalize the image and saves the results as well as calculate its embeddings and save them (similar to Initial Data Pipeline).
+  - Adds the data for a new image to the dataset that was setup via `initial_data_pipeline`.
+  - Gets triggered via API in `models.after_save`.
+  - For further information, see [Add new Embeddings Pipeline](#add-new-embeddings-pipeline).
+
 ## Initial Dataset Filter Pipeline
 
 ![A diagram showing the high level step of filtering an external dataset (11k in this case) and the resulting data (An image folder and a csv with the corresponding metadata.)](readme_data/initial_dataset_filter_pipeline_concept.png)
@@ -31,7 +52,7 @@ This pipeline-step is optional and can be used to
 - save the corresponding metadata into a csv
   - takes metadata in csv-format (implemented for filtering 11k-dataset, will need adjustments for other datasets or formats)
   - csv-header of result-csv:
-  `["uuid", "old_id", "age", "gender", "skinColor", "accessories", "aspectOfHand", "imageName", "irregularities"]`
+    `["uuid", "old_id", "age", "gender", "skinColor", "accessories", "aspectOfHand", "imageName", "irregularities"]`
 
 ### Use the initial dataset filter pipeline
 
@@ -48,25 +69,24 @@ Then, the pipeline can be run from the `/backend`-folder via console:
 
 ## Initial Data Pipeline
 
-This pipeline (`initial_data_pipeline.py`) is used to provide the initial chunk of data for the databases when they are built from the ground up OR is used when a whole new dataset is added to existing databases. Initially, it is used to filter and process relevant images from the 11k dataset.
+This pipeline (`initial_data_pipeline.py`) is used to provide the initial chunk of data for the databases when they are built from the ground up OR is used when a whole new dataset is added to existing databases.
 
-The following diagrams show the concept of the pipeline as of 10.12.24 with temporary saving images and metadata locally.
-TODO: Update when databases get introduced.
-![A diagram showing the pipeline steps validation (which yields metadata and a base dataset of images), hand-normalization (which yields a region dataset), calculation of embeddings and the creation and extension of search trees (which yield updated search trees).](readme_data/initial_data_pipeline_concept_rough_1.png)
-![A diagram showing the pipeline's more detailed steps and their results.](readme_data/initial_data_pipeline_concept_medium_detail_1.png)
+The following diagram show the concept of the pipeline with the main steps of normalizing the images, calculating the embeddings and saving the results in folders, csv-files and the milvus vector database.
 
-TODO: Add dataflow and data types of pipeline
+![A diagram showing the pipeline steps validation (which yields metadata and a base dataset of images), hand-normalization (which yields a region dataset), calculation of embeddings and the creation and extension of search trees (which yield updated search trees).](readme_data/initial_data_pipeline_concept_medium_detail_1.png)
 
 ### Use the initial data pipeline
 
-Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data are updated/ correct (tbd better documentation of what that all is).
+Before using the pipeline, make sure all the necessary paths for loading and saving the images and other data are updated/ correct. For an extensive explanation for the respective usecases and the possible flags, see the docstrings of `setup_new_project_data` or `bulk_import_calculations` in `manage.py`. Make sure the necessary docker-containers are up as well.
 
-Then, the pipeline can be run from the `/backend`-folder via console:
-`python manage.py initial_data_pipeline`. (Windows. For other ways to use `manage.py` by running python from the console, see `README` under `/backend`).
+The pipeline can then be run from the `/backend`-folder via console:
+e.g. `python manage.py setup_new_project_data`.
+(Windows. For other ways to use `manage.py` by running python from the console, see `README` under `/backend`).
 
 ## Inference Pipeline
 
-This pipeline (inference_pipeline.py) is used to predict the age and gender of an image. It normalises the image, calculates the embedding, performs a knn-search and determines the age and size of the nearest neighbours via metadata classification
+This pipeline (`inference_pipeline.py`) is used to predict the age and gender of an image.
+It normalises the image, calculates the embedding, performs a knn search and determines the age and gender by classification based on the nearest neighbour metadata.
 
 The following diagram shows the flow of the pipeline:
 
@@ -74,55 +94,81 @@ The following diagram shows the flow of the pipeline:
 
 The following diagram shows the inputs and outputs of the individual steps:
 
-![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.png)
-
-TODO: Add knn-search and classification to diagram
+![A diagram describing the input and output data types of the pipeline shown above.](readme_data/inference_pipeline_datatypes.jpg)
 
 ### Use the inference pipeline
 
-make sure that the folders are created as described here ["Setup"](../README.md#setup)
+Make sure that the folders have been created as described here ["Setup"](../README.md#setup) and the image to be analysed lies in QueryImages.
+In addition, the embeddings must be calculated and saved beforehand, see [Initial Data Pipeline](#initial-data-pipeline)
 
-with connection backend and frontend:
-the pipeline is called up by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
-graphql function get_scan_result()
+With connection backend and frontend:
+the pipeline is called by the frontend via the graphql interface when the ‘Analyse starten’ button has been pressed. The UUID of the image just taken must be transferred to the pipeline.
+graphql function `get_scan_result()`
 
 For Testing:
-The pipeline can be executed via the test_inference_pipeline.py from the `/backend` folder via the console:
-pytest -s tests/pipelines/test_inference_pipeline.py
+The pipeline can be executed via the `test_inference_pipeline.py` from the `/backend` folder via the console:
+`pytest -s tests/pipelines/test_inference_pipeline.py`
 
 ## Add new Embeddings Pipeline
 
-This pipeline (add_new_embeddings_pipeline.py) is used after checking the metadata for age and gender to add the embeddings of a new image to the vectortrees. It also saves the images of each region.
+This pipeline (`add_new_embeddings_pipeline.py`) is used to process a single image and its metadata and add it to the base dataset. Therefore it saves the results of every intermediate processing step. It is called from the API once the frontend provides the correct age and gender associated with the image (that is stored in the QueryImages-folder).
 
-The following diagram shows the flow of the pipeline:
+As displayed in the diagram below, the pipeline takes an image and its metadata, normalizes the image and saves the normalized region images, calculates the embeddings and saves them in the respective csvs as well as the vector database, saves the image metadata in the Metadata.csv and saves the image in the Base Dataset folder to add it to the base dataset of the application.
 
-![A diagram showing the pipeline steps of validation (provides image and metadata), hand normalisation (which provides a region dataset and saves images), calculation of embeddings and adding to the vector tree.](readme_data/add_new_embeddings_pipeline_concept.png)
+![A diagram showing the pipeline steps of hand normalisation (which provides a region dataset and saves images), calculation of embeddings, and adding them to the vector tree and the embeddings csv-files as well as saving the metadata in the Metadata.csv.](readme_data/add_new_embeddings_pipeline_concept.jpg)
 
-The following diagram shows the inputs and outputs of the individual steps:
+The following diagram shows the inputs and outputs of the individual steps as a rough overview:
 
-![A diagram describing the input and output data types of the pipeline shown above. First part until normalization ](readme_data/add_new_embeddings_pipeline_datatypes_1.png)
-![Shows the second part of the datatyp diagram ](readme_data/add_new_embeddings_pipeline_datatypes_2.png)
-
-TODO: Add integration of embeddings to vektortree
+![A diagram describing the input and output data types of the pipeline-steps of the add_new_embeddings_pipeline](readme_data/add_new_embeddings_pipeline_datatypes.jpg)
 
 ### Use the add new Embeddings pipeline
 
-Make sure in the method get_image_path() is the correct path to the image_folder and the 'output_folder_path_base' is correct.
+Make sure that the folders, files and milvus were created and filled correctly. Since the pipeline is similar to the Initial Data Pipeline, you can use the setup instructions described in [Use the initial data pipeline](#use-the-initial-data-pipeline) and ["Setup"](../README.md#setup).
 
-The pipeline can be executed via the test_add_new_embeddings_pipeline.py from the `/backend` folder via the console:
-pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py
+The pipeline is typically triggered via frontend-request to the API (`app/db/models.py after_event`). There is currently no explicit validation for the ground_truth_data available in the backend. Manual checking is required before the pipeline is used and the information saved.
 
-later:
-After a check of the metadata (manually by a person or with a check-script), it is triggert by the fronted and the uuid is transferred.
+For testing purposes, the pipeline can be triggered
+
+- via frontend (if both frontend and backend container have been started locally in docker)
+- directly in the browser via `/graphql`-query. Note that a ScanResultID is needed since the graphql-API is linked to a mongodb.
+- with the `test_add_new_embeddings_pipeline.py` from the `/backend` folder via the console:
+  `pytest -s tests/pipelines/test_add_new_embeddings_pipeline.py`
 
 ## Utils for Pipelines
 
 ### data_utils
 
+This module contains functions that link data from Csv files with dictonaries/data frames and process data.
+
+- **region-embeddings-from-csv**:
+  - reads data from Embeddings.csv and prepares it as a list for the next steps
+- **map-gender**:
+  - Two functions to map the gender as string ("female", "male") to int (0,1) and vice versa.
+- **build-info-knn**:
+  - Combine the results from knn-search with the metadata of the nearest neighbours.
+  - Different functions for results from csv (cosine distance) and milvus (cosine similarity), due to difference in distance and similarity and difference in incoming data types
+- **find-most-similar**:
+  - filters the n most similar neighbors from all nearest neighbors for display in the frontend
+
 ### datasets
+
+This module contains datasets that handle the loading and iterating of images from a folder. There are three datasets that handle different usecases:
+
+- **ImagePathWithCSVDataset**:
+  - Is responsible for loading the image-paths and the corresponding csv-data from a dataset like 11K into a list to iterate over.
+  - Only gets used in the `initial_dataset_filter_pipeline`.
+- **ImagePathDataset**:
+  - Is responsible for loading the image-paths of the BaseImages-folder into a list to iterate over.
+  - Expects filenames in the format `{UUID}.{ext}` where extensions could be jpg, png or bmp.
+  - Gets used e.g. in `initial_data_pipeline` or test-scenarios (see `tests`-Readme).
+- **DatasetRegionClusters**:
+  - Is responsible for loading the image-paths of the RegionImages-folder and clustering them per uuid. Holds those clusters in a list to iterate over.
+  - Expects filenames in the format `{UUID}_{region}.{ext}` where extensions could be jpg, png or bmp.
+  - Gets used e.g. in `initial_data_pipeline` or test-scenarios (see `tests`-Readme).
 
 ## Distance/ Similarity Caculation
 
-TODO: articulate better
+This module contains a function to calculate the cosine distance between an embedding and the embeddings from the region_Embedding.csvs.
 
-Since our own calculations result in distance-values and milvus has similarity-scores as a result, we use the respective metric up until we fill the dict_all_info_knn, where we standardize the metric to similarity.
+The calculations from the **Csv** files provide the **cosine distance**, but **Milvus** calculates the **cosine similarity**.
+A uniform result is required for the classifier, which is why the cosine distance is converted into the similarity in the subsequent step, the link to the metadata, see `build_info_knn_from_csv()` (data-utils.py)

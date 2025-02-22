@@ -43,13 +43,15 @@ def format_code():
                 "ruff",
                 "format",
                 "app",
+                "classifier",
                 "embeddings",
                 "hand_normalization",
-                "knn",
                 "lib",
                 "pipelines",
                 "tests",
+                "utils",
                 "validation",
+                "vectordb",
             ],
             check=True,
         )
@@ -68,13 +70,15 @@ def check_code():
                 "ruff",
                 "check",
                 "app",
+                "classifier",
                 "embeddings",
                 "hand_normalization",
-                "knn",
                 "lib",
                 "pipelines",
                 "tests",
+                "utils",
                 "validation",
+                "vectordb",
             ],
             check=True,
         )
@@ -196,18 +200,23 @@ def bulk_import_with_initial_data_pipeline():
 
 @cli.command("initial_dataset_filter")
 def filter_11k_dataset():
-    """Run filter_11k function."""
-    # TODO: Set correct paths before running the pipeline (ideally build via os.path or pathlib.Path, for example see function run_initial_data_pipeline)
+    """Run filter_11k function to filter usable images from the 11K dataset.
+    See filter_11k_hands-docstring for further information.
+
+    Ideally build via os.path or pathlib.Path, for example see function setup_new_project_data.
+    Do NOT use paths to default project folders in this function.
+    """
+    # TODO: Set correct paths before running the pipeline
     folder_path_initial_dataset = "path/to/image/folder"  # current dataset
     initial_csv_path = "path/to/csv"  # e.g. "path\to\HandInfo.csv"
     filtered_dataset_path = ""  # e.g. "NewDataset" or "BaseDataset"
-    new_csv_path = "CSV_filtered.csv"
+    new_csv_path = "CSV_filtered.csv"  # absolute path to new metadata-csv
     filter_11k_hands(folder_path_initial_dataset, initial_csv_path, filtered_dataset_path, new_csv_path)
 
 
 @cli.command("setup_csv_logging")
 def initial_setup_csv_logging():
-    """Run the setup csv-logging funktion."""
+    """Run the setup csv-logging funktion manually to create logs-folder and log-csvs for backend."""
     setup_csv_logging()
 
 

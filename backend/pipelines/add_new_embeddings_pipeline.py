@@ -57,14 +57,21 @@ def run_add_new_embeddings_pipeline(
     # calculate embeddings for each image from dict_regions
     dict_embedding = calculate_embeddings_from_tensor_dict(dict_normalization)
 
-    ######## STEP 3: Update database ################################
+    ######## STEP 3: Update databases and save information ################################
 
-    # TODO: normal return can be used for local testing, test and saving-methods need to be adjusted for
-    # pipeline testing in a later issue to not actually save in the csv-files or set the saving back
-    # while still using the correct testing-paths
+    # TODO: return for unit test. this return can be used for local and unit-tests via ci-pipeline.
+    # test and saving-methods can be adjusted in a later issue, e.g. via mocking to not actually write data in an automated test-setting
     if testing:
         return True
     else:
+        ### Save embeddings
+        if save_csvs:
+            # for testing reasons and data redundancy
+            added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
+        if save_milvus:
+            added_embeddings = add_embeddings_to_milvus(uuid, dict_embedding, milvus_collection_name)
+
+        ### Save image and metadata in base dataset
         copied_image = copy_image_to_folder(uuid, folder_path_query, folder_path_base)
         added_metadata = add_entry_to_csv(
             metadata_csv_path,
@@ -77,16 +84,8 @@ def run_add_new_embeddings_pipeline(
             },
         )
 
-        if save_csvs:
-            # for testing reasons and data redundancy
-            added_embeddings = add_embedding_dict_to_csv(embedding_csv_path, uuid, dict_embedding)
-        if save_milvus:
-            added_embeddings = add_embeddings_to_milvus(uuid, dict_embedding, milvus_collection_name)
-
         ### Logging ####
         # in case of errors, make sure logging has been setup correctly
         logging_input_data(uuid, ground_truth_data)
 
         return added_embeddings and added_metadata and copied_image
-
-    # TODO: für uns report sinnvoll mit vorhergesagtem und bestimmten Alter und Geschlecht, Timestamp?

@@ -4,24 +4,22 @@ from utils.key_enums import PipelineDictKeys as DictKeys
 from utils.key_enums import HandRegions as RegionKeys
 
 
-def region_embeddings_from_csv(regionkey, embedding_csv_path):
-    # TODO: Hier oder eher csv_utils
+def region_embeddings_from_csv(regionkey: str, embedding_csv_path: str):
     """
-    reads the data from the regionkey_embeddings.csv and saves all uuids and all
-    embeddings in seperated lists
+    reads the data from the regionkey_embeddings.csv and saves all uuids and all embeddings in seperated lists.
 
     Args:
-        regionkey(str): name of the region
-        embedding_csv_path (Path): path to the regionkey_Embeddings.csv
+        regionkey (str): name of the region
+        embedding_csv_path (str): path to the regionkey_Embeddings.csv
 
     Returns:
-        list_uuid that contains all uuids
-        list_embedding that contains all embeddings
+        list_uuid (list): contains all uuids
+        list_embedding (list): contains all embeddings
 
     Example:
         region_embeddings_from_csv("Hand", "C:\\HandScanAI\\backend\\app\\media\\csv\\Hand_Embeddings.csv")
-
     """
+
     name_csv = regionkey + "_Embeddings.csv"
     path_to_embeddings_csv = embedding_csv_path / name_csv
     embeddings_df = pd.read_csv(path_to_embeddings_csv, sep=",")
@@ -34,7 +32,7 @@ def region_embeddings_from_csv(regionkey, embedding_csv_path):
     return list_uuid, list_embedding
 
 
-def map_gender_string_to_int(df):
+def map_gender_string_to_int(df: pd.DataFrame):
     """
         Map gender values in a DataFrame to numerical values
         'female' mapped to 0
@@ -53,7 +51,7 @@ def map_gender_string_to_int(df):
     return df
 
 
-def map_gender_int_to_string(int_gender):
+def map_gender_int_to_string(int_gender: int):
     """
     Map gender numerical values in string falues
     0 mapped to 'female'
@@ -63,7 +61,7 @@ def map_gender_int_to_string(int_gender):
         int_gender (int): gender als numeric value
 
     Returns:
-        gender as string value
+        str: gender as string value
 
     Example:
         map_gender_int_to_string(0)
@@ -72,9 +70,9 @@ def map_gender_int_to_string(int_gender):
     return map_gender[str(int_gender)]
 
 
-def build_info_knn_from_milvus(metadata_csv_path, knn_results: dict):
+def build_info_knn_from_milvus(metadata_csv_path: str, knn_results: dict):
     """
-    Augment k-nearest neighbor search results with additional metadata (age and gender) from a CSV file.
+    Supplement the results of the k-nearest neighbour search with Mivlus with additional metadata (age and gender) from a CSV file.
     Each region is mapped to a DataFrame containing the combined information.
 
     Args:
@@ -82,7 +80,7 @@ def build_info_knn_from_milvus(metadata_csv_path, knn_results: dict):
         knn_results (Dict[str, List[Dict[str, Any]]]): Dictionary of k-NN results grouped by region.
 
     Returns:
-        Dict[str, pd.DataFrame]: A dictionary mapping each region to a DataFrame with 'uuid', 'similarity', 'age', 'gender'.
+        Dict[str, pd.DataFrame], {regionkey(str): region_df(uuid, similarity, age, gender)}: A dictionary mapping each region to a DataFrame with 'uuid', 'similarity', 'age', 'gender'.
     """
     dict_all_info_knn = {}
 
@@ -118,18 +116,18 @@ def build_info_knn_from_milvus(metadata_csv_path, knn_results: dict):
     return dict_all_info_knn
 
 
-# TODO: for testing purposes
-def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
+def build_info_knn_from_csv(metadata_csv_path: str, dict_all_dist: dict):
     """
-    Query of gender and age for knn of the image from csv.
-    Dictation of a dict that contains the k nearest neighbours with uuid, dist, age and gender
+    Filtering the results of the distance calculation with the csv data to the k-nearest neighbours per region.
+    Supplementing this data with information about the age and gender of the neighbours from metadata.
+    Calculation of the similarity of the nearest neighbours based on the distance.
 
     Args:
-        metadata_csv_path(Path): path to the folder where the csvs are saved
-        dict_all_dist:  {'Hand' : {'uuid': [56465, 1454514], 'distance': [0.1, 0.2], 'distance_ids_sorted' : [0,5]}}
+        metadata_csv_path(str): path to the folder where the csvs are saved
+        dict_all_dist:  {'Hand' : {'uuid': [56465, 1454514], 'distance': [0.1, 0.2], 'distance_ids_sorted' : [0,5]}} Dictonary of distance calcualtion result grouped by region
 
     Returns:
-        dict_all_info_knn: {regionkey(str): region_df(uuid, similarity, age, gender)}
+        dict_all_info_knn: {regionkey(str): region_df(uuid, similarity, age, gender)} A dictionary mapping each region to a DataFrame with 'uuid', 'similarity', 'age', 'gender'.
 
     Example:
         build_info_knn("C:\\HandScanAI\\backend\\app\\media\\csv", dict = {'Hand' : {'uuid': [56465, 1454514], 'distance': [0.1, 0.2], 'distance_ids_sorted' : [0,5]}})
@@ -144,7 +142,6 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
         RegionKeys.LITTLEFINGER_6.value: {},
     }
 
-    # TODO: Abfrage aus MongoDB?
     metadata_df = pd.read_csv(metadata_csv_path, sep=",")
     metadata_df = map_gender_string_to_int(metadata_df)
 
@@ -153,11 +150,12 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
             columns=[DictKeys.UUID.value, DictKeys.SIMILARITY.value, DictKeys.AGE.value, DictKeys.GENDER.value]
         )
         for index in dist_dict[DictKeys.DISTANCE_IDS_SORTED.value]:
+            # read uuid and distance to the corresponding index
             uuid = dist_dict[DictKeys.UUID.value][index]
             dist = dist_dict[DictKeys.DISTANCE.value][index]
             similarity = 1 - dist
             row = metadata_df.loc[metadata_df[DictKeys.UUID.value] == uuid]
-            # .iloc[0] notwendig sonst wird eindimensionale column gespeichert, nur Wert aus Zelle wird benötigt
+            # .iloc[0] necessary otherwise one-dimensional column is saved, only value from cell is required
             age = row[DictKeys.AGE.value].iloc[0]
             gender = row[DictKeys.GENDER.value].iloc[0]
             new_row = {
@@ -173,7 +171,7 @@ def build_info_knn_from_csv(metadata_csv_path, dict_all_dist: dict):
     return dict_all_info_knn
 
 
-def find_most_similar_nearest_neighbours(dict_all_info_knn):
+def find_most_similar_nearest_neighbours(dict_all_info_knn: dict):
     """
     From all the nearest neighbours in each region, n are selected that have the highest similarity and differ in uuid.
     Saving of region, uuid, age and gender in dataframe for transfer to frontend
