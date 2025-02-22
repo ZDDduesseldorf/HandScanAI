@@ -93,7 +93,7 @@ def scenario_classifier(path_to_result_csv_folder: Path, testing: bool = False):
         uuid = path_dict[Keys.UUID.value]
         image_path = path_dict[Keys.IMAGE_PATH.value]
         ### SPECIFY k
-        k = 6
+        k = 5
         run_generate_classifier_result(
             uuid, image_path, k, path_to_csv_age, path_to_csv_gender, path_to_csv_ensemble, testing
         )
