@@ -189,7 +189,7 @@ python manage.py restore_backup <backup_file>
 
 **!!IMPORTANT!!**:
 
-- All existing data will be deleted and overwritten to avoid conflicts with existing data! Also created backu
+- All existing data will be deleted and overwritten to avoid conflicts with existing data!
 - Only create and restore backups on the same device, because calculated embeddings differ from one device to the other. So to restore one backup from one device to another, please recalculate all embeddings on the new device!
 
 ## Usage from the frontend
