@@ -139,7 +139,8 @@ def run_inference_pipeline(
 
     knn_info_df = find_most_similar_nearest_neighbours(dict_all_info_knn)
 
-    #### Logging ####
+    ### Logging ####
+    # in case of errors, make sure logging has been setup correctly
     if not testing:
         logging_nearest_neighbours(uuid, dict_all_info_knn)
         logging_classification(uuid, age_dict, gender_dict, ensemble_df)
