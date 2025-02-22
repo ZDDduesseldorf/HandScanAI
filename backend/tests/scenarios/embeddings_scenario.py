@@ -19,6 +19,11 @@ Prerequisites:
         - original images in folder: app/media/BaseImages
         - region images in folder: app/media/RegionImages
         - if region images doesn't exists set normalize=True, save_images=True (for more information check docstring initial_data_pipeline)
+
+To run this scenario, comment in the function test_scenario_embeddings below.
+Then run it on the console from the /backend-folder via 'pytest -s tests/scenarios/embeddings_scenario.py'.
+
+Comment it out again afterwards to not run it as unit test in ci-pipeline.
 """
 
 # TODO: to execute the scenario_embeddings
@@ -35,6 +40,46 @@ def cleanup_tests():
     model_names = ["DENSENET_121", "DENSENET_169", "RESNET_50"]
     for name in model_names:
         drop_collection(name)
+
+
+def run_scenarios_embeddings(setup: bool = False):
+    """
+    Defines models for embeddings calculation, the number of nearest neighbours and the uuids for running the scenario.
+
+    If setup is true, it creates for each model: the folders and files for saving the results and calculates the embedding for each region of each image.
+
+    Then starts the distance_pipeline to find the nearest neighbours for each uuid and logs the result in csvs.
+
+    Args:
+        setup (bool, optional): flag for starting setup: creating folder, files and embeddings for each model. Defaults to False.
+    """
+    path_to_result_csv = scenario_path_manager()
+    models_dict = {
+        "DENSENET_121": load_model(CNNModel.DENSENET_121),
+        "DENSENET_169": load_model(CNNModel.DENSENET_169),
+        "RESNET_50": load_model(CNNModel.RESNET_50),
+    }
+    k = 10
+    uuid_list = [
+        "d8c07bec-a8e5-464d-9332-6d180bcb0e25",
+        "e8438076-49b2-49f2-b892-1a784c544ef6",
+        "5fb19ec5-65d0-43ae-9460-8dac1040dbf1",
+        "cb151d9a-f267-44fd-b8ad-e35a7ec6e43e",
+        "78c579f8-b88c-42ff-8f02-21453d10e4a2",
+        "976ad36d-0cc6-4c4e-b855-68db178da338",
+        "898d31b4-7549-4f9b-88d1-83d8fd958fdd",
+        "7c6c4cc9-7cc6-4cd8-9d79-05db814ee273",
+        "790f8655-a97a-47e0-8c54-5c6b030d1d6c",
+        "ca2b23a4-c9c2-46e4-b354-949326357ea0",
+        "6d03ac69-49f3-4666-8185-27966ec852d1",
+        "41564bb6-f474-4ddc-a95f-f1c4ff9815aa",
+    ]
+    for model_name, model in models_dict.items():
+        if setup:
+            model_csv_path = path_to_result_csv / model_name
+            setup_scenario_structure(model_csv_path, model, model_name)
+        for uuid in uuid_list:
+            run_distance_pipeline(uuid, model_name, model, k, use_milvus=True)
 
 
 def scenario_path_manager():
@@ -104,46 +149,6 @@ def check_or_create_nearest_neighbours_csv(path_to_csv_file: (str | Path)):
             Keys.GENDER.value,
         ]
         create_csv_with_header(path_to_csv_file, header_nearest_neigbour)
-
-
-def run_scenarios_embeddings(setup: bool = False):
-    """
-    Defines models for embeddings calculation, the number of nearest neighbours and the uuids for running the scenario.
-
-    If setup is true, it creates for each model: the folders and files for saving the results and calculates the embedding for each region of each image.
-
-    Then starts the distance_pipeline to find the nearest neighbours for each uuid and logs the result in csvs.
-
-    Args:
-        setup (bool, optional): flag for starting setup: creating folder, files and embeddings for each model. Defaults to False.
-    """
-    path_to_result_csv = scenario_path_manager()
-    models_dict = {
-        "DENSENET_121": load_model(CNNModel.DENSENET_121),
-        "DENSENET_169": load_model(CNNModel.DENSENET_169),
-        "RESNET_50": load_model(CNNModel.RESNET_50),
-    }
-    k = 10
-    uuid_list = [
-        "d8c07bec-a8e5-464d-9332-6d180bcb0e25",
-        "e8438076-49b2-49f2-b892-1a784c544ef6",
-        "5fb19ec5-65d0-43ae-9460-8dac1040dbf1",
-        "cb151d9a-f267-44fd-b8ad-e35a7ec6e43e",
-        "78c579f8-b88c-42ff-8f02-21453d10e4a2",
-        "976ad36d-0cc6-4c4e-b855-68db178da338",
-        "898d31b4-7549-4f9b-88d1-83d8fd958fdd",
-        "7c6c4cc9-7cc6-4cd8-9d79-05db814ee273",
-        "790f8655-a97a-47e0-8c54-5c6b030d1d6c",
-        "ca2b23a4-c9c2-46e4-b354-949326357ea0",
-        "6d03ac69-49f3-4666-8185-27966ec852d1",
-        "41564bb6-f474-4ddc-a95f-f1c4ff9815aa",
-    ]
-    for model_name, model in models_dict.items():
-        if setup:
-            model_csv_path = path_to_result_csv / model_name
-            setup_scenario_structure(model_csv_path, model, model_name)
-        for uuid in uuid_list:
-            run_distance_pipeline(uuid, model_name, model, k, use_milvus=True)
 
 
 def run_distance_pipeline(
