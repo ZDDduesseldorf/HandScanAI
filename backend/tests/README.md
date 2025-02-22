@@ -16,7 +16,7 @@
       - [Criteria for the selection of images](#criteria-for-the-selection-of-images)
     - [Classifier-Scenario](#classifier-scenario)
       - [Entry point classifier scenario](#entry-point-classifier-scenario)
-    - [Random\_Forest-Scenario](#random_forest-scenario)
+    - [Random_Forest-Scenario](#random_forest-scenario)
       - [Entry point random forest scenario](#entry-point-random-forest-scenario)
       - [Analysis and Interpretation of results](#analysis-and-interpretation-of-results)
 
@@ -28,8 +28,8 @@ All correctly named tests in the test module run via ci-pipeline in github on PR
 
 ## Create Tests
 
-- Pytest recognizes test-files with "tests_" at the beginning of the name, e.g. "tests_name_of_the_module_to_test".
-- The test-functions need to start with "test_" as well.
+- Pytest recognizes test-files with "tests\_" at the beginning of the name, e.g. "tests_name_of_the_module_to_test".
+- The test-functions need to start with "test\_" as well.
 - Make sure the file imports and file paths for the test-files are correct.
 
 ## Run Tests
@@ -119,7 +119,7 @@ Results of ensemble classifications can be used for evaluation of overall perfor
 
 - uses prod data (all images from BaseImages and its metadata)
 - uses csv-embeddings and distance calculation (use of milvus not implemented because they are nearly interchangeable)
-- k = 6
+- k = 5
 - filters same image from nearest neighbours before classification to not scew results
 
 Be sure to isolate results from different test runs by moving or renaming the result csvs. If in doubt, check the number of entries in csvs against the number of base images.

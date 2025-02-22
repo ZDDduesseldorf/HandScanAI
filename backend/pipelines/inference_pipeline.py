@@ -63,7 +63,7 @@ def _path_manager(testing: bool):
 # TODO pydoc
 def run_inference_pipeline(
     uuid: str,
-    k: int = 10,
+    k: int = 5,
     testing: bool = False,
     use_milvus: bool = True,
     milvus_collection_name: str = milvus_collection_name,
@@ -92,7 +92,7 @@ def run_inference_pipeline(
 
     Args:
         uuid (str): Unique identifier for the image
-        k (int, optional): _description_. Defaults to 10.
+        k (int, optional): _description_. Defaults to 5.
         testing (bool, optional): _description_. Defaults to False.
         use_milvus (bool, optional): _description_. Defaults to True.
         milvus_collection_name (str, optional): Name of the Milvus collection. Defaults to milvus_collection_name (milvus.py).
