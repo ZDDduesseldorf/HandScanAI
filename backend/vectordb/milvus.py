@@ -39,11 +39,12 @@ def add_embeddings_to_milvus(
 
     Args:
         uuid (str): The UUID associated with the embeddings.
-        embeddings_dict (Dict[str, Dict[str, Any]]): Dictionary containing regions and their embeddings.
-        collection_name (str): Name of the Milvus collection.
+        embeddings_dict (Dict[str, torch.Tensor]): A dictionary where each key is a region identifier and each value is the corresponding embedding tensor.
+        collection_name (str): The name of the Milvus collection to which embeddings will be added.
+        model_name (str, optional): The name of the model used to generate the embeddings. Defaults to "DENSENET_121".
 
     Returns:
-        None
+        bool: True if the embeddings were added successfully, False otherwise.
     """
     try:
         connect_to_host()
@@ -60,10 +61,17 @@ def add_embeddings_to_milvus(
 
 def create_miluvs_collection(collection_name: str, model_name="DENSENET_121") -> None:
     """
-    Connects to Milvus and initializes the collection if it does not exist.
+    Connects to the Milvus vector database and initializes a collection with a schema based on the specified model.
+
+    If the collection does not exist, the function creates it using a predefined schema corresponding to the model name.
+    It then creates partitions for each region defined in the HandRegions enum and creates an index on the "vector" field
+    if one is not already present. If the collection already exists, it simply connects to it and prints a confirmation.
 
     Args:
-        collection_name (str): Name of the Milvus collection to connect or create.
+        collection_name (str): The name of the Milvus collection to connect to or create.
+        model_name (str, optional): The model identifier that determines the embedding vector dimension and corresponding schema.
+                                    Supported models include "DENSENET_121", "DENSENET_169", and "RESNET_50".
+                                    Defaults to "DENSENET_121".
 
     Returns:
         None

@@ -6,7 +6,6 @@ import mediapipe as mp
 from typing import List, Dict, Tuple
 
 # TODO: Decide with frontend on final implementation and use of get_landmarks-function.
-# TODO: Find alternative for replace_color_in_range function to remove black rotation artifacts
 
 ################################## Debug & Test Utils ##################################
 
