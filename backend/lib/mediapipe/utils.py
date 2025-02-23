@@ -44,5 +44,6 @@ def extract_landmarks(image):
                 (int(landmark.x * image_width), int(landmark.y * image_height))
                 for landmark in results.multi_hand_landmarks[0].landmark
             ]
-            return landmarks
+            handedness = results.multi_handedness[0].classification[0].label
+            return landmarks, handedness
     return None

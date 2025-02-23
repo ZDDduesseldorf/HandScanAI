@@ -663,21 +663,40 @@ def rotate_and_crop_region(region, image, landmarks) -> np.ndarray:
 
 def calculate_hand_orientation(landmarks: list) -> int:
     """
-    Determines the hand orientation based on ring and index finger base landmarks.
+    Determines the hand orientation based on landmarks.
 
     Args:
         landmarks (list): List of hand landmarks, where each landmark is a tuple (x, y).
 
     Returns:
-        int: Orientation of the hand. Returns 1 if the ring finger base is to the right
-             of the index finger base (thumb on the left side), otherwise 0.
+        int: Orientation of the hand. Returns 1 for dorsal righthand and palmal lefthand. 0 otherwise.
     """
     ring_finger_base = landmarks[13]
     index_finger_base = landmarks[5]
+    base = landmarks[0]
+
     if abs(ring_finger_base[0] - index_finger_base[0]) > abs(ring_finger_base[1] - index_finger_base[1]):
-        return 1 if ring_finger_base[0] > index_finger_base[0] else 0
+        if ring_finger_base[0] > index_finger_base[0]:
+            if base[1] > index_finger_base[1]:
+                return 1
+            else:
+                return 0
+        else:
+            if base[1] < index_finger_base[1]:
+                return 1
+            else:
+                return 0
     else:
-        return 1 if ring_finger_base[1] > index_finger_base[1] else 0
+        if ring_finger_base[1] < index_finger_base[1]:
+            if base[0] > index_finger_base[0]:
+                return 1
+            else:
+                return 0
+        else:
+            if base[0] < index_finger_base[0]:
+                return 1
+            else:
+                return 0
 
 
 def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: int) -> float:
@@ -694,7 +713,7 @@ def calculate_region_angle(region_name: str, landmarks: list, orientation_hand: 
                a default angle of 90 degrees if the region name is not recognized.
     """
     if region_name == HandRegions.HAND_0.value or region_name == HandRegions.HANDBODY_1.value:
-        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) - orientation_hand * 180
+        return 90 - calculate_vector_angle(landmarks[5], landmarks[13]) - (1 - orientation_hand) * 180
     elif region_name == HandRegions.THUMB_2.value:
         return 180 - calculate_vector_angle(landmarks[2], landmarks[4])
     elif region_name == HandRegions.INDEXFINGER_3.value:
@@ -911,7 +930,7 @@ def remove_forearm_from_handbody_mask(mask: np.ndarray, landmarks: list) -> np.n
     Returns:
     mask (numpy.ndarray): Binary mask with non-zero values for the region of interest.
     """
-    orientation_hand = calculate_hand_orientation(landmarks)
+    orientation_hand = 1 - calculate_hand_orientation(landmarks)
     landmarks = np.array(landmarks)
     forearm_mask = np.zeros_like(mask)
     support_vector = (landmarks[0] - landmarks[13]) + landmarks[13]
