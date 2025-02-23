@@ -6,6 +6,7 @@ A script that provides various operations related to embeddings in the [Milvus](
 
 - [Overview](#overview)
 - [Requirements](#requirements)
+- [Container](#usage)
 - [Usage](#usage)
 
 ---
@@ -37,8 +38,23 @@ In the broader pipeline:
 
 ---
 
+## Container Architecture
+
+In this project, we use Milvus as a vector database. Milvus provides several containers, each serving a specific purpose:
+
+- **Milvus Standalone Container:**  
+  This container bundles all the necessary components into a single unit. It is ideally suited for development and testing environments where a quick and simple setup is paramount.
+
+- **Milvus ETCD Container:**  
+  ETCD is a distributed key-value database used for managing configurations and metadata within the cluster. Running ETCD in a separate container ensures reliable and scalable system coordination.
+
+- **Milvus MinIO Container:**  
+  MinIO offers S3-compatible object storage responsible for the persistent storage of large datasets. A dedicated MinIO container allows independent management and backup of data, which is particularly advantageous in production environments.
+
+This modular architecture enables independent scaling, maintenance, and optimization of each component, thereby enhancing the flexibility and stability of our system.
+
+---
 ## Usage
 
 - Make sure that Milvus Standalone is running (e.g., via Docker or a local setup).
-
 
