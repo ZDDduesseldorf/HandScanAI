@@ -73,3 +73,9 @@ Next, the bounding boxes are calculated to fit the region bitmask with a 5-pixel
 ![Regions Grid](https://github.com/user-attachments/assets/6eb9dcee-1430-4fcc-9152-5596b8229d73)
 The order of the regions is as follows:  
 **Hand, Hand Body, Thumb, Index Finger, Middle Finger, Ring Finger, Pinky Finger**.
+
+
+## Type Annotations and Static Type Checking
+
+This project makes extensive use of type annotations (using types such as `List`, `Dict`, `Tuple`, etc.) to enhance code clarity and reliability. Consequently, static type checkers like [mypy](http://mypy-lang.org/) can be employed to catch potential type errors during development.
+
