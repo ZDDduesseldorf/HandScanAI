@@ -12,6 +12,7 @@ from .models_utils import transforms_default, load_model
 ###############################################
 
 # Default-Model (Densenet121)
+# TODO: for change of model/ default model, always update model name as well
 _default_cnn_model_, default_model_name = load_model(), "DENSENET_121"
 
 ###############################################
@@ -76,11 +77,11 @@ def normalize_embedding(embedding: ndarray) -> ndarray:
         embedding (ndarray): embedding-tensor of given image
 
     Returns:
-        normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
+        normalized_embedding (ndarray): normalized (values between -1 and 1) 1-dimensional embeddings-vector that retains the length of the respective model's embeddings
     """
     # extract the feature vector
     feature_vector = embedding.squeeze()
-    # Scale input vectors individually to unit norm (vector length). This process can be useful if you plan to use a quadratic form such as the dot-product
+    # Scale input vectors individually to unit norm (vector length, between 1 and -1). This process can be useful if you plan to use a quadratic form such as the dot-product
     return normalize(feature_vector.reshape(1, -1), norm="l2").flatten()
 
 
@@ -89,14 +90,14 @@ def calculate_embedding(image: (torch.Tensor | ndarray), model=_default_cnn_mode
     Uses the given model to generate the embedding of an image.
     Pushes model and data to gpu (cuda) if possible to enhance performance.
     Since the model does not get trained, no-grad (flag to stop backpropagation calculations) is used.
-    Returns a normalized embeddings-tensor of length 1024 (densenet) or 1000 (resnet).
+    Returns a normalized embeddings-tensor of length 1024 (for default model) and with values between 1 and -1.
 
     Args:
         image (torch.Tensor | ndarray): image as 3 dimensional RGB Tensor/array (3, H, W) with values of uint8 in range [0, 255]
         model (DenseNet | ResNet): loaded (pytorch)-model that generates embedding. Default: CNNModel.DenseNet121
 
     Returns:
-        normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector with length 1024 (densenet) and 1000 (resnet)
+        normalized_embedding (ndarray): normalized (values between -1:1) 1-dimensional embeddings-vector
     """
 
     device = choose_device()
