@@ -30,7 +30,7 @@ def _create_densenet121():
 def _create_densenet169():
     """
     Helper Function:
-    Loads densenet169 used for generating embeddings (tensors with 1024 dimensions, generated in second to last layer).
+    Loads densenet169 used for generating embeddings (tensors with 1664 dimensions, generated in second to last layer).
 
     Returns:
         A densenet169 model
