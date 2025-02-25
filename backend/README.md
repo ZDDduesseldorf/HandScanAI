@@ -17,7 +17,7 @@
     - [validation](#validation)
     - [vectordb](#vectordb)
     - [Additional Modules](#additional-modules)
-    - [Setup](#setup)
+  - [Setup](#setup)
   - [Development](#development)
     - [Code Checks](#code-checks)
     - [Code formatting](#code-formatting)
@@ -94,7 +94,7 @@ Additional modules can be added in a similar way by creating new directories and
 
 By adding new modules in this way, the codebase remains organized and modular, making it easier to maintain and extend the application.
 
-### Setup
+## Setup
 
 Setup necessary to use the application. Describes creation of folder structures and base data.
 
