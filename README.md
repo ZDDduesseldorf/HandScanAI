@@ -26,7 +26,7 @@ The goal of this project is to create a simple and intuitive application that ca
    The estimated values and confidence levels are displayed in the frontend, along with reference images of similar hands.
 
 5. **Feedback Loop**  
-   Users can confirm or correct the results. If corrected, the image and metadata are stored, and the corresponding embedding is added to the vector database, improving the model over time.
+   Users can confirm or correct the results. Then the image and metadata are stored, and the corresponding embedding is added to the vector database, improving the model over time.
 
 ## System Architecture
 
@@ -42,7 +42,8 @@ Below is a high-level system architecture diagram illustrating the main componen
 - **Frontend:** A modern web application built with React, TypeScript, Vite, Material UI, and Emotion.  
   Detailed setup, development, and build instructions can be found in the **[Frontend README](frontend/README.md)**.
 
-- **Backend:** A Python and FastAPI backend managing data processing, API endpoints, and AI functionalities.  
+- **Backend:** A Python and FastAPI backend managing data processing, API endpoints, and AI functionalities.
+  Utilized technologies are MediaPipe, OpenCV, PyTorch-CNNs, and Milvus.
   For installation, development, and deployment instructions, see the **[Backend README](backend/README.md)**.
 
 
