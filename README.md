@@ -16,7 +16,7 @@ HandScanAI is an AI-powered web application for analyzing hand images. The appli
 2. **Data Processing**  
    The image is sent to the backend, where it is normalized and transformed into an embedding.
 
-3. **Distance Calculation**
+3. **Distance Calculation**  
    The embedding is compared with an existing dataset stored in the vector database using a k-Nearest Neighbors algorithm.
 
 4. **Result Display**  
@@ -28,7 +28,12 @@ HandScanAI is an AI-powered web application for analyzing hand images. The appli
 ## System Architecture
 
 HandScanAI consists of a **frontend** and a **backend**, where the backend can also be used **independently** without the frontend.  
-For further information on how to set up and work with the backend, refer to the **[Backend README](backend/README.md)**.
+For further information on how to set up and work with the backend, refer to the **Project Components**.
+
+### **Architecture Diagram**
+Below is a high-level system architecture diagram illustrating the main components and interactions of HandScanAI:
+
+![HandScanAI Architecture](readme_data/HandScanAIArchitecture.png)
 
 ## Known Limitations
 
@@ -41,7 +46,8 @@ The application works best under certain conditions:
 
 ## Project Components
 
-- **Frontend:** A modern web application built with React, TypeScript, Vite, Material UI, and Emotion. Detailed setup, development, and build instructions can be found in the [Frontend README](./frontend/README.md).
+- **Frontend:** A modern web application built with React, TypeScript, Vite, Material UI, and Emotion.  
+  Detailed setup, development, and build instructions can be found in the **[Frontend README](frontend/README.md)**.
 
-- **Backend:** A Python and FastAPI backend managing data processing, API endpoints, and AI functionalities. For installation, development, and deployment instructions, see the [Backend README](./backend/README.md).
-
+- **Backend:** A Python and FastAPI backend managing data processing, API endpoints, and AI functionalities.  
+  For installation, development, and deployment instructions, see the **[Backend README](backend/README.md)**.
