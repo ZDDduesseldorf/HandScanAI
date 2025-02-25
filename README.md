@@ -38,3 +38,10 @@ The application works best under certain conditions:
 - **Hand Position**: Fingers should be spread apart; otherwise, the mask might not be generated correctly.
 - **Data Quality**: Distortions, shadows, or poor lighting can negatively impact recognition accuracy.
 - **Dataset Bias**: The model relies on existing training data. If certain age groups or skin types are underrepresented, predictions may be less accurate.
+
+## Project Components
+
+- **Frontend:** A modern web application built with React, TypeScript, Vite, Material UI, and Emotion. Detailed setup, development, and build instructions can be found in the [Frontend README](./frontend/README.md).
+
+- **Backend:** A Python and FastAPI backend managing data processing, API endpoints, and AI functionalities. For installation, development, and deployment instructions, see the [Backend README](./backend/README.md).
+
