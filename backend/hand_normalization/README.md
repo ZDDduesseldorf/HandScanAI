@@ -1,8 +1,22 @@
-# Hand Normalization Pipeline
+# Hand Normalization
+
+## Table of contents
+
+- [How to Use](#how-to-use)
+  - [Normalizing Image](#normalizing-image)
+  - [Saving Region Images](#saving-region-images)
+- [What Happens Inside `segment_hand_image()`?](#what-happens-inside-segment_hand_image)
+  - [1. Creation of a Binary Mask](#1-creation-of-a-binary-mask)
+  - [2. Contour and Defect Detection](#2-contour-and-defect-detection)
+  - [3. Defect Extrapolation through Line Casting](#3-defect-extrapolation-through-line-casting)
+  - [4. Separating the Regions](#4-separating-the-regions)
+  - [5. Forearm Removal from the Hand-Body Mask](#5-forearm-removal-from-the-hand-body-mask)
+  - [6. Casting Bounding Boxes](#6-casting-bounding-boxes)
+- [Type Annotations and Static Type Checking](#type-annotations-and-static-type-checking)
 
 ## How to Use
 
-### normalizing image
+### Normalizing image
 
 Before calculating the embedding, you must call the function `normalize_hand_image()` inside `hand_normalization/src/main.py`.
 
@@ -12,7 +26,7 @@ It contains the following steps:
 - `resize_images()` transforms the images to the required sizes and rgb-format for the embedding network.
 - `build_regions_dict()` builds the dictionary used in the pipelines.
 
-### saving region images
+### Saving region images
 
 For saving the region images, use `save_region_images()`. Takes RGB-format, converts into BGR-format for openCV.
 
@@ -20,7 +34,7 @@ For saving the region images, use `save_region_images()`. Takes RGB-format, conv
 
 ### 1. Creation of a Binary Mask
 
-The mask is created using an HSV (Hue, Saturation, Value) approach. A region is defined that contains the range of valid skin tones. Everything outside this range is considered "not part of the hand." The resulting image looks like this:
+The mask is created using an HSV (Hue, Saturation, Value) mask. A HSV range is defined that contains possible skin tones. Everything outside this range is considered "not part of the hand." The resulting image looks like this:
 
 ![HandMask](https://github.com/user-attachments/assets/a7dad426-d855-4f5a-bde3-7bbf4d559afe)
 
@@ -38,10 +52,13 @@ By filtering all detected defects for the four with the largest defect distance 
 
 ![Image with Defects](https://github.com/user-attachments/assets/e8831c57-e004-4dc9-8441-31fdf7fc22f7)
 
+Which point is which is identified through a lookup in predefined areas. The lookup areas are defined by the four closest MediaPipe landmarks to the corresponding finger gap.
+
 ### 3. Defect Extrapolation through Line Casting
 
-To identify the middle finger region, we connect the two defect points near the middle finger's base.  
-With the current four points, we can only create regions for the middle and ring fingers. To extend this concept, we need to determine similar points for the other fingers. Our goal is to achieve something like this:
+We can now identify the middle and ring finger regions seperatly by connecting the two defect points near thier respective finger's bases. 
+With the current four points, we can only create regions for the middle and ring fingers.
+To extend this concept, we need to determine similar points for the other fingers. Our goal is to achieve something like this:
 
 ![Image with needed region defining points](https://github.com/user-attachments/assets/046c0f00-0563-4f39-8575-7643ed473052)
 
@@ -64,7 +81,11 @@ We then use a different contour detection method provided by OpenCV to extract c
 
 To identify which mask corresponds to which region, we use landmarks from the Mediapipe model to check which regions contain which landmarks, and we assign each region accordingly.
 
-### 5. Casting Bounding Boxes
+### 5. Forearm Removal from the Hand-Body Mask
+
+The final mask cleanup step is the removal of the forearm from the hand-body mask. For this, a new mask is created that splits the image at the wrist. The masks are then combined to form the final hand-body mask.
+
+### 6. Casting Bounding Boxes
 
 To align the bounding box with the fingers and other segments, we rotate each region to point upwards. The angle of each region is calculated using two landmarks within the region.
 
