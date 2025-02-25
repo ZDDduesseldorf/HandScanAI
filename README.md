@@ -17,7 +17,7 @@ HandScanAI is an AI-powered web application for analyzing hand images. The appli
    The image is sent to the backend, where it is normalized and transformed into an embedding.
 
 3. **Analysis**  
-   The embedding is compared with an existing dataset stored in the vector database (Milvus) using an Approximate Nearest Neighbors (ANN) algorithm.
+   The embedding is compared with an existing dataset stored in the vector database using an Approximate Nearest Neighbors algorithm.
 
 4. **Result Determination**  
    A RandomForest algorithm determines the estimated age and gender based on the most similar entries.
