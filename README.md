@@ -13,7 +13,7 @@ The goal of this project is to create a simple and intuitive application that ca
 ## How It Works
 
 1. **Image Capture**  
-   The frontend interface allows users to take a hand image using their device's camera. For current limitations see [Knownn Limitations](#known-limitations)
+   The frontend interface allows users to take a hand image using their device's camera. For current limitations see [Known Limitations](#known-limitations)
 
 
 2. **Data Processing**  
