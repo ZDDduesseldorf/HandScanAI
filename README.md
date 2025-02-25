@@ -6,7 +6,7 @@ Building a transparent, reliable, robust AI application to predict biometric inf
 
 ## Overview
 
-HandScanAI is an AI-powered web application for analyzing hand images. The application utilizes a Convolutional Neural Network (CNN) in combination with a vector database (Milvus) and a RandomForest algorithm to estimate the age and gender of a person based on an uploaded hand image.
+HandScanAI is an AI-powered web application for analyzing hand images. The application utilizes a Convolutional Neural Network (CNN) in combination with a vector database (Milvus) and a k-Nearest-Neighbors algorithm to estimate the age and gender of a person based on an uploaded hand image.
 
 ## How It Works
 
@@ -16,16 +16,13 @@ HandScanAI is an AI-powered web application for analyzing hand images. The appli
 2. **Data Processing**  
    The image is sent to the backend, where it is normalized and transformed into an embedding.
 
-3. **Analysis**  
-   The embedding is compared with an existing dataset stored in the vector database using an Approximate Nearest Neighbors algorithm.
+3. **Distance Calculation**
+   The embedding is compared with an existing dataset stored in the vector database using a k-Nearest Neighbors algorithm.
 
-4. **Result Determination**  
-   A RandomForest algorithm determines the estimated age and gender based on the most similar entries.
-
-5. **Result Display**  
+4. **Result Display**  
    The estimated values and confidence levels are displayed in the frontend, along with reference images of similar hands.
 
-6. **Feedback Loop**  
+5. **Feedback Loop**  
    Users can confirm or correct the results. If corrected, the image and metadata are stored, and the corresponding embedding is added to the vector database, improving the model over time.
 
 ## System Architecture
