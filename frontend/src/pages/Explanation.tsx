@@ -87,10 +87,10 @@ export default function Explanation() {
       <Secondary>k-nearest Neighbors (k-NN): Deine Nächsten Nachbarn</Secondary>
       <p>
         Hier siehst du dein Bild und drei weitere, die vom Alter und Geschlecht
-        doch gut zu deinem passen sollten, oder? HandScan AI nutzt nämlich einen
-        k-NN Algorithmus, um die Vorhersage zu treffen. k-Nearest Neighbors
-        (k-NN) ist eine Methode des maschinellen Lernens, die auf der Annahme
-        basiert, dass ähnliche Bilder ähnliche Ergebnisse liefern.
+        doch gut zu deinem passen sollten, oder? HandScan AI gibt dir eine
+        Vorhersage, basierend auf den Bildern, die in unserem Datensatz, am
+        meisten mit deinem Bild übereinstimmen. HandScan AI nutzt nämlich einen
+        k-Nearest Neighbors (k-NN) Algorithmus, um die Vorhersage zu treffen.
       </p>
       <NearestNeighbourLayout
         src={displayImage}
@@ -100,7 +100,7 @@ export default function Explanation() {
       />
       <Centered style="max-width: 70vw;">
         <Secondary centered={true} style="margin-bottom:0">
-          Statt Hand Scan AI kannst du auch k-NN Algorithmus sagen
+          Vom Bild zur Vorhersage: Die Schritte hinter HandScan AI
         </Secondary>
         <p style={{ textAlign: 'center' }}>
           „k-Nearest Neighbors (k-NN)“ ist eine Methode des maschinellen

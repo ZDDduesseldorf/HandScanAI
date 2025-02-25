@@ -91,9 +91,9 @@ export default function NearestNeighbourLayout({
             {neighbour.gender == 0 ? 'weiblich' : 'männlich'}, {neighbour.age}
           </HandText>
           <p>
-            Hier war der <b>{neighbour.region}</b> sehr ähnlich zu deinem, daher
-            hat HandScan mit Hilfe von diesem Bild dein Alter und Geschlecht
-            bestimmt.
+            Hier war {neighbour.region.toLowerCase() == 'hand' ? 'die' : 'der'}{' '}
+            <b>{neighbour.region}</b> sehr ähnlich zu deinem, daher hat HandScan
+            mit Hilfe von diesem Bild dein Alter und Geschlecht bestimmt.
           </p>
         </Vertical>
       ))}
