@@ -38,6 +38,15 @@ export default function SubmissionComplete() {
           Vielen Dank, dass du mit deiner Nutzung geholfen hast, HandScan AI zu
           verbessern. Bis bald!
         </p>
+        <img
+          src="/complete/QR-code.png"
+          alt="QR-Code"
+          style={{
+            objectFit: 'contain',
+            alignSelf: 'center',
+            maxWidth: '200px',
+          }}
+        />
         <FixedBottomMiddle onClick={() => void navigate('/')}>
           Beenden
         </FixedBottomMiddle>
