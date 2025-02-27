@@ -70,6 +70,7 @@ yarn build
 ```bash
 pnpm build
 ```
+
 The optimized output will be in the `dist/` directory.
 
 ## Code Quality
@@ -91,6 +92,7 @@ yarn lint
 ```
 
 #### Using pnpm
+
 ```bash
 pnpm lint
 ```
@@ -112,6 +114,7 @@ yarn format
 ```
 
 #### Using pnpm
+
 ```bash
 pnpm format
 ```
@@ -125,23 +128,28 @@ A complete list of all available CLI commands can be found in `package.json`.
 HandScanAI's frontend is a web application built with modern web technologies. The application is developed using **React with TypeScript**, optimized with **Vite**, and styled with **Material UI** and **Emotion**. It interacts with a GraphQL backend using **Apollo** and uses **Zustand** for state management.
 
 ### Core Technologies
+
 - **[React](https://react.dev/)**: A JavaScript framework for building user interfaces.
 - **[TypeScript](https://www.typescriptlang.org/)**: A typed superset of JavaScript for improved developer experience.
 - **[Vite](https://vitejs.dev/)**: A fast build tool optimized for modern frontend development.
 
 ### State Management
+
 - **[Zustand](https://github.com/pmndrs/zustand)**: A lightweight state management solution for managing application-wide states.
 
 ### Styling & UI
+
 - **[Material UI (MUI)](https://mui.com/)**: A popular UI library with ready-to-use React components.
 - **[Emotion](https://emotion.sh/docs/introduction)**: A performant CSS-in-JS library used with MUI for custom styling.
 - **[Framer Motion](https://www.framer.com/motion/)**: A library used for animated transitions between pages.
 
 ### API Communication
+
 - **[Apollo Client](https://www.apollographql.com/docs/react/)**: A GraphQL client used for efficient data fetching and caching.
 - **[WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)**: WebSocket used for real-time server communication when capturing the hand images.
 
 ### Development & Tooling
+
 - **[pnpm](https://pnpm.io/)**: A fast, efficient package manager. Alternatively, npm or yarn are also supported.
 - **[ESLint](https://eslint.org/)**: A static code analysis tool for identifying ploblems in JavaScript and TypeScript code.
 - **[Prettier](https://prettier.io/)**: A code formatter for consistent styling.
@@ -149,6 +157,7 @@ HandScanAI's frontend is a web application built with modern web technologies. T
 ## Project structure
 
 The HandScanAI frontend follows a structured file organization:
+
 ```
 frontend/
 ├── eslint.config.js       # ESLint configuration
@@ -219,12 +228,29 @@ This section provides guidance on common tasks such as adding a new page, compon
 
 ### Adding a new page
 
-TODO
+Under the pages folder you can add a new tsx file which will represent your page.
+To integrate the page with our previously created pages you need to configure Routing.
+First, Locate the //imports section in App.tsx and add an import statement for your new page.
 
-### Adding a New Component
+Second, Define the route for your new page inside the return statement of App.tsx.
 
-TODO
+If you want your page to follow the default application layout (which includes the Stepper Bar at the bottom, the title of the page, and the logo at the top), place your route inside:
+<Route element={<Layout />}>
+
+If your page does not require these layout elements, place your route above:
+<Route element={<Layout />}>
+
+### Using Components
+
+The reusable UI components for our pages can be found in the components/ directory.
+When creating new pages, the components in the following folders are particularly useful:
+
+/buttons: Contains various button components.
+/heading: Contains styled heading elements.
+/layout: Contains components which help you maintain a consistent layout across multiple pages.
 
 ### Adding GraphQL Queries or Mutations
 
-TODO
+The Apollo Client instance is located in api.ts inside the /services folder.
+
+New Mutations and Queries can be added to mutations.ts and queries.ts which are also in the /services folder.
